@@ -73,7 +73,6 @@ const Header = () => {
           </nav>
         </SheetContent>
       </Sheet>
-      <ThemeToggleButton />
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <form className="ml-auto flex-1 sm:flex-initial">
           <div className="relative">
@@ -87,16 +86,12 @@ const Header = () => {
         </form>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full bg-black dark:bg-slate-400"
-            >
-              <Avatar>
-                <AvatarImage src="/placeholder-user.jpg" alt="User" />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
-            </Button>
+            <Avatar>
+              <AvatarImage src="/placeholder-user.jpg" alt="User" />
+              <AvatarFallback className="text-primary select-none">
+                U
+              </AvatarFallback>
+            </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -107,6 +102,8 @@ const Header = () => {
             <DropdownMenuItem>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <ThemeToggleButton />
       </div>
     </header>
   );
