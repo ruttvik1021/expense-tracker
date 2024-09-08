@@ -1,0 +1,4 @@
+{
+  "regions": ["sin1"],     // hnd1: Tokyo, sin1: Singapore
+  "defaultRegion": "sin1"          // Primary region is set to Singapore
+}
