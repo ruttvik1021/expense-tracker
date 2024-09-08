@@ -1,11 +1,5 @@
-import Header from "@/components/common/Header/Header";
-import { Label } from "@/components/ui/label";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <>
-      <Header />
-      <Label>Hello</Label>
-    </>
-  );
+  return redirect("/dashboard");
 }

@@ -1,6 +1,7 @@
 import QueryWrapper from "@/components/common/QueryWrapper";
 import type { Metadata } from "next";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,8 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-background">
         <QueryWrapper>{children}</QueryWrapper>
+        <Toaster richColors />
       </body>
     </html>
   );

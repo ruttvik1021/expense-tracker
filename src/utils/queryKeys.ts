@@ -1,3 +1,3 @@
-export const queryKey = {
-  theme: "theme",
+export const queryKeys = {
+  authUser: "authUser",
 };
