@@ -3,8 +3,10 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import UserModel from "@/models/UserModel";
 import bcrypt from "bcryptjs";
-import { SignJwt } from "jose";
+import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
+
+const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -37,11 +39,11 @@ export async function POST(req: Request) {
   }
 
   // Perform validation of the user credentials here
-  const token = await SignJwt(
-    { userId: user._id },
-    process.env.JWT_SECRET || "your-secret",
-    { expiresIn: "24h" }
-  );
+  const token = await new SignJWT({ userId: user._id })
+    .setProtectedHeader({ alg: "HS256" }) // Algorithm used to sign
+    .setIssuedAt() // Optional - sets 'iat' claim (issued at)
+    .setExpirationTime("24h") // Optional - sets 'exp' claim (expiration)
+    .sign(secret); // Signing key
 
   const headers = new Headers();
   headers.set(
