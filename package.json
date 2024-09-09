@@ -32,6 +32,8 @@
     "formik": "^2.4.6",
     "jose": "^5.8.0",
     "lucide-react": "^0.439.0",
+    "mongodb": "^6.8.1",
+    "mongoose": "^8.6.1",
     "next": "14.2.8",
     "next-themes": "^0.3.0",
     "react": "^18",
