@@ -1,5 +1,3 @@
-import { User } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,9 +6,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
+import { User } from "lucide-react";
 import { LogoutButton, Navbar, NavDrawer } from "../Navigation";
 import ThemeToggleButton from "../ThemeToggle/ThemeToggle";
-import { Label } from "@/components/ui/label";
 
 const navLinks = [{ label: "Dashboard", href: "/dashboard" }];
 

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { CrossIcon, IndianRupee, Menu } from "lucide-react";
-import { cookies } from "next/headers";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
@@ -45,7 +44,10 @@ export const Navbar = ({ links }: { links: ILink[] }) => {
     <nav className="flex items-center gap-8">
       <Brand />
       {links.map((item) => (
-        <NavLink link={{ ...item, isActive: pathName === item.href }} />
+        <NavLink
+          link={{ ...item, isActive: pathName === item.href }}
+          key={item.href}
+        />
       ))}
     </nav>
   );
@@ -83,6 +85,7 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
                 isActive: pathName === item.href,
                 onClick: () => toggleDrawer(),
               }}
+              key={item.href}
             />
           ))}
         </nav>

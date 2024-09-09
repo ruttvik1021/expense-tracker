@@ -49,6 +49,7 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const postAjax = async (url: string, data: any, auth: boolean) => {
   return await axiosInstance.post(url, data, {
     headers: getHeaders(auth),
@@ -56,6 +57,7 @@ const postAjax = async (url: string, data: any, auth: boolean) => {
   });
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const putAjax = (url: string, data: any, auth: boolean) => {
   return axiosInstance.put(url, data, {
     headers: getHeaders(auth),

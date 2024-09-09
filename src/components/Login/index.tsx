@@ -1,6 +1,5 @@
 "use client";
 
-import { AjaxUtils } from "@/ajax/ajax";
 import { loginApi } from "@/ajax/authApi";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,10 +12,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { queryKeys } from "@/utils/queryKeys";
 import { ILogin } from "@/utils/types";
 import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError, AxiosResponse } from "axios";
 import { Field, FormikProvider, useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -64,6 +61,7 @@ const Login = () => {
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
             <Field name="email">
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {({ field, meta }: any) => (
                 <div className="my-2">
                   <Label htmlFor={"email"}>Email</Label>
@@ -78,6 +76,7 @@ const Login = () => {
           </div>
           <div className="grid gap-2">
             <Field name="password">
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {({ field, meta }: any) => (
                 <div className="my-2">
                   <Label htmlFor={"password"}>Password</Label>
