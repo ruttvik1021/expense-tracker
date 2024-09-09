@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
 import Joi from "joi";
+import { cookies } from "next/headers";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
@@ -55,13 +56,7 @@ export async function POST(req: Request) {
       .setExpirationTime("24h") // Optional - sets 'exp' claim (expiration)
       .sign(secret); // Signing key
 
-    const headers = new Headers();
-    headers.set(
-      "Set-Cookie",
-      `token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict`
-    );
-
-    return NextResponse.json({ message: "Login successful" }, { headers });
+    return NextResponse.json({ message: "Login successful", token });
   } catch (error) {
     return NextResponse.json(
       { message: "Internal Server Error" },

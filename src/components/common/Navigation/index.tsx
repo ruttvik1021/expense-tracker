@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { cn } from "@/lib/utils";
 import { CrossIcon, IndianRupee, Menu } from "lucide-react";
 import Link from "next/link";
@@ -96,25 +97,9 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
 
 export const LogoutButton = () => {
   const router = useRouter();
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/api/logout", {
-        method: "POST",
-      });
-
-      if (response.ok) {
-        // Optionally handle response
-        router.push("/login"); // Redirect to login page or another page
-      } else {
-        // Handle error
-        console.error("Failed to log out");
-      }
-    } catch (error) {
-      console.error("An error occurred:", error);
-    }
-  };
+  const { logoutUser } = useAuthContext();
   return (
-    <Button variant="destructive" className="w-full" onClick={handleLogout}>
+    <Button variant="destructive" className="w-full" onClick={logoutUser}>
       Logout
     </Button>
   );

@@ -54,16 +54,7 @@ export async function POST(req: Request) {
       .setExpirationTime("24h") // Optional - sets 'exp' claim (expiration)
       .sign(secret); // Signing key
 
-    const headers = new Headers();
-    headers.set(
-      "Set-Cookie",
-      `token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict`
-    );
-
-    return NextResponse.json(
-      { message: "Registration successful" },
-      { headers }
-    );
+    return NextResponse.json({ message: "Login successful", token });
   } catch (err) {
     return NextResponse.json(
       { message: "Internal Server Error" },

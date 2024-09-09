@@ -1,11 +1,5 @@
-import { NavHeader } from "@/components/common/Headers";
-
 const Dashboard = () => {
-  return (
-    <>
-      <NavHeader />
-    </>
-  );
+  return <></>;
 };
 
 export default Dashboard;

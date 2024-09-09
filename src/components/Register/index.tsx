@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import * as Yup from "yup";
+import { useAuthContext } from "../wrapper/ContextWrapper";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -27,10 +28,12 @@ const validationSchema = Yup.object({
 
 const Register = () => {
   const router = useRouter();
+  const { authenticateUser } = useAuthContext();
   const { mutate: registerMutate, isPending: isRegistering } = useMutation({
-    mutationKey: ["register"],
+    mutationKey: ["user"],
     mutationFn: (data: ILogin) => signUpApi(data),
     onSuccess(data) {
+      authenticateUser(data.data?.token);
       toast.success(data.data?.message);
       router.push("/login");
     },

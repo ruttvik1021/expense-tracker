@@ -1,10 +1,11 @@
 "use client";
 import axios, { AxiosHeaders } from "axios";
+import Cookies from "js-cookie";
 
 const getHeaders = (auth: boolean) => {
   const headers = new AxiosHeaders();
   if (auth) {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     return {
       ...headers,
       Authorization: `Bearer ${token}`,
@@ -25,7 +26,6 @@ const createController = () => {
 
 const axiosInstance = axios.create({
   baseURL: "/api",
-  //   baseURL: "https://localhost:3000/",
 });
 
 // Response interceptor
@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(
 
       const { status } = error.response;
       if (status === 401 || status === 403) {
-        window.location.href = "/login"; // Redirect to login page
+        // window.location.href = "/login"; // Redirect to login page
       }
     }
     return Promise.reject(error.response.data);
