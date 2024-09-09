@@ -1,5 +1,6 @@
 "use client";
 
+import { signUpApi } from "@/ajax/authApi";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,74 +12,108 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ILogin } from "@/utils/types";
+import { useMutation } from "@tanstack/react-query";
+import { Field, FormikProvider, useFormik } from "formik";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "sonner";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object({
+  email: Yup.string().email("Invalid email address").required("Required"),
+  password: Yup.string().required("Required"),
+});
 
 const Register = () => {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const handleRegister = async () => {
-    try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+  const { mutate: registerMutate, isPending: isRegistering } = useMutation({
+    mutationKey: ["register"],
+    mutationFn: (data: ILogin) => signUpApi(data),
+    onSuccess(data) {
+      toast.success(data.data?.message);
+      router.push("/login");
+    },
+    onError(error) {
+      toast.error(error?.message);
+    },
+  });
 
-      if (response.ok) {
-        const data = await response.json();
-        toast.success(data.message);
-        router.push("/dashboard");
-      } else {
-        const data = await response.json();
-        setError(data.error);
-      }
-    } catch (err) {
-      console.error("An error occurred:", err);
-      setError("Something went wrong. Please try again.");
-    }
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      registerMutate(values);
+    },
+  });
 
   return (
-    <Card className="w-full max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">Register</CardTitle>
-        <CardDescription>Enter your email below to register.</CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        {error && <p className="text-red-500">{error}</p>}
-      </CardContent>
-      <CardFooter>
-        <Button className="w-full" onClick={() => handleRegister()}>
-          Sign up
-        </Button>
-      </CardFooter>
-    </Card>
+    <FormikProvider value={formik}>
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">Register</CardTitle>
+          <CardDescription>Enter your email below to register.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <div className="grid gap-2">
+            <Field name="email">
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {({ field, meta }: any) => (
+                <div className="my-2">
+                  <Label htmlFor={"email"}>Email</Label>
+                  <span className="text-red-600 ml-1">*</span>
+                  <Input
+                    type={"text"}
+                    {...field}
+                    autoComplete="false"
+                    disabled={isRegistering}
+                  />
+                  {meta.touched && meta.error && (
+                    <div className="text-sm text-red-600">{meta.error}</div>
+                  )}
+                </div>
+              )}
+            </Field>
+          </div>
+          <div className="grid gap-2">
+            <Field name="password">
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {({ field, meta }: any) => (
+                <div className="my-2">
+                  <Label htmlFor={"password"}>Password</Label>
+                  <span className="text-red-600 ml-1">*</span>
+                  <Input
+                    type={"password"}
+                    {...field}
+                    autoComplete="false"
+                    disabled={isRegistering}
+                  />
+                  {meta.touched && meta.error && (
+                    <div className="text-sm text-red-600">{meta.error}</div>
+                  )}
+                </div>
+              )}
+            </Field>
+          </div>
+          <Button
+            className="w-full bg-primary"
+            onClick={() => formik.handleSubmit()}
+            disabled={isRegistering}
+          >
+            Register
+          </Button>
+        </CardContent>
+        <CardFooter>
+          Already registered ?{" "}
+          <Link href={"/login"} className="ml-2 text-blue-700">
+            Login here
+          </Link>
+        </CardFooter>
+      </Card>
+    </FormikProvider>
   );
 };
 

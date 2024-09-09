@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { ILogin } from "@/utils/types";
 import { useMutation } from "@tanstack/react-query";
 import { Field, FormikProvider, useFormik } from "formik";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import * as Yup from "yup";
@@ -66,7 +67,12 @@ const Login = () => {
                 <div className="my-2">
                   <Label htmlFor={"email"}>Email</Label>
                   <span className="text-red-600 ml-1">*</span>
-                  <Input type={"text"} {...field} autoComplete="false" />
+                  <Input
+                    type={"text"}
+                    {...field}
+                    autoComplete="false"
+                    disabled={isLogging}
+                  />
                   {meta.touched && meta.error && (
                     <div className="text-sm text-red-600">{meta.error}</div>
                   )}
@@ -81,7 +87,12 @@ const Login = () => {
                 <div className="my-2">
                   <Label htmlFor={"password"}>Password</Label>
                   <span className="text-red-600 ml-1">*</span>
-                  <Input type={"password"} {...field} autoComplete="false" />
+                  <Input
+                    type={"password"}
+                    {...field}
+                    autoComplete="false"
+                    disabled={isLogging}
+                  />
                   {meta.touched && meta.error && (
                     <div className="text-sm text-red-600">{meta.error}</div>
                   )}
@@ -89,15 +100,19 @@ const Login = () => {
               )}
             </Field>
           </div>
-        </CardContent>
-        <CardFooter>
           <Button
-            className="w-full"
+            className="w-full bg-primary"
             onClick={() => formik.handleSubmit()}
             disabled={isLogging}
           >
             Sign in
           </Button>
+        </CardContent>
+        <CardFooter>
+          Don't have an account ?{" "}
+          <Link href={"/register"} className="ml-2 text-blue-700">
+            Register here
+          </Link>
         </CardFooter>
       </Card>
     </FormikProvider>

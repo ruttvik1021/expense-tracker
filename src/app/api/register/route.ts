@@ -3,42 +3,71 @@ import UserModel from "@/models/UserModel";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
+import Joi from "joi";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  const { email, password } = body;
+const schema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().min(8).required(),
+});
 
-  if (!email || !password)
-    return NextResponse.json(
-      { message: "Invalid credentials" },
-      { status: 400 }
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    const { error } = schema.validate(body);
+    if (error) {
+      return NextResponse.json(
+        {
+          message: error.details[0]?.message,
+        },
+        { status: 400 }
+      );
+    }
+
+    const { email, password } = body;
+
+    await connectToDatabase();
+
+    const isUserAlreadyRegistered = await UserModel.findOne({ email });
+
+    if (isUserAlreadyRegistered) {
+      return NextResponse.json(
+        { message: "User already exist" },
+        { status: 400 }
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const newUser = new UserModel({
+      email,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+
+    const token = await new SignJWT({ userId: newUser._id })
+      .setProtectedHeader({ alg: "HS256" }) // Algorithm used to sign
+      .setIssuedAt() // Optional - sets 'iat' claim (issued at)
+      .setExpirationTime("24h") // Optional - sets 'exp' claim (expiration)
+      .sign(secret); // Signing key
+
+    const headers = new Headers();
+    headers.set(
+      "Set-Cookie",
+      `token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict`
     );
 
-  const dbConnect = await connectToDatabase();
-  console.log("dbConnect", dbConnect)
-
-  const hashedPassword = await bcrypt.hash(password, 12);
-
-  const newUser = new UserModel({
-    email,
-    password: hashedPassword,
-  });
-
-  await newUser.save();
-
-  const token = await new SignJWT({ userId: newUser._id })
-    .setProtectedHeader({ alg: "HS256" }) // Algorithm used to sign
-    .setIssuedAt() // Optional - sets 'iat' claim (issued at)
-    .setExpirationTime("24h") // Optional - sets 'exp' claim (expiration)
-    .sign(secret); // Signing key
-
-  const headers = new Headers();
-  headers.set(
-    "Set-Cookie",
-    `token=${token}; Path=/; HttpOnly; Secure; SameSite=Strict`
-  );
-
-  return NextResponse.json({ message: "Registration successful" }, { headers });
+    return NextResponse.json(
+      { message: "Registration successful" },
+      { headers }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }
