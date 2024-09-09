@@ -3,10 +3,9 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import UserModel from "@/models/UserModel";
 import bcrypt from "bcryptjs";
+import Joi from "joi";
 import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
-import Joi from "joi";
-import { cookies } from "next/headers";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 

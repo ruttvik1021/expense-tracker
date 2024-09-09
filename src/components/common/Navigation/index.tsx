@@ -96,7 +96,6 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
 };
 
 export const LogoutButton = () => {
-  const router = useRouter();
   const { logoutUser } = useAuthContext();
   return (
     <Button variant="destructive" className="w-full" onClick={logoutUser}>

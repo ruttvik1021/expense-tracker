@@ -19,7 +19,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import * as Yup from "yup";
-import Cookies from "js-cookie";
 import { useAuthContext } from "../wrapper/ContextWrapper";
 
 const validationSchema = Yup.object({
