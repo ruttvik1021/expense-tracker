@@ -1,7 +1,7 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import UserModel from "@/models/UserModel";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { SignJwt } from "jose";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
   await newUser.save();
 
-  const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET!, {
+  const token = await SignJwt({ userId: newUser._id }, process.env.JWT_SECRET!, {
     expiresIn: "24h",
   });
 
