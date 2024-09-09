@@ -16,7 +16,8 @@ export async function POST(req: Request) {
       { status: 400 }
     );
 
-  await connectToDatabase();
+  const dbConnect = await connectToDatabase();
+  console.log("dbConnect", dbConnect)
 
   const hashedPassword = await bcrypt.hash(password, 12);
 
