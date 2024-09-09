@@ -72,7 +72,7 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" onBlur={toggleDrawer}>
+      <SheetContent side="left">
         <div className="flex justify-end items-center"></div>
         <nav className="grid gap-6 text-lg font-medium">
           <div className="flex justify-between items-center">
