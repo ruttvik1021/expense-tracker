@@ -6,7 +6,7 @@ import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { cn } from "@/lib/utils";
 import { CrossIcon, IndianRupee, Menu } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 export interface ILink {
