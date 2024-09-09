@@ -13,11 +13,13 @@ let cachedClient: mongoose.Mongoose | null = null;
 
 export async function connectToDatabase() {
   if (cachedClient) {
+console.log("cachedClient", cachedClient)
     return cachedClient;
   }
 
   try {
     const client = await mongoose.connect(MONGODB_URI);
+console.log("client", client)
     cachedClient = client;
     return client;
   } catch (error) {
