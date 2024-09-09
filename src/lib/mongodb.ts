@@ -18,7 +18,11 @@ console.log("cachedClient", cachedClient)
   }
 
   try {
-    const client = await mongoose.connect(MONGODB_URI);
+    const client = await mongoose.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
+    });
 console.log("client", client)
     cachedClient = client;
     return client;
