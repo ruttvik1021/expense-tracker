@@ -1,16 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+
+let cachedClient: mongoose.Mongoose | null = null;
 
 export async function connectToDatabase() {
-
-  if(mongoose.connections[0].readyState){
-    return true
+  if (cachedClient) {
+    return cachedClient;
   }
 
   try {
-    await mongoose.connect(process.env.MONGODB_URI!);
-    console.log('Database connected successfully');
+    const client = await mongoose.connect(process.env.MONGODB_URI!);
+    cachedClient = client;
+    return client;
   } catch (error) {
-    console.log('Database connection failed:', error);
+    throw new Error("Failed to connect to MongoDB");
   }
 }
-
