@@ -25,14 +25,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useDeviceType } from "@/hooks/useMediaQuery";
-import { cn } from "@/lib/utils";
+import { Field, FormikProvider, useFormik } from "formik";
 import { Calendar as CalendarIcon, PlusCircleIcon } from "lucide-react";
 import moment from "moment-timezone";
 import React from "react";
+import * as Yup from "yup";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Field, Formik, FormikProvider, useFormik } from "formik";
-import * as Yup from "yup";
 
 const AddButton = (props: ButtonProps) => {
   return (
