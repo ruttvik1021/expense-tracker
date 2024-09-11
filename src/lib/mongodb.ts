@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export async function connectToDatabase = () => {
+export async function connectToDatabase() {
 
   if(mongoose.connections[0].readyState){
     return true
