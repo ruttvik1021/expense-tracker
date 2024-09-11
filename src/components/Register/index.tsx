@@ -16,7 +16,6 @@ import { ILogin } from "@/utils/types";
 import { useMutation } from "@tanstack/react-query";
 import { Field, FormikProvider, useFormik } from "formik";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import * as Yup from "yup";
 import { useAuthContext } from "../wrapper/ContextWrapper";
@@ -27,7 +26,6 @@ const validationSchema = Yup.object({
 });
 
 const Register = () => {
-  const router = useRouter();
   const { authenticateUser } = useAuthContext();
   const { mutate: registerMutate, isPending: isRegistering } = useMutation({
     mutationKey: ["user"],
@@ -35,7 +33,6 @@ const Register = () => {
     onSuccess(data) {
       authenticateUser(data.data?.token);
       toast.success(data.data?.message);
-      router.push("/login");
     },
     onError(error) {
       toast.error(error?.message);

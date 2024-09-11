@@ -14,14 +14,17 @@ import { User } from "lucide-react";
 import { LogoutButton, Navbar, NavDrawer } from "../Navigation";
 import ThemeToggleButton from "../ThemeToggle/ThemeToggle";
 
-const navLinks = [{ label: "Dashboard", href: "/dashboard" }];
+const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "Transactions", href: "/transactions" },
+];
 
 export const NavHeader = () => {
   const { isAuthenticated } = useAuthContext();
 
   if (isAuthenticated) {
     return (
-      <header className="bg-header sticky top-0 flex h-16 justify-between items-center gap-4 border-b px-4 shadow-sm md:px-6 ">
+      <header className="bg-header sticky top-0 flex h-16 justify-between items-center gap-4 px-4 shadow-sm md:px-6 border-b-2 border-selected">
         <div className="flex w-full justify-between items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
             <Navbar links={navLinks} />
@@ -40,7 +43,6 @@ export const NavHeader = () => {
                 <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <LogoutButton />
-                <DropdownMenuSeparator />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

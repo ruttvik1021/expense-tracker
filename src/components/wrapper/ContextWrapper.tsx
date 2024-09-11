@@ -22,7 +22,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const authenticateUser = (token: string) => {
     Cookies.set("token", token);
     setIsAuthenticated(true);
-    router.push("/dashboard");
+    router.push("/");
   };
 
   const logoutUser = () => {

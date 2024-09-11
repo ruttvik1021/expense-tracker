@@ -25,7 +25,7 @@ const NavLink = ({ link }: { link: ILink }) => {
       href={link.href}
       className={cn(
         "text-primary transition-colors",
-        link.isActive ? "font-bold border-b-2 border-b-primary" : ""
+        link.isActive ? "font-bold text-selected" : ""
       )}
       onClick={link.onClick}
     >
@@ -36,7 +36,7 @@ const NavLink = ({ link }: { link: ILink }) => {
 };
 
 const Brand = () => {
-  return <IndianRupee className="h-8 w-8 text-primary" />;
+  return <IndianRupee className="h-8 w-8 text-selected" />;
 };
 
 export const Navbar = ({ links }: { links: ILink[] }) => {
@@ -72,7 +72,11 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left">
+      <SheetContent
+        side="top"
+        className="rounded-xl shadow-lg border-b-2 border-selected"
+        onBlur={toggleDrawer}
+      >
         <div className="flex justify-end items-center"></div>
         <nav className="grid gap-6 text-lg font-medium">
           <div className="flex justify-between items-center">
@@ -84,7 +88,6 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
               link={{
                 ...item,
                 isActive: pathName === item.href,
-                onClick: () => toggleDrawer(),
               }}
               key={item.href}
             />
@@ -98,7 +101,10 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
 export const LogoutButton = () => {
   const { logoutUser } = useAuthContext();
   return (
-    <Button variant="destructive" className="w-full" onClick={logoutUser}>
+    <Button
+      className="w-full border border-red-300 text-red-700 bg-red hover:bg-red-100 hover:text-red-900 rounded-md px-4 py-2 transition duration-300"
+      onClick={logoutUser}
+    >
       Logout
     </Button>
   );

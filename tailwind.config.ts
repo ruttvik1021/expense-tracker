@@ -14,6 +14,7 @@ const config: Config = {
         foreground: "hsl(var(--foreground))",
         link: "hsl(var(--link-primary))",
         header: "hsl(var(--header))",
+        selected: "rgb(var(--selected))",
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",

@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import PageHeader from "@/components/common/Pageheader";
 
 export default function Home() {
-  return redirect("/dashboard");
+  return <PageHeader title={"Home"} />;
 }
