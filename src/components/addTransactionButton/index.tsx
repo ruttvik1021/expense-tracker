@@ -11,10 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -59,6 +57,7 @@ const TransactionForm = () => {
 
   const handleSubmit = async (values: typeof initialValues) => {
     console.log(values);
+    alert(values);
   };
 
   const transactionFormik = useFormik({
@@ -180,12 +179,6 @@ const AddTransaction = () => {
             <TransactionForm />
           </DrawerDescription>
         </DrawerHeader>
-        <AddButton />
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
