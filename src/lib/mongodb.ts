@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 let cachedClient: mongoose.Mongoose | null = null;
@@ -9,7 +10,7 @@ export async function connectToDatabase() {
   }
 
   try {
-    const client = await mongoose.connect(process.env.MONGODB_URI!);
+    const client = await mongoose.connect("mongodb+srv://rktesting2022:RoPXp8EhJ7oyfvsD@expense.qlar7.mongodb.net/?retryWrites=true&w=majority&appName=expense");
     console.log("client", client)
     cachedClient = client;
     return client;
