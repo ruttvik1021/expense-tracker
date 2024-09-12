@@ -5,9 +5,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Car, Film, PlusCircleIcon, ShoppingCart } from "lucide-react";
-import { Button } from "../ui/button";
-import PageHeader from "../common/Pageheader";
+import { Car, Film, ShoppingCart } from "lucide-react";
 import AddCategory from "../addCategoryButton";
 
 const Category = () => {
@@ -35,7 +33,7 @@ const Category = () => {
     },
   ];
   return (
-    <div className="flex flex-wrap gap-5">
+    <div className="flex overflow-auto md:flex-wrap gap-5">
       <AddCategory type="Card" />
       {categories.map((category) => (
         <Card key={category.id} className="p-4 min-w-32 cursor-pointer">

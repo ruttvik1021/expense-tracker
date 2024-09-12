@@ -9,7 +9,8 @@ const Transactions = () => {
         <PageHeader title="Transactions" />
         <TransactionsList />
       </div>
-      <div className="grid grid-cols-2 gap-4">
+
+      <div className="flex flex-col md:grid md:grid-cols-2 md:gap-4 mt-4">
         <Category />
       </div>
     </>

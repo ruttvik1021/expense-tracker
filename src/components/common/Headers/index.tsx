@@ -13,9 +13,6 @@ import { Label } from "@/components/ui/label";
 import { User } from "lucide-react";
 import { LogoutButton, Navbar, NavDrawer } from "../Navigation";
 import ThemeToggleButton from "../ThemeToggle/ThemeToggle";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { label: "Home", href: "/" },

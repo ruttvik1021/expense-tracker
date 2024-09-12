@@ -1,4 +1,3 @@
-import React from "react";
 import AddTransaction from "../addTransactionButton";
 
 const TransactionsList = () => {

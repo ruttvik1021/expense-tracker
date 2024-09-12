@@ -1,9 +1,5 @@
 "use client";
-import React from "react";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
-import { PlusCircleIcon } from "lucide-react";
-import { useDeviceType } from "@/hooks/useMediaQuery";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -20,13 +16,16 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import * as Yup from "yup";
-import { Field, FormikProvider, useFormik } from "formik";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { useDeviceType } from "@/hooks/useMediaQuery";
 import Picker from "emoji-picker-react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Field, FormikProvider, useFormik } from "formik";
+import { PlusCircleIcon } from "lucide-react";
+import React from "react";
+import * as Yup from "yup";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 const AddButton = ({
   type,
