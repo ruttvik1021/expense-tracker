@@ -63,6 +63,7 @@ const AddButton = ({
 const CategoryForm: React.FC = () => {
   const [showPicker, setShowPicker] = React.useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onEmojiClick = (_: any, emojiObject: any) => {
     console.log("emojiObject", emojiObject.target.currentSrc);
     formik.setFieldValue("icon", emojiObject.target.currentSrc);
@@ -112,6 +113,7 @@ const CategoryForm: React.FC = () => {
           </Dialog>
         </div>
         <Field name="category">
+          {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {({ field }: { field: any }) => (
             <div className="my-2">
               <Label htmlFor="category">Category:</Label>
@@ -125,6 +127,7 @@ const CategoryForm: React.FC = () => {
           )}
         </Field>
         <Field name="budget">
+          {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {({ field, meta }: { field: any; meta: any }) => (
             <div className="my-2">
               <Label htmlFor="budget">Budget</Label>
