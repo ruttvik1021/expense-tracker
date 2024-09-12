@@ -69,6 +69,7 @@ const TransactionForm: React.FC = () => {
     <form onSubmit={formik.handleSubmit}>
       <FormikProvider value={formik}>
         <Field name="amount">
+          {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {({ field, meta }: { field: any; meta: any }) => (
             <div className="my-2">
               <Label htmlFor="amount">Amount</Label>
@@ -85,6 +86,7 @@ const TransactionForm: React.FC = () => {
           )}
         </Field>
         <Field name="spentOn">
+          {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {({ field }: { field: any }) => (
             <div className="my-2">
               <Label htmlFor="spentOn">For:</Label>
