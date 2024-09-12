@@ -1,10 +1,8 @@
 import { connectToDatabase } from "@/lib/mongodb";
-import UserModel from "@/models/UserModel";
-import bcrypt from "bcryptjs";
+import CategoryModel from "@/models/CategoryModel";
+import Joi from "joi";
 import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
-import Joi from "joi";
-import CategoryModel from "@/models/CategoryModel";
 
 const schema = Joi.object({
   category: Joi.string().required(),

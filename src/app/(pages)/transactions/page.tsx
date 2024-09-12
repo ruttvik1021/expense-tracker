@@ -1,5 +1,4 @@
 import AddTransaction from "@/components/addTransactionButton";
-import Category from "@/components/category";
 import PageHeader from "@/components/common/Pageheader";
 import TransactionsList from "@/components/transactions";
 
