@@ -35,7 +35,8 @@
     --radius: 0.5rem;
     --link-primary: 258, 86, 34;
 
-    --selected: 0, 113, 188
+    --selected: 0, 113, 188;
+    --drawer: 232, 232, 232
   }
  
   .dark {
@@ -67,7 +68,8 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
 
-    --selected: 0, 113, 188
+    --selected: 0, 113, 188;
+    --drawer: 0, 23, 31
   }
 }
  

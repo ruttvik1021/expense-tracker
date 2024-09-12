@@ -17,7 +17,7 @@ export interface ILink {
   onClick?: () => void;
 }
 
-const NavLink = ({ link }: { link: ILink }) => {
+export const Navlink = ({ link }: { link: ILink }) => {
   return (
     <Link
       role="button"
@@ -45,7 +45,7 @@ export const Navbar = ({ links }: { links: ILink[] }) => {
     <nav className="flex items-center gap-8">
       <Brand />
       {links.map((item) => (
-        <NavLink
+        <Navlink
           link={{ ...item, isActive: pathName === item.href }}
           key={item.href}
         />
@@ -74,20 +74,23 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
       </SheetTrigger>
       <SheetContent
         side="top"
-        className="rounded-xl shadow-lg border-b-2 border-selected"
-        onBlur={toggleDrawer}
+        className="rounded-b-xl shadow-lg border-b-4 border-selected"
       >
         <div className="flex justify-end items-center"></div>
         <nav className="grid gap-6 text-lg font-medium">
           <div className="flex justify-between items-center">
             <Brand />
-            <CrossIcon className="rotate-45 w-4 h-4" onClick={toggleDrawer} />
+            <CrossIcon
+              className="rotate-45 w-4 h-4 text-red-900 fill-red-400"
+              onClick={toggleDrawer}
+            />
           </div>
           {links.map((item) => (
-            <NavLink
+            <Navlink
               link={{
                 ...item,
                 isActive: pathName === item.href,
+                onClick: toggleDrawer,
               }}
               key={item.href}
             />

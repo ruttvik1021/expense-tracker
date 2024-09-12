@@ -1,4 +1,5 @@
 "use client";
+
 import { Button, ButtonProps } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -31,24 +32,22 @@ import * as Yup from "yup";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
-const AddButton = (props: ButtonProps) => {
-  return (
-    <Button className="flex gap-2" variant="outline" {...props}>
-      <p>Add</p> <PlusCircleIcon />
-    </Button>
-  );
-};
+const AddButton: React.FC<ButtonProps> = (props) => (
+  <Button className="flex gap-2" variant="outline" {...props}>
+    <p>Add Transaction</p> <PlusCircleIcon />
+  </Button>
+);
 
-const TransactionForm = () => {
+const TransactionForm: React.FC = () => {
   const [date, setDate] = React.useState<Date>(new Date());
   const [calendarOpen, setCalendarOpen] = React.useState<boolean>(false);
-  const validationSchema = Yup.object().shape({
+
+  const validationSchema = Yup.object({
     amount: Yup.number()
       .required("Amount is required")
       .positive("Amount must be positive"),
   });
 
-  // Initial Values
   const initialValues = {
     amount: 0,
     spentOn: "",
@@ -57,27 +56,26 @@ const TransactionForm = () => {
 
   const handleSubmit = async (values: typeof initialValues) => {
     console.log(values);
-    alert(values);
+    alert(JSON.stringify(values, null, 2));
   };
 
-  const transactionFormik = useFormik({
+  const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit: handleSubmit,
   });
 
   return (
-    <form onSubmit={transactionFormik.handleSubmit}>
-      <FormikProvider value={transactionFormik}>
+    <form onSubmit={formik.handleSubmit}>
+      <FormikProvider value={formik}>
         <Field name="amount">
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {({ field, meta }: any) => (
+          {({ field, meta }: { field: any; meta: any }) => (
             <div className="my-2">
-              <Label htmlFor={"amount"}>Amount</Label>
+              <Label htmlFor="amount">Amount</Label>
               <Input
                 {...field}
-                type={"number"}
-                autoComplete="false"
+                type="number"
+                autoComplete="off"
                 placeholder="Amount"
               />
               {meta.touched && meta.error && (
@@ -87,29 +85,25 @@ const TransactionForm = () => {
           )}
         </Field>
         <Field name="spentOn">
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {({ field }: any) => (
+          {({ field }: { field: any }) => (
             <div className="my-2">
-              <Label htmlFor={"spentOn"}>For:</Label>
+              <Label htmlFor="spentOn">For:</Label>
               <Input
                 {...field}
                 type="text"
-                id="amount-spent-on"
-                placeholder="What did you spend on ?"
+                id="spentOn"
+                placeholder="What did you spend on?"
               />
             </div>
           )}
         </Field>
-
         <div className="my-2">
           <Label htmlFor="date">Date:</Label>
           <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className={`w-full justify-start text-left font-normal text-black border-black ${
-                  !date ? "text-muted-foreground" : ""
-                }`}
+                className={`w-full justify-start text-left font-normal bg-transparent dark:border-white border-black`}
                 onClick={() => setCalendarOpen(!calendarOpen)}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
@@ -124,11 +118,11 @@ const TransactionForm = () => {
               <Calendar
                 mode="single"
                 selected={date}
-                onSelect={(date) => {
-                  setDate(date || new Date());
-                  transactionFormik.setFieldValue(
+                onSelect={(selectedDate) => {
+                  setDate(selectedDate || new Date());
+                  formik.setFieldValue(
                     "date",
-                    moment(date).format("DD/MM/YYYY")
+                    moment(selectedDate).format("DD/MM/YYYY")
                   );
                   setCalendarOpen(false);
                 }}
@@ -137,37 +131,42 @@ const TransactionForm = () => {
             </PopoverContent>
           </Popover>
         </div>
-        <div className="flex justify-end">
-          <Button type="submit">Save</Button>
+        <div className="flex justify-between">
+          <Button
+            type="reset"
+            variant="outline"
+            onClick={() => formik.resetForm()}
+          >
+            Clear
+          </Button>
+          <Button type="submit" variant="default">
+            Add
+          </Button>
         </div>
       </FormikProvider>
     </form>
   );
 };
 
-const AddTransaction = () => {
+const AddTransaction: React.FC = () => {
   const [open, setOpen] = React.useState(false);
   const { isDesktop } = useDeviceType();
 
-  if (isDesktop) {
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <AddButton onClick={() => setOpen(true)} />
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Add Transaction</DialogTitle>
-            <DialogDescription>
-              <TransactionForm />
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-
-  return (
+  return isDesktop ? (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <AddButton onClick={() => setOpen(true)} />
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add Transaction</DialogTitle>
+          <DialogDescription>
+            <TransactionForm />
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  ) : (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <AddButton onClick={() => setOpen(true)} />
