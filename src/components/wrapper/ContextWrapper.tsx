@@ -44,7 +44,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     } else {
       logoutUser();
     }
-  }, [token]);
+  }, [authenticateUser, logoutUser, token]);
 
   return (
     <MyContext.Provider value={contextValue}>{children}</MyContext.Provider>

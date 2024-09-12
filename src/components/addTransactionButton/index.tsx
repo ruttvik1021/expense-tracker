@@ -24,7 +24,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useDeviceType } from "@/hooks/useMediaQuery";
-import { Field, FormikProvider, useFormik } from "formik";
+import {
+  Field,
+  FieldInputProps,
+  FieldMetaProps,
+  FormikProvider,
+  useFormik,
+} from "formik";
 import { Calendar as CalendarIcon, PlusCircleIcon } from "lucide-react";
 import moment from "moment-timezone";
 import React from "react";
@@ -69,8 +75,13 @@ const TransactionForm: React.FC = () => {
     <form onSubmit={formik.handleSubmit}>
       <FormikProvider value={formik}>
         <Field name="amount">
-          {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {({ field, meta }: { field: any; meta: any }) => (
+          {({
+            field,
+            meta,
+          }: {
+            field: FieldInputProps<typeof formik.values.amount>;
+            meta: FieldMetaProps<typeof formik.values.amount>;
+          }) => (
             <div className="my-2">
               <Label htmlFor="amount">Amount</Label>
               <Input
@@ -86,8 +97,11 @@ const TransactionForm: React.FC = () => {
           )}
         </Field>
         <Field name="spentOn">
-          {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {({ field }: { field: any }) => (
+          {({
+            field,
+          }: {
+            field: FieldInputProps<typeof formik.values.spentOn>;
+          }) => (
             <div className="my-2">
               <Label htmlFor="spentOn">For:</Label>
               <Input
