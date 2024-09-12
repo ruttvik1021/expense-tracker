@@ -14,7 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ILogin } from "@/utils/types";
 import { useMutation } from "@tanstack/react-query";
-import { Field, FormikProvider, useFormik } from "formik";
+import {
+  Field,
+  FieldInputProps,
+  FieldMetaProps,
+  FormikProvider,
+  useFormik,
+} from "formik";
 import Link from "next/link";
 import { toast } from "sonner";
 import * as Yup from "yup";
@@ -63,8 +69,13 @@ const Login = () => {
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
               <Field name="email">
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {({ field, meta }: any) => (
+                {({
+                  field,
+                  meta,
+                }: {
+                  field: FieldInputProps<typeof formik.values.email>;
+                  meta: FieldMetaProps<typeof formik.values.email>;
+                }) => (
                   <div className="my-2">
                     <Label htmlFor={"email"}>Email</Label>
                     <span className="text-red-600 ml-1">*</span>
@@ -83,8 +94,13 @@ const Login = () => {
             </div>
             <div className="grid gap-2">
               <Field name="password">
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {({ field, meta }: any) => (
+                {({
+                  field,
+                  meta,
+                }: {
+                  field: FieldInputProps<typeof formik.values.password>;
+                  meta: FieldMetaProps<typeof formik.values.password>;
+                }) => (
                   <div className="my-2">
                     <Label htmlFor={"password"}>Password</Label>
                     <span className="text-red-600 ml-1">*</span>
