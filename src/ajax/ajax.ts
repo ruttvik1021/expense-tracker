@@ -49,18 +49,14 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-const postAjax = async (
-  url: string,
-  data: Record<string, unknown>,
-  auth: boolean
-) => {
+const postAjax = async (url: string, data: any, auth: boolean) => {
   return await axiosInstance.post(url, data, {
     headers: getHeaders(auth),
     signal: createController(),
   });
 };
 
-const putAjax = (url: string, data: Record<string, unknown>, auth: boolean) => {
+const putAjax = (url: string, data: any, auth: boolean) => {
   return axiosInstance.put(url, data, {
     headers: getHeaders(auth),
     signal: createController(),

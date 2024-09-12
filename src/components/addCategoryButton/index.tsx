@@ -1,4 +1,5 @@
 "use client";
+import { createCategoryApi } from "@/ajax/categoryApi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -17,6 +18,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useDeviceType } from "@/hooks/useMediaQuery";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Picker from "emoji-picker-react";
 import {
   Field,
@@ -27,6 +29,7 @@ import {
 } from "formik";
 import { PlusCircleIcon } from "lucide-react";
 import React from "react";
+import { toast } from "sonner";
 import * as Yup from "yup";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
@@ -40,6 +43,13 @@ const AddButton = ({
   type: "Card" | "Button" | "Link";
   onClick: () => void;
 }) => {
+  const queryClient = useQueryClient();
+  const isAdding = Boolean(
+    queryClient.isMutating({
+      mutationKey: ["category"],
+    })
+  );
+
   return type === "Card" ? (
     <Card className="p-4 min-w-32 cursor-pointer" onClick={onClick}>
       <CardHeader className="p-0">
@@ -59,14 +69,16 @@ const AddButton = ({
     <Button
       className="flex gap-2 items-center"
       variant={type === "Button" ? "outline" : "link"}
-      onClick={() => alert("Add Category")}
+      onClick={onClick}
+      loading={isAdding}
     >
       <p>Add Category</p> <PlusCircleIcon />
     </Button>
   );
 };
 
-const CategoryForm: React.FC = () => {
+const CategoryForm = ({ onSuccess }: { onSuccess: () => void }) => {
+  const queryClient = useQueryClient();
   const [showPicker, setShowPicker] = React.useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,6 +87,19 @@ const CategoryForm: React.FC = () => {
     formik.setFieldValue("icon", emojiObject.target.currentSrc);
     setShowPicker(false);
   };
+
+  const { mutate: addCategory, isPending: isAddingCategory } = useMutation({
+    mutationKey: ["category"],
+    mutationFn: (data: typeof initialValues) => createCategoryApi(data),
+    onSuccess(data) {
+      toast.success(data.data?.message);
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      onSuccess();
+    },
+    onError(error) {
+      toast.error(error?.message);
+    },
+  });
 
   const validationSchema = Yup.object({
     icon: Yup.string().required("Icon is required"),
@@ -89,8 +114,7 @@ const CategoryForm: React.FC = () => {
   };
 
   const handleSubmit = async (values: typeof initialValues) => {
-    console.log(values);
-    alert(JSON.stringify(values, null, 2));
+    addCategory(values);
   };
 
   const formik = useFormik({
@@ -165,7 +189,7 @@ const CategoryForm: React.FC = () => {
           >
             Clear
           </Button>
-          <Button type="submit" variant="default">
+          <Button type="submit" variant="default" loading={isAddingCategory}>
             Add
           </Button>
         </div>
@@ -178,6 +202,10 @@ const AddCategory = ({ type }: { type: "Card" | "Button" | "Link" }) => {
   const [open, setOpen] = React.useState<boolean>(false);
   const { isDesktop } = useDeviceType();
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return isDesktop ? (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -187,7 +215,7 @@ const AddCategory = ({ type }: { type: "Card" | "Button" | "Link" }) => {
         <DialogHeader>
           <DialogTitle>Add Category</DialogTitle>
           <DialogDescription>
-            <CategoryForm />
+            <CategoryForm onSuccess={handleClose} />
           </DialogDescription>
         </DialogHeader>
       </DialogContent>
@@ -201,7 +229,7 @@ const AddCategory = ({ type }: { type: "Card" | "Button" | "Link" }) => {
         <DrawerHeader className="text-left">
           <DrawerTitle>Add Category</DrawerTitle>
           <DrawerDescription>
-            <CategoryForm />
+            <CategoryForm onSuccess={handleClose} />
           </DrawerDescription>
         </DrawerHeader>
       </DrawerContent>

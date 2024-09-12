@@ -1,3 +1,4 @@
+import AddTransaction from "@/components/addTransactionButton";
 import Category from "@/components/category";
 import PageHeader from "@/components/common/Pageheader";
 import TransactionsList from "@/components/transactions";
@@ -5,14 +6,11 @@ import TransactionsList from "@/components/transactions";
 const Transactions = () => {
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between mb-3">
         <PageHeader title="Transactions" />
-        <TransactionsList />
+        <AddTransaction />
       </div>
-
-      <div className="flex flex-col md:grid md:grid-cols-2 md:gap-4 mt-4">
-        <Category />
-      </div>
+      <TransactionsList />
     </>
   );
 };

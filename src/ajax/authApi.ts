@@ -1,4 +1,4 @@
-import { ILogin } from "../utils/types";
+import { ILogin, IRegister } from "@/utils/types/authTypes";
 import { AjaxUtils } from "./ajax";
 
 export const loginApi = (values: ILogin) => {
@@ -6,7 +6,7 @@ export const loginApi = (values: ILogin) => {
   return AjaxUtils.postAjax(url, values, false);
 };
 
-export const signUpApi = (values: ILogin) => {
+export const signUpApi = (values: IRegister) => {
   const url = "/register";
   return AjaxUtils.postAjax(url, values, false);
 };

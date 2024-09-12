@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ILogin } from "@/utils/types";
 import { useMutation } from "@tanstack/react-query";
 import {
   Field,
@@ -25,17 +24,21 @@ import Link from "next/link";
 import { toast } from "sonner";
 import * as Yup from "yup";
 import { useAuthContext } from "../wrapper/ContextWrapper";
+import { IRegister } from "@/utils/types/authTypes";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
-  password: Yup.string().required("Required"),
+  password: Yup.string()
+    .min(8, "Must be at least 8 characters")
+    .required("Required"),
+  confirmPassword: Yup.string().required("Required"),
 });
 
 const Register = () => {
   const { authenticateUser } = useAuthContext();
   const { mutate: registerMutate, isPending: isRegistering } = useMutation({
     mutationKey: ["user"],
-    mutationFn: (data: ILogin) => signUpApi(data),
+    mutationFn: (data: IRegister) => signUpApi(data),
     onSuccess(data) {
       authenticateUser(data.data?.token);
       toast.success(data.data?.message);
@@ -49,6 +52,7 @@ const Register = () => {
     initialValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -114,10 +118,38 @@ const Register = () => {
               )}
             </Field>
           </div>
+          <div className="grid gap-2">
+            <Field name="confirmPassword">
+              {({
+                field,
+                meta,
+              }: {
+                field: FieldInputProps<typeof formik.values.confirmPassword>;
+                meta: FieldMetaProps<typeof formik.values.confirmPassword>;
+              }) => (
+                <div className="my-2">
+                  <Label htmlFor={"confirmPassword"}>Confirm Password</Label>
+                  <span className="text-red-600 ml-1">*</span>
+                  <Input
+                    type={"password"}
+                    {...field}
+                    autoComplete="false"
+                    disabled={isRegistering}
+                  />
+                  {meta.touched && meta.error && (
+                    <div className="text-sm text-red-600">{meta.error}</div>
+                  )}
+                </div>
+              )}
+            </Field>
+          </div>
           <Button
             className="w-full bg-primary"
             onClick={() => formik.handleSubmit()}
-            disabled={isRegistering}
+            disabled={
+              formik.values.password !== formik.values.confirmPassword ||
+              isRegistering
+            }
           >
             Register
           </Button>

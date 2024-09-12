@@ -16,6 +16,7 @@ import ThemeToggleButton from "../ThemeToggle/ThemeToggle";
 
 const navLinks = [
   { label: "Home", href: "/" },
+  { label: "Category", href: "/category" },
   { label: "Transactions", href: "/transactions" },
 ];
 

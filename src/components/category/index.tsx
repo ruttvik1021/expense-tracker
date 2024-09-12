@@ -1,48 +1,35 @@
 "use client";
+import { getCategoryApi } from "@/ajax/categoryApi";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Car, Film, ShoppingCart } from "lucide-react";
-import AddCategory from "../addCategoryButton";
+import { useQuery } from "@tanstack/react-query";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const Category = () => {
-  const categories = [
-    {
-      id: 1,
-      category: "Groceries",
-      budget: 500,
-      spending: 350,
-      icon: ShoppingCart,
-    },
-    {
-      id: 2,
-      category: "Entertainment",
-      budget: 200,
-      spending: 150,
-      icon: Film,
-    },
-    {
-      id: 3,
-      category: "Transportation",
-      budget: 300,
-      spending: 280,
-      icon: Car,
-    },
-  ];
+  const { data } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategoryApi(),
+  });
+
+  if (!data) return <div>Loading...</div>;
+
   return (
-    <div className="flex overflow-auto md:flex-wrap gap-5">
-      <AddCategory type="Card" />
-      {categories.map((category) => (
-        <Card key={category.id} className="p-4 min-w-32 cursor-pointer">
-          <CardHeader className="p-0">
-            <category.icon className="h-8 w-8 mb-2" />
+    <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
+      {data.data.categories.map((category: any) => (
+        <Card key={category.id} className="p-4">
+          <CardHeader className="p-0 mb-3">
+            <Avatar className="cursor-pointer p-1 border-2 border-selected">
+              <AvatarImage src={category.icon} />
+              <AvatarFallback>{category.category}</AvatarFallback>
+            </Avatar>
           </CardHeader>
           <CardContent className="flex-col items-center p-0">
             <h3 className="font-semibold text-sm">{category.category}</h3>
-            <p className="text-sm">Budget: ${category.budget}</p>
+            <p className="text-sm">Budget: {category.budget}</p>
           </CardContent>
           <CardFooter>
             <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">

@@ -82,6 +82,25 @@
   }
 }
 
+@keyframes loading-border {
+  0% {
+    transform: translateX(-100%);
+    background-color: rgb(var(--selected)); /* Starting color */
+  }
+  100% {
+    transform: translateX(100%);
+    background-color: rgba(var(--selected), 0.5); /* Ending color */
+  }
+}
+
+.loading-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  animation: loading-border 1s linear infinite;
+}
 
 body,
 html {

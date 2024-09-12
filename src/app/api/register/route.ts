@@ -10,6 +10,7 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 const schema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
+  confirmPassword: Joi.string().min(8),
 });
 
 export async function POST(req: Request) {
