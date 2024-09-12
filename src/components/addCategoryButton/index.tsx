@@ -18,7 +18,13 @@ import {
 } from "@/components/ui/drawer";
 import { useDeviceType } from "@/hooks/useMediaQuery";
 import Picker from "emoji-picker-react";
-import { Field, FormikProvider, useFormik } from "formik";
+import {
+  Field,
+  FieldInputProps,
+  FieldMetaProps,
+  FormikProvider,
+  useFormik,
+} from "formik";
 import { PlusCircleIcon } from "lucide-react";
 import React from "react";
 import * as Yup from "yup";
@@ -113,8 +119,11 @@ const CategoryForm: React.FC = () => {
           </Dialog>
         </div>
         <Field name="category">
-          {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {({ field }: { field: any }) => (
+          {({
+            field,
+          }: {
+            field: FieldInputProps<typeof formik.values.category>;
+          }) => (
             <div className="my-2">
               <Label htmlFor="category">Category:</Label>
               <Input
@@ -127,8 +136,13 @@ const CategoryForm: React.FC = () => {
           )}
         </Field>
         <Field name="budget">
-          {/* // eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {({ field, meta }: { field: any; meta: any }) => (
+          {({
+            field,
+            meta,
+          }: {
+            field: FieldInputProps<typeof formik.values.budget>;
+            meta: FieldMetaProps<typeof formik.errors.category>;
+          }) => (
             <div className="my-2">
               <Label htmlFor="budget">Budget</Label>
               <Input
