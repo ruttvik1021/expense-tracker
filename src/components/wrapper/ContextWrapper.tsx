@@ -2,7 +2,7 @@
 
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useLayoutEffect, useState } from "react";
 
 // Use a type to define the context value shape
 type ContextWrapperType = {
@@ -22,7 +22,6 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const authenticateUser = (token: string) => {
     Cookies.set("token", token);
     setIsAuthenticated(true);
-    router.push("/");
   };
 
   const logoutUser = () => {
@@ -38,13 +37,14 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     logoutUser,
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (token) {
       authenticateUser(token);
     } else {
       logoutUser();
     }
-  }, [authenticateUser, logoutUser, token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <MyContext.Provider value={contextValue}>{children}</MyContext.Provider>
