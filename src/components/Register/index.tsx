@@ -150,6 +150,7 @@ const Register = () => {
               formik.values.password !== formik.values.confirmPassword ||
               isRegistering
             }
+            loading={isRegistering}
           >
             Register
           </Button>

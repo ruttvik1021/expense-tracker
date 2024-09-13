@@ -1,6 +1,6 @@
 "use client";
 import { createCategoryApi } from "@/ajax/categoryApi";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useDeviceType } from "@/hooks/useMediaQuery";
+import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Picker from "emoji-picker-react";
 import {
@@ -83,7 +84,6 @@ const CategoryForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onEmojiClick = (_: any, emojiObject: any) => {
-    console.log("emojiObject", emojiObject.target.currentSrc);
     formik.setFieldValue("icon", emojiObject.target.currentSrc);
     setShowPicker(false);
   };
@@ -127,14 +127,18 @@ const CategoryForm = ({ onSuccess }: { onSuccess: () => void }) => {
     <form onSubmit={formik.handleSubmit}>
       <FormikProvider value={formik}>
         <div className="my-2">
-          <Avatar
-            onClick={() => setShowPicker((val) => !val)}
-            className="cursor-pointer p-1 border-2 border-selected"
-          >
-            <AvatarImage src={formik.values.icon} />
-            <AvatarFallback>✏️</AvatarFallback>
-          </Avatar>
           <Dialog open={showPicker} onOpenChange={setShowPicker}>
+            <DialogTrigger asChild>
+              <Avatar
+                onClick={() => setShowPicker((val) => !val)}
+                className={cn(
+                  "cursor-pointer p-1 border-2 border-selected",
+                  formik.errors.icon && "border-red-600"
+                )}
+              >
+                <AvatarImage src={formik.values.icon} />
+              </Avatar>
+            </DialogTrigger>
             <DialogContent className="w-auto p-0">
               <DialogDescription>
                 <Picker className="w-full" onEmojiClick={onEmojiClick} />
@@ -145,8 +149,10 @@ const CategoryForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <Field name="category">
           {({
             field,
+            meta,
           }: {
             field: FieldInputProps<typeof formik.values.category>;
+            meta: FieldMetaProps<typeof formik.errors.category>;
           }) => (
             <div className="my-2">
               <Label htmlFor="category">Category:</Label>
@@ -156,6 +162,9 @@ const CategoryForm = ({ onSuccess }: { onSuccess: () => void }) => {
                 id="category"
                 placeholder="Category Name"
               />
+              {meta.touched && meta.error && (
+                <div className="text-base text-red-600">{meta.error}</div>
+              )}
             </div>
           )}
         </Field>

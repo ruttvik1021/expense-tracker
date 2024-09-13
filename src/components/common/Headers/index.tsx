@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 import {
   DropdownMenu,
@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
-// import { useAuthContext } from "@/components/wrapper/ContextWrapper";
+import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { User } from "lucide-react";
 import { LogoutButton, Navbar, NavDrawer } from "../Navigation";
 import ThemeToggleButton from "../ThemeToggle/ThemeToggle";
@@ -21,9 +21,8 @@ const navLinks = [
 ];
 
 export const NavHeader = () => {
-  // const { isAuthenticated } = useAuthContext();
-
-  if (true) {
+  const { isAuthenticated } = useAuthContext();
+  if (isAuthenticated) {
     return (
       <header className="bg-drawer sticky top-0 flex h-16 justify-between items-center gap-4 px-4 shadow-md md:px-6 rounded-b-xl border-b-2 border-selected z-20">
         <div className="flex w-full justify-between items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">

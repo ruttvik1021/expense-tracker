@@ -31,11 +31,6 @@ const Category = () => {
             <h3 className="font-semibold text-base">{category.category}</h3>
             <p className="text-base">Budget: {category.budget}</p>
           </CardContent>
-          <CardFooter>
-            <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-              <div className="bg-blue-600 h-1.5 rounded-full"></div>
-            </div>
-          </CardFooter>
         </Card>
       ))}
     </div>

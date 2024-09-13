@@ -38,21 +38,15 @@ export async function decrypt(session: string) {
 export async function createSession(userData: Record<string, unknown>) {
   const expires = new Date(Date.now() + cookie.duration); // Create a Date object
   const session = await encrypt({ ...userData, expires });
-
-  cookies().set(cookie.name, session, { ...cookie.options, expires }); // Use Date object directly
-  redirect("/");
+  cookies().set(cookie.name, session, { ...cookie.options, expires });
 }
 
 export async function verifySession() {
   const decryptCookie = cookies().get(cookie.name)?.value;
   const userData = await decrypt(decryptCookie || "");
-  if (!userData) {
-    redirect("/login");
-  }
   return userData;
 }
 
 export async function deleteSession() {
   cookies().delete(cookie.name);
-  redirect("/login");
 }
