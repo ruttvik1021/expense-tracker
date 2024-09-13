@@ -1,7 +1,6 @@
 // import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 const key = new TextEncoder().encode(process.env.JWT_SECRET!);
 

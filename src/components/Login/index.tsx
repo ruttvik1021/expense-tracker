@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ILogin } from "@/utils/types/authTypes";
 import { useMutation } from "@tanstack/react-query";
 import {
   Field,
@@ -24,8 +25,6 @@ import Link from "next/link";
 import { toast } from "sonner";
 import * as Yup from "yup";
 import { useAuthContext } from "../wrapper/ContextWrapper";
-import { ILogin } from "@/utils/types/authTypes";
-import { useRouter } from "next/navigation";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -33,7 +32,6 @@ const validationSchema = Yup.object({
 });
 
 const Login = () => {
-  const router = useRouter();
   const { authenticateUser } = useAuthContext();
   const { mutate: loginMutate, isPending: isLogging } = useMutation({
     mutationKey: ["user"],
