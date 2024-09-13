@@ -8,25 +8,21 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer";
-import { cn } from "@/lib/utils";
+import { useDeviceType } from "@/hooks/useMediaQuery";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { EditIcon, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Drawer } from "../ui/drawer";
 import { Button } from "../ui/button";
-import { useDeviceType } from "@/hooks/useMediaQuery";
+import { Drawer } from "../ui/drawer";
 
 const Category = () => {
   const queryClient = useQueryClient();

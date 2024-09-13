@@ -11,7 +11,7 @@ export const getCategoryApi = () => {
   return AjaxUtils.getAjax(url, true);
 };
 
-export const deleteCategoryApi = (id: String) => {
+export const deleteCategoryApi = (id: string) => {
   const url = "/category" + `/${id}`;
   return AjaxUtils.deleteAjax(url, true);
 };
