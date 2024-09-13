@@ -86,7 +86,7 @@ const Login = () => {
                       disabled={isLogging}
                     />
                     {meta.touched && meta.error && (
-                      <div className="text-sm text-red-600">{meta.error}</div>
+                      <div className="text-base text-red-600">{meta.error}</div>
                     )}
                   </div>
                 )}
@@ -111,7 +111,7 @@ const Login = () => {
                       disabled={isLogging}
                     />
                     {meta.touched && meta.error && (
-                      <div className="text-sm text-red-600">{meta.error}</div>
+                      <div className="text-base text-red-600">{meta.error}</div>
                     )}
                   </div>
                 )}

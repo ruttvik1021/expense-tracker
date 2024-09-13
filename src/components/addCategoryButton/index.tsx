@@ -56,8 +56,8 @@ const AddButton = ({
         <PlusCircleIcon className="h-8 w-8 mb-2" />
       </CardHeader>
       <CardContent className="flex-col items-center p-0">
-        <h3 className="font-semibold text-sm">Add New</h3>
-        <p className="text-sm">Category</p>
+        <h3 className="font-semibold text-base">Add New</h3>
+        <p className="text-base">Category</p>
       </CardContent>
       <CardFooter>
         <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
@@ -176,7 +176,7 @@ const CategoryForm = ({ onSuccess }: { onSuccess: () => void }) => {
                 placeholder="Budget"
               />
               {meta.touched && meta.error && (
-                <div className="text-sm text-red-600">{meta.error}</div>
+                <div className="text-base text-red-600">{meta.error}</div>
               )}
             </div>
           )}

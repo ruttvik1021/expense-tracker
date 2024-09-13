@@ -28,8 +28,8 @@ const Category = () => {
             </Avatar>
           </CardHeader>
           <CardContent className="flex-col items-center p-0">
-            <h3 className="font-semibold text-sm">{category.category}</h3>
-            <p className="text-sm">Budget: {category.budget}</p>
+            <h3 className="font-semibold text-base">{category.category}</h3>
+            <p className="text-base">Budget: {category.budget}</p>
           </CardContent>
           <CardFooter>
             <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">

@@ -27,7 +27,7 @@ export const NavHeader = () => {
     return (
       <header className="bg-drawer sticky top-0 flex h-16 justify-between items-center gap-4 px-4 shadow-md md:px-6 rounded-b-xl border-b-2 border-selected z-20">
         <div className="flex w-full justify-between items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
+          <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-base lg:gap-6">
             <Navbar links={navLinks} />
           </nav>
           <NavDrawer links={navLinks} />
