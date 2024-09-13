@@ -2,7 +2,12 @@
 
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import React, { createContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 
 // Use a type to define the context value shape
 type ContextWrapperType = {
@@ -15,6 +20,10 @@ type ContextWrapperType = {
 const MyContext = createContext<ContextWrapperType | null>(null);
 
 export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
+  useLayoutEffect(() => {
+    const isDarkMode = localStorage.getItem("theme") === "dark";
+    // toggleTheme()
+  }, []);
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const token = Cookies.get("token");

@@ -10,3 +10,8 @@ export const getCategoryApi = () => {
   const url = "/category";
   return AjaxUtils.getAjax(url, true);
 };
+
+export const deleteCategoryApi = (id: String) => {
+  const url = "/category" + `/${id}`;
+  return AjaxUtils.deleteAjax(url, true);
+};

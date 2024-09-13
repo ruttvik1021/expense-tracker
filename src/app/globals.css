@@ -127,3 +127,16 @@ html {
   background-color: #374151;
   border-radius: 3px;
 }
+
+/* Add to your global CSS or a CSS module */
+.perspective {
+  perspective: 1000px;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}

@@ -1,7 +1,7 @@
 "use client";
 // import useThemeToggle from "../../../hooks/useThemeToggle";
 import { Moon, Sun } from "lucide-react";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 const Theme = "theme";
 enum Modes {
@@ -11,6 +11,11 @@ enum Modes {
 
 const ThemeToggleButton = () => {
   const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
+
+  useLayoutEffect(() => {
+    const isDarkTheme = localStorage.getItem(Theme) === Modes.DARK;
+    toggleTheme(isDarkTheme ? Modes.DARK : Modes.LIGHT);
+  }, []);
 
   const toggleTheme = (theme: Modes) => {
     const htmlElement = document.documentElement;

@@ -1,6 +1,7 @@
 // import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 const key = new TextEncoder().encode(process.env.JWT_SECRET!);
 
@@ -48,4 +49,22 @@ export async function verifySession() {
 
 export async function deleteSession() {
   cookies().delete(cookie.name);
+}
+
+export async function validateToken(req: Request) {
+  const authorizationHeader = req.headers.get("authorization");
+  if (!authorizationHeader) {
+    return NextResponse.json(
+      { message: "Unauthorized: Missing token" },
+      { status: 401 }
+    );
+  }
+  const token = authorizationHeader.split("Bearer ")[1].trim();
+  if (!token) {
+    return NextResponse.json(
+      { message: "Unauthorized: Invalid token format" },
+      { status: 401 }
+    );
+  }
+  return token;
 }

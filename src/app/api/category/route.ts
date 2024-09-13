@@ -49,8 +49,6 @@ export async function POST(req: Request) {
       userId: decodedToken.payload?.userId,
     });
 
-    console.log("isCateogryAlreadyCreated", isCateogryAlreadyCreated);
-
     if (isCateogryAlreadyCreated) {
       return NextResponse.json(
         { message: "Category already exist" },

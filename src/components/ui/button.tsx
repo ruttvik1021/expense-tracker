@@ -55,6 +55,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           className={cn(buttonVariants({ variant, size, className }), {
             "border-selected": loading,
             "border-2": loading,
+            "text-black": loading,
           })}
           ref={ref}
           {...props}
