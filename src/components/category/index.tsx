@@ -112,7 +112,10 @@ const Category = () => {
               </DialogContent>
             </Dialog>
           ) : (
-            <Drawer open={!!isConfirmationVisible}>
+            <Drawer
+              open={!!isConfirmationVisible}
+              onDrag={() => setConfirmationVisible(null)}
+            >
               <DrawerContent>
                 <DrawerHeader className="text-left">
                   <DrawerTitle>Delete Category</DrawerTitle>

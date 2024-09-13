@@ -230,7 +230,7 @@ const AddCategory = ({ type }: { type: "Card" | "Button" | "Link" }) => {
       </DialogContent>
     </Dialog>
   ) : (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={setOpen} onDrag={handleClose}>
       <DrawerTrigger asChild>
         <AddButton type={type} onClick={() => setOpen(true)} />
       </DrawerTrigger>

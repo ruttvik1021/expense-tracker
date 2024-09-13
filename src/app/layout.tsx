@@ -24,7 +24,7 @@ export default function RootLayout({
               <NavHeader />
               <section className="px-5 py-3">{children}</section>
             </main>
-            <Toaster richColors />
+            <Toaster richColors position="top-center" />
           </ContextWrapper>
         </QueryWrapper>
       </body>

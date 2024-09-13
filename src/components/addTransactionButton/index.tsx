@@ -183,7 +183,7 @@ const AddTransaction: React.FC = () => {
       </DialogContent>
     </Dialog>
   ) : (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={setOpen} onDrag={() => setOpen(false)}>
       <DrawerTrigger asChild>
         <AddButton onClick={() => setOpen(true)} />
       </DrawerTrigger>
