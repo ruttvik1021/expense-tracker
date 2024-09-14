@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useQueryClient } from "@tanstack/react-query";
-import { Car, EditIcon, Trash2 } from "lucide-react";
+import { EditIcon, Trash2 } from "lucide-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";

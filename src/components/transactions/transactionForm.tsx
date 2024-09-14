@@ -99,7 +99,10 @@ const TransactionForm = ({
                       <SelectLabel>Fruits</SelectLabel>
                       {data?.data?.categories.map(
                         (category: CategoryDocument) => (
-                          <SelectItem value={category._id as string}>
+                          <SelectItem
+                            value={category._id as string}
+                            key={category._id as string}
+                          >
                             <p className="flex items-between gap-2">
                               {category.icon}
                               {category.category}
