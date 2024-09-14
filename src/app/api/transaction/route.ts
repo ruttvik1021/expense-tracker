@@ -116,37 +116,37 @@ export async function GET(req: Request) {
     // Connect to the database
     await connectToDatabase();
 
-    // const transactions = await TransactionModel.find({
-    //   userId,
-    //   deletedAt: null,
-    // });
+    const transactions = await TransactionModel.find({
+      userId,
+      deletedAt: null,
+    });
 
-    const transactions = await TransactionModel.aggregate([
-      {
-        $match: {
-          userId: userId,
-          deletedAt: null,
-        },
-      },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "category",
-          foreignField: "_id",
-          as: "category",
-        },
-      },
-      { $unwind: "$category" },
-      {
-        $project: {
-          _id: 1,
-          amount: 1,
-          spentOn: 1,
-          date: 1,
-          category: { category: 1, icon: 1, _id: 1 },
-        },
-      },
-    ]);
+    // const transactions = await TransactionModel.aggregate([
+    //   {
+    //     $match: {
+    //       userId: userId,
+    //       deletedAt: null,
+    //     },
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: "categories",
+    //       localField: "category",
+    //       foreignField: "_id",
+    //       as: "category",
+    //     },
+    //   },
+    //   { $unwind: "$category" },
+    //   {
+    //     $project: {
+    //       _id: 1,
+    //       amount: 1,
+    //       spentOn: 1,
+    //       date: 1,
+    //       category: { category: 1, icon: 1, _id: 1 },
+    //     },
+    //   },
+    // ]);
 
     return NextResponse.json({
       transactions,
