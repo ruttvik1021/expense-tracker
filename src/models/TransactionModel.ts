@@ -16,7 +16,7 @@ export interface TransactionDocument extends Document {
 const TransactionSchema: Schema<TransactionDocument> = new Schema(
   {
     amount: { type: Number, required: true },
-    spentOn: { type: String },
+    spentOn: { type: String, default: "" },
     date: { type: String },
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
