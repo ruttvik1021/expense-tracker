@@ -6,8 +6,9 @@ export const useCategories = () => {
 };
 
 export const useCategoryById = (categoryId: string | null) => {
+  const queryClient = useQueryClient();
   if (!categoryId) {
-    useQueryClient().setQueryData(["category", categoryId], null);
+    queryClient.setQueryData(["category", categoryId], null);
   }
   return useQuery({
     queryKey: ["category", categoryId],

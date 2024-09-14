@@ -33,7 +33,7 @@ import TransactionForm, { TransactionFormValues } from "./transactionForm";
 
 const Transactions = () => {
   const queryClient = useQueryClient();
-  const { data, isLoading } = useTransactions();
+  const { data } = useTransactions();
   const { addTransaction, deleteTransaction, updateTransaction } =
     useTransactionMutation();
   const [open, setOpen] = useState<{
@@ -94,23 +94,6 @@ const Transactions = () => {
       setOpen({ type: "EDIT", open: true });
     }
   }, [transactionData]);
-
-  const currentTransactions = [
-    {
-      id: 1,
-      category: {
-        id: 3,
-        category: "Transportation",
-        budget: 300,
-        spending: 280,
-        icon: Car,
-      },
-      amount: 50,
-      date: "2023-06-01",
-      description: "Weekly groceries Weekly groceries",
-    },
-  ];
-
   return (
     <>
       <div className="flex justify-between mb-3">

@@ -87,13 +87,7 @@ const TransactionForm = ({
             )}
           </Field>
           <Field name="category">
-            {({
-              field,
-              meta,
-            }: {
-              field: FieldInputProps<string>;
-              meta: FieldMetaProps<string>;
-            }) => (
+            {({ meta }: { meta: FieldMetaProps<string> }) => (
               <div className="my-2">
                 <Label htmlFor="category">Category:</Label>
                 <Select onValueChange={(e) => setFieldValue("category", e)}>

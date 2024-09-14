@@ -7,8 +7,9 @@ export const useTransactions = () => {
 };
 
 export const useTransactionById = (transactionId: string | null) => {
+  const queryClient = useQueryClient();
   if (!transactionId) {
-    useQueryClient().setQueryData(["transaction", transactionId], null);
+    queryClient.setQueryData(["transaction", transactionId], null);
   }
   return useQuery({
     queryKey: ["transaction", transactionId],
