@@ -116,12 +116,15 @@ export async function GET(req: Request) {
     // Connect to the database
     await connectToDatabase();
 
-    console.log("before aggregate");
+    // const transactions = await TransactionModel.find({
+    //   userId,
+    //   deletedAt: null,
+    // });
 
     const transactions = await TransactionModel.aggregate([
       {
         $match: {
-          userId,
+          userId: userId,
           deletedAt: null,
         },
       },
@@ -140,12 +143,10 @@ export async function GET(req: Request) {
           amount: 1,
           spentOn: 1,
           date: 1,
-          category: { category: 1, icon: 1, id: 1 },
+          category: { category: 1, icon: 1, _id: 1 },
         },
       },
     ]);
-
-    console.log("transactions", transactions);
 
     return NextResponse.json({
       transactions,
