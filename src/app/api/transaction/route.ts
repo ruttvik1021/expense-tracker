@@ -5,7 +5,7 @@ import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
 
 const transactionSchema = Joi.object({
-  amount: Joi.string().required(),
+  amount: Joi.number().required(),
   spentOn: Joi.string(),
   date: Joi.string(),
   category: Joi.string().required(),

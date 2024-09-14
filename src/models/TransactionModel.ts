@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 // Define the Category interface based on the Mongoose document
 export interface TransactionDocument extends Document {
-  amount: string;
+  amount: number;
   spentOn: string;
   date: string;
   userId: mongoose.Schema.Types.ObjectId;
@@ -15,7 +15,7 @@ export interface TransactionDocument extends Document {
 // Define the Category schema
 const TransactionSchema: Schema<TransactionDocument> = new Schema(
   {
-    amount: { type: String, required: true },
+    amount: { type: Number, required: true },
     spentOn: { type: String },
     date: { type: String },
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
