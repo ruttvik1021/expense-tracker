@@ -96,7 +96,6 @@ const TransactionForm = ({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Fruits</SelectLabel>
                       {data?.data?.categories.map(
                         (category: CategoryDocument) => (
                           <SelectItem
