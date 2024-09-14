@@ -127,13 +127,13 @@ const Transactions = () => {
                           <TooltipTrigger asChild>
                             <Avatar className="w-6 h-6">
                               <AvatarFallback>
-                                {transaction.category.icon}
+                                {transaction?.category?.icon}
                               </AvatarFallback>
                             </Avatar>
                           </TooltipTrigger>
                           <TooltipContent className="bg-background">
                             <Label className="text-primary">
-                              {transaction.category.category}
+                              {transaction?.category?.category}
                             </Label>
                           </TooltipContent>
                         </Tooltip>
