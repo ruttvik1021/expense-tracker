@@ -15,3 +15,13 @@ export const deleteCategoryApi = (id: string) => {
   const url = "/category" + `/${id}`;
   return AjaxUtils.deleteAjax(url, true);
 };
+
+export const getCategoryById = (id: string) => {
+  const url = "/category" + `/${id}`;
+  return AjaxUtils.getAjax(url, true);
+};
+
+export const updateCategoryApi = (id: string, values: ICategory) => {
+  const url = "/category" + `/${id}`;
+  return AjaxUtils.putAjax(url, values, true);
+};

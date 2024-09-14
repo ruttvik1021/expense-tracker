@@ -1,14 +1,8 @@
-import AddTransaction from "@/components/addTransactionButton";
-import PageHeader from "@/components/common/Pageheader";
 import TransactionsList from "@/components/transactions";
 
 const Transactions = () => {
   return (
     <>
-      <div className="flex justify-between mb-3">
-        <PageHeader title="Transactions" />
-        <AddTransaction />
-      </div>
       <TransactionsList />
     </>
   );

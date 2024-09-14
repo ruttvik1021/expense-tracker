@@ -1,76 +1,66 @@
 import { connectToDatabase } from "@/lib/mongodb";
-import CategoryModel from "@/models/CategoryModel";
+import TransactionModel from "@/models/TransactionModel";
 import Joi from "joi";
 import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
 
-const schema = Joi.object({
+const transactionSchema = Joi.object({
+  amount: Joi.string().required(),
+  spentOn: Joi.string(),
+  date: Joi.string(),
   category: Joi.string().required(),
-  icon: Joi.string().required(),
-  budget: Joi.number().required(),
 });
 
 export async function POST(req: Request) {
   try {
+    // Parse the request body
     const body = await req.json();
 
+    // Get the token from headers
     const token = req.headers.get("authorization");
 
     if (!token) {
-      return NextResponse.json(
-        {
-          message: "Unauthorised",
-        },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
+    // Verify the token
     const decodedToken = await jwtVerify(
       token.split("Bearer ")[1],
       new TextEncoder().encode(process.env.JWT_SECRET!)
     );
 
-    const { error } = schema.validate(body);
+    // Validate the request body
+    const { error } = transactionSchema.validate(body);
     if (error) {
       return NextResponse.json(
-        {
-          message: error.details[0]?.message,
-        },
+        { message: error.details[0]?.message },
         { status: 400 }
       );
     }
 
-    const { category, icon, budget } = body;
+    // Destructure validated body
+    const { amount, spentOn, date, category } = body;
 
+    // Connect to the database
     await connectToDatabase();
 
-    const isCateogryAlreadyCreated = await CategoryModel.findOne({
+    // Create a new transaction
+    const newTransaction = new TransactionModel({
+      amount,
+      spentOn,
+      date,
       category,
-      userId: decodedToken.payload?.userId,
-      deletedAt: null,
-    });
-
-    if (isCateogryAlreadyCreated) {
-      return NextResponse.json(
-        { message: "Category already exist" },
-        { status: 400 }
-      );
-    }
-
-    const newCategory = new CategoryModel({
-      category,
-      icon,
-      budget,
       userId: decodedToken.payload?.userId,
     });
 
-    await newCategory.save();
+    await newTransaction.save();
 
     return NextResponse.json({
-      message: "Category created successfully",
-      category: newCategory,
+      message: "Transaction created successfully",
+      transaction: newTransaction,
     });
   } catch (err) {
+    console.error("Error creating transaction:", err);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }
@@ -78,6 +68,7 @@ export async function POST(req: Request) {
   }
 }
 
+// Handler for GET requests to fetch transactions
 export async function GET(req: Request) {
   try {
     // Extract the token from the Authorization header
@@ -122,15 +113,45 @@ export async function GET(req: Request) {
       );
     }
 
+    // Connect to the database
     await connectToDatabase();
 
-    const categories = await CategoryModel.find({ userId, deletedAt: null });
+    console.log("before aggregate");
+
+    const transactions = await TransactionModel.aggregate([
+      {
+        $match: {
+          userId,
+          deletedAt: null,
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      { $unwind: "$category" },
+      {
+        $project: {
+          _id: 1,
+          amount: 1,
+          spentOn: 1,
+          date: 1,
+          category: { category: 1, icon: 1, id: 1 },
+        },
+      },
+    ]);
+
+    console.log("transactions", transactions);
 
     return NextResponse.json({
-      categories,
+      transactions,
     });
   } catch (err) {
-    console.error("Internal Server Error:", err);
+    console.error("Error fetching transactions:", err);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }

@@ -1,31 +1,33 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 // Define the Category interface based on the Mongoose document
-export interface ICategory extends Document {
+export interface CategoryDocument extends Document {
   category: string;
   icon: string;
   budget: number;
-  userId: mongoose.Schema.Types.ObjectId; // Reference to a User document
+  userId: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date;
 }
 
 // Define the Category schema
-const CategorySchema: Schema<ICategory> = new Schema(
+const CategorySchema: Schema<CategoryDocument> = new Schema(
   {
     category: { type: String, required: true },
     icon: { type: String, required: true },
     budget: { type: Number, required: true },
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Reference to User model
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    deletedAt: { type: Date, default: null },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    timestamps: true,
   }
 );
 
 // Create or retrieve the Category model
 const CategoryModel =
   mongoose.models.Category ||
-  mongoose.model<ICategory>("Category", CategorySchema);
+  mongoose.model<CategoryDocument>("Category", CategorySchema);
 
 export default CategoryModel;
