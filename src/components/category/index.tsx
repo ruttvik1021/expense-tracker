@@ -12,6 +12,8 @@ import CategoryForm, { CategoryFormValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const Category = () => {
   const queryClient = useQueryClient();
@@ -119,13 +121,20 @@ const Category = () => {
                     <div className="text-right">
                       <p className="text-base">
                         Budget:{" "}
-                        <span className="font-bold">{category.budget}</span>
+                        <Badge className="font-bold">{category.budget}</Badge>
                       </p>
                       <p className="text-base">
                         Spent:{" "}
-                        <span className="font-bold">
+                        <Badge
+                          className={cn("font-bold", {
+                            "bg-red-500":
+                              category.totalAmountSpent > category.budget,
+                            "bg-green-500":
+                              category.totalAmountSpent <= category.budget,
+                          })}
+                        >
                           {category.totalAmountSpent}
-                        </span>
+                        </Badge>
                       </p>
                     </div>
                   </CardContent>
