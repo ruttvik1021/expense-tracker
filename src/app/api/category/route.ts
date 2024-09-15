@@ -124,13 +124,14 @@ export async function GET(req: Request) {
     }
 
     await connectToDatabase();
-    // const now = new Date();
-    // const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    // const endOfMonth = new Date(
-    //  now.getFullYear(),
-    //  now.getMonth() + 1,
-    //  0,
-    //);
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1); // Set to the 1st day of the month
+    startOfMonth.setHours(0, 0, 0, 0); // Start of the day
+
+    const endOfMonth = new Date(startOfMonth);
+    endOfMonth.setMonth(endOfMonth.getMonth() + 1); // Move to the next month
+    endOfMonth.setDate(0); // Go back to the last day of the current month
+    endOfMonth.setHours(23, 59, 59, 999); // End of the day
 
     const categories = await CategoryModel.aggregate([
       {
@@ -141,15 +142,50 @@ export async function GET(req: Request) {
       },
       { $sort: { createdAt: -1 } },
       {
+        $lookup: {
+          from: "transactions",
+          let: { categoryId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$category", "$$categoryId"] },
+                    { $gte: ["$createdAt", startOfMonth] },
+                    { $lte: ["$createdAt", endOfMonth] },
+                  ],
+                },
+                deletedAt: null,
+              },
+            },
+            {
+              $project: {
+                amount: 1, // Ensure this field exists in the transactions collection
+                createdAt: 1,
+              },
+            },
+          ],
+          as: "transactions",
+        },
+      },
+      {
+        $unwind: {
+          path: "$transactions",
+          preserveNullAndEmptyArrays: true, // Keep categories with no transactions
+        },
+      },
+      {
         $group: {
           _id: "$_id",
           category: { $first: "$category" },
           icon: { $first: "$icon" },
           budget: { $first: "$budget" },
-          // totalAmountSpent: { $sum: "$transactions.amount" },
+          totalAmountSpent: { $sum: "$transactions.amount" },
         },
       },
     ]);
+
+    console.log(categories);
 
     return NextResponse.json({
       categories,
