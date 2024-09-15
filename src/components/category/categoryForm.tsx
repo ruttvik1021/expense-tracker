@@ -119,12 +119,12 @@ const CategoryForm = ({
               meta: FieldMetaProps<number>;
             }) => (
               <div className="my-2">
-                <Label htmlFor="budget">Budget</Label>
+                <Label htmlFor="budget">Budget (Monthly):</Label>
                 <Input
                   {...field}
                   type="number"
                   autoComplete="off"
-                  placeholder="Budget"
+                  placeholder="Budget (Monthly)"
                 />
                 {meta.touched && meta.error && (
                   <div className="text-base text-red-600">{meta.error}</div>

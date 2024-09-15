@@ -40,7 +40,9 @@ const Category = () => {
   const validationSchema = Yup.object({
     icon: Yup.string().required("Icon is required"),
     category: Yup.string().required("Category is required"),
-    budget: Yup.number().required("Budget is required"),
+    budget: Yup.number()
+      .typeError("Must be a number")
+      .required("Budget is required"),
   });
 
   const handleSubmit = async (values: CategoryFormValues) => {
@@ -108,12 +110,24 @@ const Category = () => {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex justify-between items-center p-0">
-                    <p className={`font-bold text-base`}>{category.category}</p>
-                    <p className="text-base">
-                      Budget:{" "}
-                      <span className="font-bold">{category.budget}</span>
-                    </p>
+                  <CardContent className="flex justify-between p-0">
+                    <div>
+                      <p className={`font-bold text-base`}>
+                        {category.category}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-base">
+                        Budget:{" "}
+                        <span className="font-bold">{category.budget}</span>
+                      </p>
+                      <p className="text-base">
+                        Spent:{" "}
+                        <span className="font-bold">
+                          {category.totalAmountSpent}
+                        </span>
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
               );

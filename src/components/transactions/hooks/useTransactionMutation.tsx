@@ -15,6 +15,7 @@ export const useTransactionMutation = () => {
     onSuccess: (data) => {
       toast.success(data.data?.message);
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
     onError: (error) => toast.error(error?.message),
   });
@@ -24,6 +25,7 @@ export const useTransactionMutation = () => {
     onSuccess: (data) => {
       toast.success(data.data?.message);
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
     onError: (error) => toast.error(error?.message),
   });
@@ -39,6 +41,7 @@ export const useTransactionMutation = () => {
     onSuccess: (data) => {
       toast.success(data.data?.message);
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
     onError: (error) => toast.error(error?.message),
   });

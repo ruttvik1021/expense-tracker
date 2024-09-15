@@ -124,6 +124,17 @@ export async function GET(req: Request) {
     }
 
     await connectToDatabase();
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999
+    );
 
     const categories = await CategoryModel.aggregate([
       {
@@ -134,11 +145,43 @@ export async function GET(req: Request) {
       },
       { $sort: { createdAt: -1 } },
       {
-        $project: {
-          _id: 1,
-          category: 1,
-          icon: 1,
-          budget: 1,
+        $lookup: {
+          from: "transactions",
+          let: { categoryId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$category", "$$categoryId"] },
+                    { $gte: ["$createdAt", startOfMonth] },
+                    { $lte: ["$createdAt", endOfMonth] },
+                  ],
+                },
+                deletedAt: null,
+              },
+            },
+            {
+              $project: {
+                amount: 1, // Assuming 'amount' is the field you want to sum
+                createdAt: 1,
+                // Add other fields you might need
+              },
+            },
+          ],
+          as: "transactions",
+        },
+      },
+      {
+        $unwind: "$transactions",
+      },
+      {
+        $group: {
+          _id: "$_id",
+          category: { $first: "$category" },
+          icon: { $first: "$icon" },
+          budget: { $first: "$budget" },
+          totalAmountSpent: { $sum: "$transactions.amount" },
         },
       },
     ]);
