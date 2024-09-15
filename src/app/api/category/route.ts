@@ -124,13 +124,13 @@ export async function GET(req: Request) {
     }
 
     await connectToDatabase();
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      0,
-    );
+    // const now = new Date();
+    // const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    // const endOfMonth = new Date(
+    //  now.getFullYear(),
+    //  now.getMonth() + 1,
+    //  0,
+    //);
 
     const categories = await CategoryModel.aggregate([
       {
@@ -150,8 +150,8 @@ export async function GET(req: Request) {
                 $expr: {
                   $and: [
                     { $eq: ["$category", "$$categoryId"] },
-                    { $gte: ["$createdAt", startOfMonth] },
-                    { $lte: ["$createdAt", endOfMonth] },
+                    // { $gte: ["$createdAt", startOfMonth] },
+                    // { $lte: ["$createdAt", endOfMonth] },
                   ],
                 },
                 deletedAt: null,
