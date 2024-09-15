@@ -130,10 +130,6 @@ export async function GET(req: Request) {
       now.getFullYear(),
       now.getMonth() + 1,
       0,
-      23,
-      59,
-      59,
-      999
     );
 
     const categories = await CategoryModel.aggregate([
