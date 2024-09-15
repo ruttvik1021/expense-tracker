@@ -2,6 +2,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import CategoryModel from "@/models/CategoryModel";
 import Joi from "joi";
 import { jwtVerify } from "jose";
+import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 const schema = Joi.object({
@@ -124,7 +125,23 @@ export async function GET(req: Request) {
 
     await connectToDatabase();
 
-    const categories = await CategoryModel.find({ userId, deletedAt: null });
+    const categories = await CategoryModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId as string),
+          deletedAt: null,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      {
+        $project: {
+          _id: 1,
+          category: 1,
+          icon: 1,
+          budget: 1,
+        },
+      },
+    ]);
 
     return NextResponse.json({
       categories,

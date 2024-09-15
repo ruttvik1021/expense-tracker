@@ -1,13 +1,19 @@
 "use client";
-import { Formik, Field, FormikHelpers } from "formik";
-import * as Yup from "yup";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { FieldInputProps, FieldMetaProps } from "formik";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Field,
+  FieldInputProps,
+  FieldMetaProps,
+  Formik,
+  FormikHelpers,
+} from "formik";
+import { useState } from "react";
+import * as Yup from "yup";
 import EmojiPicker from "../emojiPicker";
 import { Button } from "../ui/button";
-import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export interface CategoryFormValues {
   icon: string;
@@ -33,6 +39,7 @@ const CategoryForm = ({
   onReset,
   submitText = "Add",
 }: CategoryFormProps) => {
+  const [open, setOpen] = useState<boolean>(false);
   return (
     <Formik
       initialValues={initialValues}
@@ -51,7 +58,7 @@ const CategoryForm = ({
               meta: FieldMetaProps<string>;
             }) => (
               <div className="my-2">
-                <Popover>
+                <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
                     <Avatar
                       className={`cursor-pointer p-1 border-2 ${
@@ -66,9 +73,10 @@ const CategoryForm = ({
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
                     <EmojiPicker
-                      onClick={(emojiObject: { native: unknown }) =>
-                        setFieldValue("icon", emojiObject.native)
-                      }
+                      onClick={(emojiObject: { native: unknown }) => {
+                        setFieldValue("icon", emojiObject.native);
+                        setOpen(false);
+                      }}
                     />
                   </PopoverContent>
                 </Popover>

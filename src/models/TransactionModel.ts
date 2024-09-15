@@ -26,10 +26,11 @@ const TransactionSchema: Schema<TransactionDocument> = new Schema(
     timestamps: true,
   }
 );
+console.log("modles", mongoose.models);
 
 // Create or retrieve the Category model
 const TransactionModel =
-  mongoose.models.transactions ||
+  mongoose.models.Transactions ||
   mongoose.model<TransactionDocument>("Transactions", TransactionSchema);
 
 export default TransactionModel;

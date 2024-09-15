@@ -2,11 +2,12 @@ import { connectToDatabase } from "@/lib/mongodb";
 import TransactionModel from "@/models/TransactionModel";
 import Joi from "joi";
 import { jwtVerify } from "jose";
+import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 const transactionSchema = Joi.object({
   amount: Joi.number().required(),
-  spentOn: Joi.string(),
+  spentOn: Joi.string().empty(""),
   date: Joi.string(),
   category: Joi.string().required(),
 });
@@ -31,6 +32,7 @@ export async function POST(req: Request) {
 
     // Validate the request body
     const { error } = transactionSchema.validate(body);
+    console.log("error", { error, body });
     if (error) {
       return NextResponse.json(
         { message: error.details[0]?.message },
@@ -72,6 +74,7 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   try {
     // Extract the token from the Authorization header
+    debugger;
     const authorizationHeader = req.headers.get("authorization");
 
     if (!authorizationHeader) {
@@ -116,37 +119,33 @@ export async function GET(req: Request) {
     // Connect to the database
     await connectToDatabase();
 
-    const transactions = await TransactionModel.find({
-      userId,
-      deletedAt: null,
-    });
-
-    // const transactions = await TransactionModel.aggregate([
-    //   {
-    //     $match: {
-    //       userId: userId,
-    //       deletedAt: null,
-    //     },
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: "categories",
-    //       localField: "category",
-    //       foreignField: "_id",
-    //       as: "category",
-    //     },
-    //   },
-    //   { $unwind: "$category" },
-    //   {
-    //     $project: {
-    //       _id: 1,
-    //       amount: 1,
-    //       spentOn: 1,
-    //       date: 1,
-    //       category: { category: 1, icon: 1, _id: 1 },
-    //     },
-    //   },
-    // ]);
+    const transactions = await TransactionModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId as string),
+          deletedAt: null,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      { $unwind: "$category" },
+      {
+        $project: {
+          _id: 1,
+          amount: 1,
+          spentOn: 1,
+          date: 1,
+          category: { category: 1, icon: 1, _id: 1 },
+        },
+      },
+    ]);
 
     return NextResponse.json({
       transactions,

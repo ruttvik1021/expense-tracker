@@ -86,10 +86,19 @@ const TransactionForm = ({
             )}
           </Field>
           <Field name="category">
-            {({ meta }: { meta: FieldMetaProps<string> }) => (
+            {({
+              field,
+              meta,
+            }: {
+              field: FieldInputProps<string>;
+              meta: FieldMetaProps<string>;
+            }) => (
               <div className="my-2">
                 <Label htmlFor="category">Category:</Label>
-                <Select onValueChange={(e) => setFieldValue("category", e)}>
+                <Select
+                  onValueChange={(e) => setFieldValue("category", e)}
+                  value={field.value}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a Category" />
                   </SelectTrigger>
@@ -101,10 +110,10 @@ const TransactionForm = ({
                             value={category._id as string}
                             key={category._id as string}
                           >
-                            <p className="flex items-between gap-2">
-                              {category.icon}
-                              {category.category}
-                            </p>
+                            <div className="flex items-center gap-2">
+                              <Label>{category.icon}</Label>
+                              <Label>{category.category}</Label>
+                            </div>
                           </SelectItem>
                         )
                       )}

@@ -1,5 +1,4 @@
-import { getCategoryById } from "@/ajax/categoryApi";
-import { getTransactionsApi } from "@/ajax/transactionApi";
+import { getTransactionById, getTransactionsApi } from "@/ajax/transactionApi";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useTransactions = () => {
@@ -13,7 +12,7 @@ export const useTransactionById = (transactionId: string | null) => {
   }
   return useQuery({
     queryKey: ["transaction", transactionId],
-    queryFn: () => getCategoryById(transactionId || ""),
+    queryFn: () => getTransactionById(transactionId || ""),
     enabled: !!transactionId,
     staleTime: 0,
   });

@@ -1,17 +1,17 @@
 "use client";
 import { useQueryClient } from "@tanstack/react-query";
 import { EditIcon, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
 import PageHeader from "../common/Pageheader";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
-import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Label } from "../ui/label";
 import CategoryForm, { CategoryFormValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
+import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
 
 const Category = () => {
   const queryClient = useQueryClient();
@@ -28,7 +28,8 @@ const Category = () => {
   const [categoryToEdit, setCategoryToEdit] = useState<string | null>(null);
   const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
 
-  const { data: categoryData } = useCategoryById(categoryToEdit || "");
+  const { data: categoryData, isLoading: gettingCategoryById } =
+    useCategoryById(categoryToEdit || "");
 
   const initialValues: CategoryFormValues = {
     icon: categoryData?.data.icon || "",
@@ -63,14 +64,6 @@ const Category = () => {
     setOpen({ type: "ADD", open: false });
   };
 
-  useEffect(() => {
-    if (categoryData) {
-      setOpen({ type: "EDIT", open: true });
-    }
-  }, [categoryData]);
-
-  if (isLoading) return <div>Loading...</div>;
-
   return (
     <>
       <div className="flex justify-between mb-3">
@@ -83,33 +76,48 @@ const Category = () => {
           Add
         </Button>
       </div>
-
-      {/* Category List */}
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
-        {data?.data?.categories.map((category: any) => (
-          <Card key={category._id} className="p-4">
-            <CardHeader className="p-0 mb-3">
-              <div className="flex justify-between ">
-                <Avatar className="cursor-pointer p-1 border-2 border-selected">
-                  <AvatarFallback>{category.icon}</AvatarFallback>
-                </Avatar>
-                <div className="flex gap-2">
-                  <EditIcon onClick={() => setCategoryToEdit(category._id)} />
-                  <Trash2
-                    onClick={() => {
-                      setCategoryToDelete(category._id);
-                      setOpen({ type: "DELETE", open: true });
-                    }}
-                  />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="flex-col items-center p-0">
-              <h3 className="font-semibold text-base">{category.category}</h3>
-              <p className="text-base">Budget: {category.budget}</p>
-            </CardContent>
-          </Card>
-        ))}
+      <div className={`grid gap-4 md:grid-cols-3 lg:grid-cols-5`}>
+        {isLoading
+          ? Array.from({ length: 5 }).map((_, i) => (
+              <CategorySkeleton key={i} />
+            ))
+          : data?.data?.categories.map((category: any) => {
+              return (
+                <Card
+                  key={category._id}
+                  className="p-4 shadow-md shadow-selected"
+                >
+                  <CardHeader className="p-0 mb-3">
+                    <div className="flex justify-between">
+                      <p className="text-4xl">{category.icon}</p>
+                      <div className="flex gap-2">
+                        <EditIcon
+                          onClick={() => {
+                            setCategoryToEdit(category._id);
+                            setOpen({ type: "EDIT", open: true });
+                          }}
+                          className="icon"
+                        />
+                        <Trash2
+                          onClick={() => {
+                            setCategoryToDelete(category._id);
+                            setOpen({ type: "DELETE", open: true });
+                          }}
+                          className="icon"
+                        />
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex justify-between items-center p-0">
+                    <p className={`font-bold text-base`}>{category.category}</p>
+                    <p className="text-base">
+                      Budget:{" "}
+                      <span className="font-bold">{category.budget}</span>
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })}
       </div>
 
       <ResponsiveDialogAndDrawer
@@ -142,13 +150,17 @@ const Category = () => {
         handleClose={handleClose}
         title={open.type === "ADD" ? "Add Category" : "Edit Category"}
         content={
-          <CategoryForm
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-            onReset={handleClose}
-            submitText={open.type === "ADD" ? "Add" : "Update"}
-          />
+          gettingCategoryById ? (
+            <CategoryFormSkeleton />
+          ) : (
+            <CategoryForm
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+              onReset={handleClose}
+              submitText={open.type === "ADD" ? "Add" : "Update"}
+            />
+          )
         }
       />
     </>

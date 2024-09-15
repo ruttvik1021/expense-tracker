@@ -111,24 +111,6 @@ html {
   user-select: none;
 }
 
-/* global.css */
-
-/* Scrollbar Styles */
-::-webkit-scrollbar {
-  width: 6px; /* Adjust the width as needed */
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background-color: #374151;
-  border-radius: 3px;
-}
-
 /* Add to your global CSS or a CSS module */
 .perspective {
   perspective: 1000px;
@@ -140,4 +122,29 @@ html {
 
 .backface-hidden {
   backface-visibility: hidden;
+}
+
+/* Custom scrollbar styles for WebKit browsers */
+::-webkit-scrollbar {
+  width: 2px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background color of the track */
+  border-radius: 2px; /* Rounded corners of the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar thumb */
+  border-radius: 12px; /* Rounded corners of the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the thumb when hovered */
+}
+
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
 }

@@ -1,5 +1,4 @@
 "use client";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -17,7 +16,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { EditIcon, Trash2 } from "lucide-react";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
 import PageHeader from "../common/Pageheader";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
@@ -29,6 +28,7 @@ import {
   useTransactionById,
   useTransactions,
 } from "./hooks/useTransactionQuery";
+import { TransactionFormSkeleton } from "./skeleton";
 import TransactionForm, { TransactionFormValues } from "./transactionForm";
 
 const Transactions = () => {
@@ -50,7 +50,8 @@ const Transactions = () => {
     null
   );
 
-  const { data: transactionData } = useTransactionById(transactionToEdit || "");
+  const { data: transactionData, isLoading: gettingTransactionById } =
+    useTransactionById(transactionToEdit || "");
 
   const validationSchema = Yup.object({
     amount: Yup.number()
@@ -60,10 +61,10 @@ const Transactions = () => {
   });
 
   const initialValues = {
-    amount: 0,
-    category: "",
-    spentOn: "",
-    date: moment().format("DD/MM/YYYY"),
+    amount: transactionData?.data.amount || 0,
+    category: transactionData?.data.category || "",
+    spentOn: transactionData?.data.spentOn || "",
+    date: transactionData?.data.date || moment().format("DD/MM/YYYY"),
   };
 
   const handleSubmit = async (values: TransactionFormValues) => {
@@ -89,11 +90,6 @@ const Transactions = () => {
     setOpen({ type: "ADD", open: false });
   };
 
-  useEffect(() => {
-    if (transactionData) {
-      setOpen({ type: "EDIT", open: true });
-    }
-  }, [transactionData]);
   return (
     <>
       <div className="flex justify-between mb-3">
@@ -106,63 +102,63 @@ const Transactions = () => {
           Add
         </Button>
       </div>
-      <Card>
-        <CardContent>
-          <Table className="overflow-auto">
-            <TableHeader>
-              <TableRow>
-                <TableHead>Description</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data?.data?.transactions.map((transaction: any) => (
-                <TableRow key={transaction._id}>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Avatar className="w-6 h-6">
-                              <AvatarFallback>
-                                {transaction?.category?.icon}
-                              </AvatarFallback>
-                            </Avatar>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-background">
-                            <Label className="text-primary">
-                              {transaction?.category?.category}
-                            </Label>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-
-                      <Label className="text-wrap">{transaction.spentOn}</Label>
-                    </div>
-                  </TableCell>
-                  <TableCell>{transaction.amount}</TableCell>
-                  <TableCell>{transaction.date}</TableCell>
-                  <TableCell>
-                    <div className="flex justify-between items-center">
-                      <EditIcon
-                        onClick={() => setTransactionToEdit(transaction._id)}
-                      />
-                      <Trash2
-                        onClick={() => {
-                          setTransactionToDelete(transaction._id);
-                          setOpen({ type: "DELETE", open: true });
-                        }}
-                      />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <Table className="overflow-auto">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Description</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead className="w-2">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data?.data?.transactions.map((transaction: any) => (
+            <TableRow key={transaction._id}>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Avatar className="w-6 h-6">
+                          <AvatarFallback>
+                            {transaction?.category?.icon}
+                          </AvatarFallback>
+                        </Avatar>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-background">
+                        <Label className="text-primary">
+                          {transaction?.category?.category}
+                        </Label>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <Label className="text-wrap">
+                    {transaction.spentOn || transaction?.category?.category}
+                  </Label>
+                </div>
+              </TableCell>
+              <TableCell>{transaction.amount}</TableCell>
+              <TableCell>{transaction.date}</TableCell>
+              <TableCell className="flex justify-between items-center">
+                <EditIcon
+                  onClick={() => {
+                    setTransactionToEdit(transaction._id);
+                    setOpen({ type: "EDIT", open: true });
+                  }}
+                  className="icon"
+                />
+                <Trash2
+                  onClick={() => {
+                    setTransactionToDelete(transaction._id);
+                    setOpen({ type: "DELETE", open: true });
+                  }}
+                  className="icon"
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       <ResponsiveDialogAndDrawer
         open={open.type === "DELETE" && open.open}
         handleClose={handleClose}
@@ -198,13 +194,17 @@ const Transactions = () => {
             : ""
         }
         content={
-          <TransactionForm
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-            onReset={handleClose}
-            submitText={open.type === "ADD" ? "Add" : "Update"}
-          />
+          gettingTransactionById ? (
+            <TransactionFormSkeleton />
+          ) : (
+            <TransactionForm
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+              onReset={handleClose}
+              submitText={open.type === "ADD" ? "Add" : "Update"}
+            />
+          )
         }
       />
     </>
