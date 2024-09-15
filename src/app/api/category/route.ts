@@ -154,13 +154,13 @@ export async function GET(req: Request) {
                     // { $lte: ["$createdAt", endOfMonth] },
                   ],
                 },
-                deletedAt: null,
+                // deletedAt: null,
               },
             },
             {
               $project: {
                 amount: 1, // Assuming 'amount' is the field you want to sum
-                createdAt: 1,
+                // createdAt: 1,
                 // Add other fields you might need
               },
             },
