@@ -141,43 +141,12 @@ export async function GET(req: Request) {
       },
       { $sort: { createdAt: -1 } },
       {
-        $lookup: {
-          from: "transactions",
-          let: { categoryId: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$category", "$$categoryId"] },
-                    // { $gte: ["$createdAt", startOfMonth] },
-                    // { $lte: ["$createdAt", endOfMonth] },
-                  ],
-                },
-                // deletedAt: null,
-              },
-            },
-            {
-              $project: {
-                amount: 1, // Assuming 'amount' is the field you want to sum
-                // createdAt: 1,
-                // Add other fields you might need
-              },
-            },
-          ],
-          as: "transactions",
-        },
-      },
-      {
-        $unwind: "$transactions",
-      },
-      {
         $group: {
           _id: "$_id",
           category: { $first: "$category" },
           icon: { $first: "$icon" },
           budget: { $first: "$budget" },
-          totalAmountSpent: { $sum: "$transactions.amount" },
+          // totalAmountSpent: { $sum: "$transactions.amount" },
         },
       },
     ]);
