@@ -21,16 +21,8 @@ import React from "react";
 import * as Yup from "yup";
 import { useCategories } from "../category/hooks/useCategoryQuery";
 import { Button } from "../ui/button";
-import { Calendar } from "../ui/calendar";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
 export interface TransactionFormValues {
   spentOn: string;

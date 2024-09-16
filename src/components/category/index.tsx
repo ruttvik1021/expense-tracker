@@ -1,4 +1,6 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { EditIcon, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -12,8 +14,6 @@ import CategoryForm, { CategoryFormValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 
 const Category = () => {
   const queryClient = useQueryClient();

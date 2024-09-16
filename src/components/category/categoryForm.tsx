@@ -7,6 +7,7 @@ import {
   Formik,
   FormikHelpers,
 } from "formik";
+import { IndianRupee, Tag } from "lucide-react";
 import { useState } from "react";
 import * as Yup from "yup";
 import EmojiPicker from "../emojiPicker";
@@ -14,7 +15,6 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { IndianRupee, Tag } from "lucide-react";
 
 export interface CategoryFormValues {
   icon: string;
