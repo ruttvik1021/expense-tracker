@@ -17,7 +17,6 @@ import {
 } from "formik";
 import { CalendarIcon, IndianRupee, Notebook, Tag } from "lucide-react";
 import moment from "moment";
-import React from "react";
 import * as Yup from "yup";
 import { useCategories } from "../category/hooks/useCategoryQuery";
 import { Button } from "../ui/button";
@@ -50,8 +49,6 @@ const TransactionForm = ({
   submitText = "Add",
 }: CategoryFormProps) => {
   const { data } = useCategories();
-  const [date, setDate] = React.useState<Date>(new Date());
-  const [calendarOpen, setCalendarOpen] = React.useState<boolean>(false);
   return (
     <Formik
       initialValues={initialValues}
