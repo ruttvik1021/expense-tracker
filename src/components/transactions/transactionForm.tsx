@@ -15,7 +15,7 @@ import {
   Formik,
   FormikHelpers,
 } from "formik";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, IndianRupee, Notebook, Tag } from "lucide-react";
 import moment from "moment";
 import React from "react";
 import * as Yup from "yup";
@@ -25,6 +25,12 @@ import { Calendar } from "../ui/calendar";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export interface TransactionFormValues {
   spentOn: string;
@@ -71,8 +77,14 @@ const TransactionForm = ({
               field: FieldInputProps<number>;
               meta: FieldMetaProps<number>;
             }) => (
-              <div className="my-2">
-                <Label htmlFor="amount">Amount</Label>
+              <div className="space-y-1 my-2">
+                <Label
+                  htmlFor="amount"
+                  className="flex items-center space-x-2 text-gray-700"
+                >
+                  <IndianRupee className="w-5 h-5" />
+                  <span>Amount</span>
+                </Label>
                 <Input
                   {...field}
                   type="number"
@@ -80,7 +92,9 @@ const TransactionForm = ({
                   placeholder="Amount"
                 />
                 {meta.touched && meta.error && (
-                  <div className="text-base text-red-600">{meta.error}</div>
+                  <Label className="text-base text-red-600 pl-2">
+                    {meta.error}
+                  </Label>
                 )}
               </div>
             )}
@@ -93,13 +107,19 @@ const TransactionForm = ({
               field: FieldInputProps<string>;
               meta: FieldMetaProps<string>;
             }) => (
-              <div className="my-2">
-                <Label htmlFor="category">Category:</Label>
+              <div className="spcace-y-1 my-2">
+                <Label
+                  htmlFor="category"
+                  className="flex items-center space-x-2 text-gray-700"
+                >
+                  <Tag className="w-5 h-5" />
+                  <span>Category</span>
+                </Label>
                 <Select
                   onValueChange={(e) => setFieldValue("category", e)}
                   value={field.value}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="mt-2">
                     <SelectValue placeholder="Select a Category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -121,49 +141,63 @@ const TransactionForm = ({
                   </SelectContent>
                 </Select>
                 {meta.touched && meta.error && (
-                  <div className="text-base text-red-600">{meta.error}</div>
+                  <Label className="text-base text-red-600 pl-2">
+                    {meta.error}
+                  </Label>
                 )}
               </div>
             )}
           </Field>
-          <div className="my-2">
-            <Label htmlFor="date">Date:</Label>
-            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={`w-full justify-start text-left font-normal bg-transparent dark:border-white border-black`}
-                  onClick={() => setCalendarOpen(!calendarOpen)}
+          <Field name="date">
+            {({
+              field,
+              meta,
+            }: {
+              field: FieldInputProps<string>;
+              meta: FieldMetaProps<string>;
+            }) => (
+              <div className="space-y-1 my-2">
+                <Label
+                  htmlFor="date"
+                  className="flex items-center space-x-2 text-gray-700"
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? (
-                    <p>{moment(date).format("DD/MM/YYYY")}</p>
-                  ) : (
-                    <span>Pick a date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(selectedDate) => {
-                    setDate(selectedDate || new Date());
+                  <CalendarIcon className="w-5 h-5" />
+                  <span>Date</span>
+                </Label>
+                <Input
+                  type="date"
+                  className={`w-full justify-start text-left font-normal bg-transparent dark:border-white border-black mt-1`}
+                  value={
+                    field.value
+                      ? moment(field.value, "DD/MM/YYYY").format("YYYY-MM-DD")
+                      : ""
+                  }
+                  onChange={(e) =>
                     setFieldValue(
                       "date",
-                      moment(selectedDate).format("DD/MM/YYYY")
-                    );
-                    setCalendarOpen(false);
-                  }}
-                  initialFocus
+                      moment(e.target.value, "YYYY-MM-DD").format("DD/MM/YYYY")
+                    )
+                  }
                 />
-              </PopoverContent>
-            </Popover>
-          </div>
+                {meta.touched && meta.error && (
+                  <Label className="text-base text-red-600 pl-2">
+                    {meta.error}
+                  </Label>
+                )}
+              </div>
+            )}
+          </Field>
+
           <Field name="spentOn">
             {({ field }: { field: FieldInputProps<string> }) => (
-              <div className="my-2">
-                <Label htmlFor="spentOn">For:</Label>
+              <div className="space-y-1 my-2">
+                <Label
+                  htmlFor="spentOn"
+                  className="flex items-center space-x-2 text-gray-700"
+                >
+                  <Notebook className="w-5 h-5" />
+                  <span>For</span>
+                </Label>
                 <Input
                   {...field}
                   type="text"

@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { IndianRupee, Tag } from "lucide-react";
 
 export interface CategoryFormValues {
   icon: string;
@@ -81,7 +82,9 @@ const CategoryForm = ({
                   </PopoverContent>
                 </Popover>
                 {meta.touched && meta.error && (
-                  <div className="text-base text-red-600">{meta.error}</div>
+                  <Label className="text-base text-red-600 pl-2">
+                    {meta.error}
+                  </Label>
                 )}
               </div>
             )}
@@ -95,8 +98,14 @@ const CategoryForm = ({
               field: FieldInputProps<string>;
               meta: FieldMetaProps<string>;
             }) => (
-              <div className="my-2">
-                <Label htmlFor="category">Category:</Label>
+              <div className="space-y-1 my-2">
+                <Label
+                  htmlFor="category"
+                  className="flex items-center space-x-2 text-gray-700"
+                >
+                  <Tag className="w-5 h-5" />
+                  <span>Category</span>
+                </Label>
                 <Input
                   {...field}
                   type="text"
@@ -104,7 +113,9 @@ const CategoryForm = ({
                   placeholder="Category Name"
                 />
                 {meta.touched && meta.error && (
-                  <div className="text-base text-red-600">{meta.error}</div>
+                  <Label className="text-base text-red-600 pl-2">
+                    {meta.error}
+                  </Label>
                 )}
               </div>
             )}
@@ -118,8 +129,14 @@ const CategoryForm = ({
               field: FieldInputProps<number>;
               meta: FieldMetaProps<number>;
             }) => (
-              <div className="my-2">
-                <Label htmlFor="budget">Budget (Monthly):</Label>
+              <div className="space-y-1">
+                <Label
+                  htmlFor="category"
+                  className="flex items-center space-x-2 text-gray-700"
+                >
+                  <IndianRupee className="w-5 h-5" />
+                  <span>Budget</span>
+                </Label>
                 <Input
                   {...field}
                   type="number"
@@ -127,13 +144,15 @@ const CategoryForm = ({
                   placeholder="Budget (Monthly)"
                 />
                 {meta.touched && meta.error && (
-                  <div className="text-base text-red-600">{meta.error}</div>
+                  <Label className="text-base text-red-600 pl-2">
+                    {meta.error}
+                  </Label>
                 )}
               </div>
             )}
           </Field>
 
-          <div className="flex justify-between">
+          <div className="flex justify-between mt-3">
             <Button type="reset" variant="outline" onClick={handleReset}>
               Clear
             </Button>

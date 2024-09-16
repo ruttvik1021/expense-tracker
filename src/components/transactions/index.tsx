@@ -53,11 +53,23 @@ const Transactions = () => {
   const { data: transactionData, isLoading: gettingTransactionById } =
     useTransactionById(transactionToEdit || "");
 
+  const validateDate = (value: string) => {
+    // Check if the value is a valid date in DD/MM/YYYY format
+    return moment(value, "YYYY-MM-DD", true).isValid();
+  };
+
   const validationSchema = Yup.object({
     amount: Yup.number()
       .required("Amount is required")
       .positive("Amount must be positive"),
     category: Yup.string().required("Category is required"),
+    date: Yup.string()
+      .required("Date is required")
+      .test("is-valid-date", "Invalid Format", validateDate)
+      .transform((value) => {
+        // Transform the input value to standard format for further processing if needed
+        return moment(value, "DD/MM/YYYY").format("YYYY-MM-DD"); // Optional
+      }),
   });
 
   const initialValues = {

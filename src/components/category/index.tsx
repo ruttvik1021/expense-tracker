@@ -150,7 +150,10 @@ const Category = () => {
         content={
           <>
             <div>
-              <Label>Are you sure you want to delete this category?</Label>
+              <Label className="text-wrap">
+                Are you sure you want to delete this category? <br /> All the
+                transaction under this category will be deleted?
+              </Label>
             </div>
             <div className="flex justify-between items-center mt-5">
               <Button type="reset" variant="outline" onClick={handleClose}>

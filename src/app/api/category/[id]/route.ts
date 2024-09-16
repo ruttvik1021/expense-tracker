@@ -1,5 +1,6 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import CategoryModel from "@/models/CategoryModel";
+import TransactionModel from "@/models/TransactionModel";
 import Joi from "joi";
 import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
@@ -88,6 +89,15 @@ export async function DELETE(req: Request) {
         deletedAt: new Date(),
       },
       { new: true }
+    );
+
+    await TransactionModel.updateMany(
+      { category: id },
+      {
+        $set: {
+          deletedAt: new Date(),
+        },
+      }
     );
 
     return NextResponse.json({
