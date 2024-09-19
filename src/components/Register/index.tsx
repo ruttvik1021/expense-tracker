@@ -26,6 +26,7 @@ import * as Yup from "yup";
 import { useAuthContext } from "../wrapper/ContextWrapper";
 import { IRegister } from "@/utils/types/authTypes";
 import { useRouter } from "next/navigation";
+import { queryKeys } from "@/utils/queryKeys";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -39,7 +40,7 @@ const Register = () => {
   const router = useRouter();
   const { authenticateUser } = useAuthContext();
   const { mutate: registerMutate, isPending: isRegistering } = useMutation({
-    mutationKey: ["user"],
+    mutationKey: [queryKeys.user],
     mutationFn: (data: IRegister) => signUpApi(data),
     onSuccess(data) {
       authenticateUser(data.data?.token);

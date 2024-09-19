@@ -14,6 +14,7 @@ import CategoryForm, { CategoryFormValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
+import { queryKeys } from "@/utils/queryKeys";
 
 const Category = () => {
   const queryClient = useQueryClient();
@@ -50,7 +51,9 @@ const Category = () => {
   const handleSubmit = async (values: CategoryFormValues) => {
     if (categoryToEdit) {
       await updateCategory.mutateAsync({ id: categoryToEdit, values });
-      queryClient.removeQueries({ queryKey: ["category", categoryToEdit] });
+      queryClient.removeQueries({
+        queryKey: [queryKeys.categories, categoryToEdit],
+      });
     } else {
       await addCategory.mutateAsync(values);
     }
@@ -156,7 +159,12 @@ const Category = () => {
               </Label>
             </div>
             <div className="flex justify-between items-center mt-5">
-              <Button type="reset" variant="outline" onClick={handleClose}>
+              <Button
+                type="reset"
+                variant="outline"
+                onClick={handleClose}
+                disabled={deleteCategory.isPending}
+              >
                 Cancel
               </Button>
               <Button

@@ -1,5 +1,7 @@
 "use client";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { queryKeys } from "@/utils/queryKeys";
+import { useIsMutating } from "@tanstack/react-query";
 import {
   Field,
   FieldInputProps,
@@ -41,6 +43,9 @@ const CategoryForm = ({
   submitText = "Add",
 }: CategoryFormProps) => {
   const [open, setOpen] = useState<boolean>(false);
+  const isCategoryMutating = useIsMutating({
+    mutationKey: [queryKeys.mutateCategory],
+  });
   return (
     <Formik
       initialValues={initialValues}
@@ -60,7 +65,7 @@ const CategoryForm = ({
             }) => (
               <div className="my-2">
                 <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
+                  <PopoverTrigger asChild disabled={isCategoryMutating > 0}>
                     <Avatar
                       className={`cursor-pointer p-1 border-2 ${
                         meta.touched && meta.error
@@ -111,6 +116,7 @@ const CategoryForm = ({
                   type="text"
                   id="category"
                   placeholder="Category Name"
+                  disabled={isCategoryMutating > 0}
                 />
                 {meta.touched && meta.error && (
                   <Label className="text-base text-red-600 pl-2">
@@ -142,6 +148,7 @@ const CategoryForm = ({
                   type="number"
                   autoComplete="off"
                   placeholder="Budget (Monthly)"
+                  disabled={isCategoryMutating > 0}
                 />
                 {meta.touched && meta.error && (
                   <Label className="text-base text-red-600 pl-2">
@@ -153,10 +160,19 @@ const CategoryForm = ({
           </Field>
 
           <div className="flex justify-between mt-3">
-            <Button type="reset" variant="outline" onClick={handleReset}>
+            <Button
+              type="reset"
+              variant="outline"
+              onClick={handleReset}
+              disabled={isCategoryMutating > 0}
+            >
               Clear
             </Button>
-            <Button type="submit" variant="default">
+            <Button
+              type="submit"
+              variant="default"
+              loading={isCategoryMutating > 0}
+            >
               {submitText}
             </Button>
           </div>

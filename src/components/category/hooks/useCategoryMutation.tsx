@@ -6,34 +6,40 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CategoryFormValues } from "../categoryForm";
+import { queryKeys } from "@/utils/queryKeys";
 
 export const useCategoryMutation = () => {
   const queryClient = useQueryClient();
 
+  const onSuccessFn = (message: string) => {
+    toast.success(message);
+    queryClient.invalidateQueries({ queryKey: [queryKeys.categories] });
+  };
+
   const addCategory = useMutation({
+    mutationKey: [queryKeys.mutateCategory],
     mutationFn: createCategoryApi,
     onSuccess: (data) => {
-      toast.success(data.data?.message);
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      onSuccessFn(data.data?.message);
     },
     onError: (error) => toast.error(error?.message),
   });
 
   const deleteCategory = useMutation({
+    mutationKey: [queryKeys.deleteCategory],
     mutationFn: deleteCategoryApi,
     onSuccess: (data) => {
-      toast.success(data.data?.message);
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      onSuccessFn(data.data?.message);
     },
     onError: (error) => toast.error(error?.message),
   });
 
   const updateCategory = useMutation({
+    mutationKey: [queryKeys.mutateCategory],
     mutationFn: ({ id, values }: { id: string; values: CategoryFormValues }) =>
       updateCategoryApi(id, values),
     onSuccess: (data) => {
-      toast.success(data.data?.message);
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      onSuccessFn(data.data?.message);
     },
     onError: (error) => toast.error(error?.message),
   });

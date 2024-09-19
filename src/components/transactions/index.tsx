@@ -30,6 +30,7 @@ import {
 } from "./hooks/useTransactionQuery";
 import { TransactionFormSkeleton } from "./skeleton";
 import TransactionForm, { TransactionFormValues } from "./transactionForm";
+import { queryKeys } from "@/utils/queryKeys";
 
 const Transactions = () => {
   const queryClient = useQueryClient();
@@ -83,7 +84,7 @@ const Transactions = () => {
     if (transactionToEdit) {
       await updateTransaction.mutateAsync({ id: transactionToEdit, values });
       queryClient.removeQueries({
-        queryKey: ["transaction", transactionToEdit],
+        queryKey: [queryKeys.transactions, transactionToEdit],
       });
     } else {
       await addTransaction.mutateAsync(values);
@@ -181,7 +182,12 @@ const Transactions = () => {
               <Label>Are you sure you want to delete this transaction?</Label>
             </div>
             <div className="flex justify-between items-center mt-5">
-              <Button type="reset" variant="outline" onClick={handleClose}>
+              <Button
+                type="reset"
+                variant="outline"
+                onClick={handleClose}
+                disabled={deleteTransaction.isPending}
+              >
                 Cancel
               </Button>
               <Button

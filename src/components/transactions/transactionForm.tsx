@@ -8,6 +8,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CategoryDocument } from "@/models/CategoryModel";
+import { queryKeys } from "@/utils/queryKeys";
+import { useIsMutating } from "@tanstack/react-query";
 import {
   Field,
   FieldInputProps,
@@ -49,6 +51,9 @@ const TransactionForm = ({
   submitText = "Add",
 }: CategoryFormProps) => {
   const { data } = useCategories();
+  const isTransactionMutating = useIsMutating({
+    mutationKey: [queryKeys.mutateTransaction],
+  });
   return (
     <Formik
       initialValues={initialValues}
@@ -79,6 +84,7 @@ const TransactionForm = ({
                   type="number"
                   autoComplete="off"
                   placeholder="Amount"
+                  disabled={isTransactionMutating > 0}
                 />
                 {meta.touched && meta.error && (
                   <Label className="text-base text-red-600 pl-2">
@@ -107,6 +113,7 @@ const TransactionForm = ({
                 <Select
                   onValueChange={(e) => setFieldValue("category", e)}
                   value={field.value}
+                  disabled={isTransactionMutating > 0}
                 >
                   <SelectTrigger className="mt-2">
                     <SelectValue placeholder="Select a Category" />
@@ -118,6 +125,7 @@ const TransactionForm = ({
                           <SelectItem
                             value={category._id as string}
                             key={category._id as string}
+                            disabled={isTransactionMutating > 0}
                           >
                             <div className="flex items-center gap-2">
                               <Label>{category.icon}</Label>
@@ -167,6 +175,7 @@ const TransactionForm = ({
                       moment(e.target.value, "YYYY-MM-DD").format("DD/MM/YYYY")
                     )
                   }
+                  disabled={isTransactionMutating > 0}
                 />
                 {meta.touched && meta.error && (
                   <Label className="text-base text-red-600 pl-2">
@@ -192,16 +201,26 @@ const TransactionForm = ({
                   type="text"
                   id="spentOn"
                   placeholder="What did you spend on?"
+                  disabled={isTransactionMutating > 0}
                 />
               </div>
             )}
           </Field>
 
           <div className="flex justify-between">
-            <Button type="reset" variant="outline" onClick={handleReset}>
+            <Button
+              type="reset"
+              variant="outline"
+              onClick={handleReset}
+              disabled={isTransactionMutating > 0}
+            >
               Clear
             </Button>
-            <Button type="submit" variant="default">
+            <Button
+              type="submit"
+              variant="default"
+              loading={isTransactionMutating > 0}
+            >
               {submitText}
             </Button>
           </div>
