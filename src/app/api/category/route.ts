@@ -140,7 +140,6 @@ export async function GET(req: Request) {
           deletedAt: null,
         },
       },
-      // { $sort: { createdAt: -1 } },
       {
         $lookup: {
           from: "transactions",
@@ -183,9 +182,8 @@ export async function GET(req: Request) {
           totalAmountSpent: { $sum: "$transactions.amount" },
         },
       },
+      { $sort: { createdAt: -1 } },
     ]);
-
-    console.log(categories);
 
     return NextResponse.json({
       categories,
