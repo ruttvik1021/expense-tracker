@@ -47,9 +47,9 @@ const Transactions = () => {
     categoryId: filterBy,
   };
   const { data } = useTransactions(filter);
-  const filteredCategory = categoryList.data.categories.find(
-    (item: any) => item._id === filter.categoryId
-  );
+  const filteredCategory =
+    filterBy &&
+    categoryList.data.categories.find((item: any) => item._id === filterBy);
   const { addTransaction, deleteTransaction, updateTransaction } =
     useTransactionMutation();
   const [open, setOpen] = useState<{
@@ -133,7 +133,9 @@ const Transactions = () => {
     <>
       <div className="flex justify-between mb-3">
         <PageHeader
-          title={`${filteredCategory?.category} Transactions` || "Transactions"}
+          title={`${
+            filteredCategory ? filteredCategory?.category : ""
+          } Transactions`}
         />
         <Button
           onClick={() => {
