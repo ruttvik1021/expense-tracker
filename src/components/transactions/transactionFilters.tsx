@@ -199,6 +199,14 @@ export default function TransactionFilters() {
               <Button type="submit" className="w-full">
                 Apply Filters
               </Button>
+              <Button
+                type="button"
+                className="w-full"
+                onClick={() => setIsOpen(false)}
+                variant="destructive"
+              >
+                Cancel
+              </Button>
             </Form>
           )}
         </Formik>

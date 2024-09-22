@@ -138,7 +138,7 @@ const Transactions = () => {
             filteredCategory ? filteredCategory?.category : ""
           } Transactions`}
         />
-        <div>
+        <div className="flex gap-2">
           <TransactionFilters />
           <Button
             onClick={() => {
