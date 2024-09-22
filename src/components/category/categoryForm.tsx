@@ -17,6 +17,7 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 
 export interface CategoryFormValues {
   icon: string;
@@ -75,19 +76,19 @@ const CategoryForm = ({
                 >
                   <AvatarFallback>{field.value}</AvatarFallback>
                 </Avatar>
-                <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogContent
-                    onClose={() => setOpen(false)}
-                    className="w-fit"
-                  >
+                <ResponsiveDialogAndDrawer
+                  open={open}
+                  handleClose={() => setOpen(false)}
+                  title={"Pick Emoji for Category"}
+                  content={
                     <EmojiPicker
                       onClick={(e) => {
                         setFieldValue("icon", e.emoji);
                         setOpen(false);
                       }}
                     />
-                  </DialogContent>
-                </Dialog>
+                  }
+                />
                 {meta.touched && meta.error && (
                   <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                     {meta.error}
