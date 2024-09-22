@@ -20,7 +20,7 @@ export default function RootLayout({
       <body>
         <QueryWrapper>
           <ContextWrapper>
-            <main className="bg-background relative">
+            <main className="h-[100vh] bg-background relative">
               <NavHeader />
               <section className="px-5 py-3 h-[90vh]">{children}</section>
             </main>
