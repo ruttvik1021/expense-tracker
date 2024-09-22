@@ -182,7 +182,7 @@ export async function GET(req: Request) {
           totalAmountSpent: { $sum: "$transactions.amount" },
         },
       },
-      { $sort: { createdAt: -1 } },
+      { $sort: { updatedAt: -1 } },
     ]);
 
     return NextResponse.json({
