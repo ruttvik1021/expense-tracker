@@ -80,12 +80,14 @@ const CategoryForm = ({
                   handleClose={() => setOpen(false)}
                   title={"Pick Emoji for Category"}
                   content={
-                    <EmojiPicker
-                      onClick={(e) => {
-                        setFieldValue("icon", e.emoji);
-                        setOpen(false);
-                      }}
-                    />
+                    <div className="flex justify-center">
+                      <EmojiPicker
+                        onClick={(e) => {
+                          setFieldValue("icon", e.emoji);
+                          setOpen(false);
+                        }}
+                      />
+                    </div>
                   }
                 />
                 {meta.touched && meta.error && (
