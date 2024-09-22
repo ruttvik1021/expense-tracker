@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { queryKeys } from "@/utils/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
 import { EditIcon, PlusIcon, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import * as Yup from "yup";
 import PageHeader from "../common/Pageheader";
@@ -19,6 +19,7 @@ import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
 
 const Category = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const queryClient = useQueryClient();
   const { data, isLoading } = useCategories();
   const { addCategory, deleteCategory, updateCategory } = useCategoryMutation();
@@ -104,7 +105,7 @@ const Category = () => {
                           className="icon"
                           onClick={() =>
                             router.push(
-                              `transactions?categoryId=${category._id}`
+                              `transactions?addBycategory=${category._id}&navigate=${pathname}`
                             )
                           }
                         />
@@ -130,7 +131,9 @@ const Category = () => {
                       <p
                         className={`font-bold text-base cursor-pointer hover:text-selected`}
                         onClick={() => {
-                          router.push(`transactions?filterBy=${category._id}`);
+                          router.push(
+                            `transactions?filterByCategory=${category._id}`
+                          );
                         }}
                       >
                         {category.category}
