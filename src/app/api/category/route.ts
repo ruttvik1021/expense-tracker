@@ -140,7 +140,7 @@ export async function GET(req: Request) {
           deletedAt: null,
         },
       },
-      { $sort: { createdAt: -1 } },
+      // { $sort: { createdAt: -1 } },
       {
         $lookup: {
           from: "transactions",
