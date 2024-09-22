@@ -2,7 +2,7 @@
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 // import useThemeToggle from "../../../hooks/useThemeToggle";
 import { Moon, Sun } from "lucide-react";
-import { useLayoutEffect, useState } from "react";
+import { useLayoutEffect } from "react";
 
 const Theme = "theme";
 export enum Modes {

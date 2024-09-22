@@ -3,7 +3,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { queryKeys } from "@/utils/queryKeys";
 import { useIsMutating } from "@tanstack/react-query";
 import {
-  ErrorMessage,
   Field,
   FieldInputProps,
   FieldMetaProps,
@@ -15,10 +14,9 @@ import { useState } from "react";
 import * as Yup from "yup";
 import EmojiPicker from "../emojiPicker";
 import { Button } from "../ui/button";
+import { Dialog, DialogContent } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Dialog, DialogContent } from "../ui/dialog";
-import { EmojiClickData } from "emoji-picker-react";
 
 export interface CategoryFormValues {
   icon: string;
