@@ -20,9 +20,9 @@ export default function RootLayout({
       <body>
         <QueryWrapper>
           <ContextWrapper>
-            <main className="h-screen bg-background relative">
+            <main className="bg-background relative">
               <NavHeader />
-              <section className="px-5 py-3">{children}</section>
+              <section className="px-5 py-3 h-[90vh]">{children}</section>
             </main>
             <Toaster richColors position="top-center" />
           </ContextWrapper>
