@@ -74,7 +74,6 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   try {
     // Extract the token from the Authorization header
-    debugger;
     const authorizationHeader = req.headers.get("authorization");
 
     if (!authorizationHeader) {
@@ -119,11 +118,17 @@ export async function GET(req: Request) {
     // Connect to the database
     await connectToDatabase();
 
+    const urlSearchParams = new URLSearchParams(req.url.split("?")[1]);
+    const categoryId = urlSearchParams.get("categoryId");
+
     const transactions = await TransactionModel.aggregate([
       {
         $match: {
           userId: new mongoose.Types.ObjectId(userId as string),
           deletedAt: null,
+          ...(categoryId
+            ? { category: new mongoose.Types.ObjectId(categoryId) }
+            : {}),
         },
       },
       { $sort: { createdAt: -1 } },

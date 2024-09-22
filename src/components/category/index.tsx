@@ -1,8 +1,10 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { queryKeys } from "@/utils/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
-import { EditIcon, Trash2 } from "lucide-react";
+import { EditIcon, PlusIcon, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import * as Yup from "yup";
 import PageHeader from "../common/Pageheader";
@@ -14,9 +16,9 @@ import CategoryForm, { CategoryFormValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
-import { queryKeys } from "@/utils/queryKeys";
 
 const Category = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { data, isLoading } = useCategories();
   const { addCategory, deleteCategory, updateCategory } = useCategoryMutation();
@@ -98,6 +100,14 @@ const Category = () => {
                     <div className="flex justify-between">
                       <p className="text-4xl">{category.icon}</p>
                       <div className="flex gap-2">
+                        <PlusIcon
+                          className="icon"
+                          onClick={() =>
+                            router.push(
+                              `transactions?categoryId=${category._id}`
+                            )
+                          }
+                        />
                         <EditIcon
                           onClick={() => {
                             setCategoryToEdit(category._id);
@@ -117,7 +127,12 @@ const Category = () => {
                   </CardHeader>
                   <CardContent className="flex justify-between p-0">
                     <div>
-                      <p className={`font-bold text-base`}>
+                      <p
+                        className={`font-bold text-base cursor-pointer hover:text-selected`}
+                        onClick={() => {
+                          router.push(`transactions?filterBy=${category._id}`);
+                        }}
+                      >
                         {category.category}
                       </p>
                     </div>

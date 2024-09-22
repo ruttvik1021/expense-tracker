@@ -2,10 +2,10 @@ import { getTransactionById, getTransactionsApi } from "@/ajax/transactionApi";
 import { queryKeys } from "@/utils/queryKeys";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-export const useTransactions = () => {
+export const useTransactions = (filter: Record<string, unknown>) => {
   return useQuery({
-    queryKey: [queryKeys.transactions],
-    queryFn: getTransactionsApi,
+    queryKey: [queryKeys.transactions, filter],
+    queryFn: () => getTransactionsApi(filter),
   });
 };
 

@@ -65,108 +65,112 @@ const Register = () => {
   });
 
   return (
-    <FormikProvider value={formik}>
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Register</CardTitle>
-          <CardDescription>Enter your email below to register.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <Field name="email">
-              {({
-                field,
-                meta,
-              }: {
-                field: FieldInputProps<typeof formik.values.email>;
-                meta: FieldMetaProps<typeof formik.values.email>;
-              }) => (
-                <div className="my-2">
-                  <Label htmlFor={"email"}>Email</Label>
-                  <span className="text-red-600 ml-1">*</span>
-                  <Input
-                    type={"text"}
-                    {...field}
-                    autoComplete="false"
-                    disabled={isRegistering}
-                  />
-                  {meta.touched && meta.error && (
-                    <div className="text-base text-red-600">{meta.error}</div>
-                  )}
-                </div>
-              )}
-            </Field>
-          </div>
-          <div className="grid gap-2">
-            <Field name="password">
-              {({
-                field,
-                meta,
-              }: {
-                field: FieldInputProps<typeof formik.values.password>;
-                meta: FieldMetaProps<typeof formik.values.password>;
-              }) => (
-                <div className="my-2">
-                  <Label htmlFor={"password"}>Password</Label>
-                  <span className="text-red-600 ml-1">*</span>
-                  <Input
-                    type={"password"}
-                    {...field}
-                    autoComplete="false"
-                    disabled={isRegistering}
-                  />
-                  {meta.touched && meta.error && (
-                    <div className="text-base text-red-600">{meta.error}</div>
-                  )}
-                </div>
-              )}
-            </Field>
-          </div>
-          <div className="grid gap-2">
-            <Field name="confirmPassword">
-              {({
-                field,
-                meta,
-              }: {
-                field: FieldInputProps<typeof formik.values.confirmPassword>;
-                meta: FieldMetaProps<typeof formik.values.confirmPassword>;
-              }) => (
-                <div className="my-2">
-                  <Label htmlFor={"confirmPassword"}>Confirm Password</Label>
-                  <span className="text-red-600 ml-1">*</span>
-                  <Input
-                    type={"password"}
-                    {...field}
-                    autoComplete="false"
-                    disabled={isRegistering}
-                  />
-                  {meta.touched && meta.error && (
-                    <div className="text-base text-red-600">{meta.error}</div>
-                  )}
-                </div>
-              )}
-            </Field>
-          </div>
-          <Button
-            className="w-full bg-primary"
-            onClick={() => formik.handleSubmit()}
-            disabled={
-              formik.values.password !== formik.values.confirmPassword ||
-              isRegistering
-            }
-            loading={isRegistering}
-          >
-            Register
-          </Button>
-        </CardContent>
-        <CardFooter>
-          Already registered ?{" "}
-          <Link href={"/login"} className="ml-2 text-blue-700">
-            Login here
-          </Link>
-        </CardFooter>
-      </Card>
-    </FormikProvider>
+    <div className="h-[100vh] w-full flex justify-center items-center">
+      <FormikProvider value={formik}>
+        <Card className="w-full max-w-sm shadow-md shadow-selected">
+          <CardHeader>
+            <CardTitle className="text-2xl">Register</CardTitle>
+            <CardDescription>
+              Enter your email below to register.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <div className="grid gap-2">
+              <Field name="email">
+                {({
+                  field,
+                  meta,
+                }: {
+                  field: FieldInputProps<typeof formik.values.email>;
+                  meta: FieldMetaProps<typeof formik.values.email>;
+                }) => (
+                  <div className="my-2">
+                    <Label htmlFor={"email"}>Email</Label>
+                    <span className="text-red-600 ml-1">*</span>
+                    <Input
+                      type={"text"}
+                      {...field}
+                      autoComplete="false"
+                      disabled={isRegistering}
+                    />
+                    {meta.touched && meta.error && (
+                      <div className="text-base text-red-600">{meta.error}</div>
+                    )}
+                  </div>
+                )}
+              </Field>
+            </div>
+            <div className="grid gap-2">
+              <Field name="password">
+                {({
+                  field,
+                  meta,
+                }: {
+                  field: FieldInputProps<typeof formik.values.password>;
+                  meta: FieldMetaProps<typeof formik.values.password>;
+                }) => (
+                  <div className="my-2">
+                    <Label htmlFor={"password"}>Password</Label>
+                    <span className="text-red-600 ml-1">*</span>
+                    <Input
+                      type={"password"}
+                      {...field}
+                      autoComplete="false"
+                      disabled={isRegistering}
+                    />
+                    {meta.touched && meta.error && (
+                      <div className="text-base text-red-600">{meta.error}</div>
+                    )}
+                  </div>
+                )}
+              </Field>
+            </div>
+            <div className="grid gap-2">
+              <Field name="confirmPassword">
+                {({
+                  field,
+                  meta,
+                }: {
+                  field: FieldInputProps<typeof formik.values.confirmPassword>;
+                  meta: FieldMetaProps<typeof formik.values.confirmPassword>;
+                }) => (
+                  <div className="my-2">
+                    <Label htmlFor={"confirmPassword"}>Confirm Password</Label>
+                    <span className="text-red-600 ml-1">*</span>
+                    <Input
+                      type={"password"}
+                      {...field}
+                      autoComplete="false"
+                      disabled={isRegistering}
+                    />
+                    {meta.touched && meta.error && (
+                      <div className="text-base text-red-600">{meta.error}</div>
+                    )}
+                  </div>
+                )}
+              </Field>
+            </div>
+            <Button
+              className="w-full bg-primary"
+              onClick={() => formik.handleSubmit()}
+              disabled={
+                formik.values.password !== formik.values.confirmPassword ||
+                isRegistering
+              }
+              loading={isRegistering}
+            >
+              Register
+            </Button>
+          </CardContent>
+          <CardFooter>
+            Already registered ?{" "}
+            <Link href={"/login"} className="ml-2 text-blue-700">
+              Login here
+            </Link>
+          </CardFooter>
+        </Card>
+      </FormikProvider>
+    </div>
   );
 };
 

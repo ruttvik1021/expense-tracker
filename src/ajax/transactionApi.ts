@@ -6,8 +6,11 @@ export const createTransactionApi = (values: ITransaction) => {
   return AjaxUtils.postAjax(url, values, true);
 };
 
-export const getTransactionsApi = () => {
-  const url = "/transaction";
+export const getTransactionsApi = (filter: Record<string, unknown>) => {
+  let url = `/transaction`;
+  if (filter.categoryId) {
+    url += `?categoryId=${filter.categoryId}`;
+  }
   return AjaxUtils.getAjax(url, true);
 };
 

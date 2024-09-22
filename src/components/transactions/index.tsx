@@ -16,7 +16,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { EditIcon, Trash2 } from "lucide-react";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import PageHeader from "../common/Pageheader";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
@@ -31,19 +31,41 @@ import {
 import { TransactionFormSkeleton } from "./skeleton";
 import TransactionForm, { TransactionFormValues } from "./transactionForm";
 import { queryKeys } from "@/utils/queryKeys";
+import { useRouter, useSearchParams } from "next/navigation";
+import { AxiosResponse } from "axios";
 
 const Transactions = () => {
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("categoryId") || "";
+  const filterBy = searchParams.get("filterBy") || "";
   const queryClient = useQueryClient();
-  const { data } = useTransactions();
+  const categoryList = queryClient.getQueryData([
+    queryKeys.categories,
+  ]) as AxiosResponse;
+  const router = useRouter();
+  const filter = {
+    categoryId: filterBy,
+  };
+  const { data } = useTransactions(filter);
+  const filteredCategory = categoryList.data.categories.find(
+    (item: any) => item._id === filter.categoryId
+  );
   const { addTransaction, deleteTransaction, updateTransaction } =
     useTransactionMutation();
   const [open, setOpen] = useState<{
     type: "ADD" | "EDIT" | "DELETE";
     open: boolean;
-  }>({
-    type: "ADD",
-    open: false,
-  });
+  }>(
+    categoryId
+      ? {
+          type: "ADD",
+          open: true,
+        }
+      : {
+          type: "ADD",
+          open: false,
+        }
+  );
   const [transactionToEdit, setTransactionToEdit] = useState<string | null>(
     null
   );
@@ -75,7 +97,7 @@ const Transactions = () => {
 
   const initialValues = {
     amount: transactionData?.data.amount || 0,
-    category: transactionData?.data.category || "",
+    category: transactionData?.data.category || categoryId || "",
     spentOn: transactionData?.data.spentOn || "",
     date: transactionData?.data.date || moment().format("DD/MM/YYYY"),
   };
@@ -92,6 +114,10 @@ const Transactions = () => {
     handleClose();
   };
 
+  useEffect(() => {
+    categoryId && router.push("/transactions");
+  }, [categoryId]);
+
   const handleDeleteTransaction = async () => {
     await deleteTransaction.mutateAsync(transactionToDelete!);
     handleClose();
@@ -106,7 +132,9 @@ const Transactions = () => {
   return (
     <>
       <div className="flex justify-between mb-3">
-        <PageHeader title="Transactions" />
+        <PageHeader
+          title={`${filteredCategory?.category} Transactions` || "Transactions"}
+        />
         <Button
           onClick={() => {
             setOpen({ type: "ADD", open: true });
