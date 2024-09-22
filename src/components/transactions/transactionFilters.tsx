@@ -69,7 +69,7 @@ export default function TransactionFilters() {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-full sm:w-auto">
-          <FilterIcon />
+          <FilterIcon className="icon" />
           <span className="sr-only">Filter transactions</span>
         </Button>
       </SheetTrigger>
