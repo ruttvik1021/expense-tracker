@@ -33,6 +33,7 @@ import {
 } from "./hooks/useTransactionQuery";
 import { TransactionFormSkeleton } from "./skeleton";
 import TransactionForm, { TransactionFormValues } from "./transactionForm";
+import TransactionFilters from "./transactionFilters";
 
 const Transactions = () => {
   const searchParams = useSearchParams();
@@ -137,13 +138,16 @@ const Transactions = () => {
             filteredCategory ? filteredCategory?.category : ""
           } Transactions`}
         />
-        <Button
-          onClick={() => {
-            setOpen({ type: "ADD", open: true });
-          }}
-        >
-          Add
-        </Button>
+        <div>
+          <TransactionFilters />
+          <Button
+            onClick={() => {
+              setOpen({ type: "ADD", open: true });
+            }}
+          >
+            Add
+          </Button>
+        </div>
       </div>
       <Table className="overflow-auto">
         <TableHeader>
