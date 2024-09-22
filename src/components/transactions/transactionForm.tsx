@@ -87,7 +87,7 @@ const TransactionForm = ({
                   disabled={isTransactionMutating > 0}
                 />
                 {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 pl-2">
+                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                     {meta.error}
                   </Label>
                 )}
@@ -138,7 +138,7 @@ const TransactionForm = ({
                   </SelectContent>
                 </Select>
                 {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 pl-2">
+                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                     {meta.error}
                   </Label>
                 )}
@@ -178,7 +178,7 @@ const TransactionForm = ({
                   disabled={isTransactionMutating > 0}
                 />
                 {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 pl-2">
+                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                     {meta.error}
                   </Label>
                 )}

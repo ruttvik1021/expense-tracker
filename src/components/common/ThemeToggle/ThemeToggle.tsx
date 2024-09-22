@@ -1,16 +1,17 @@
 "use client";
+import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 // import useThemeToggle from "../../../hooks/useThemeToggle";
 import { Moon, Sun } from "lucide-react";
 import { useLayoutEffect, useState } from "react";
 
 const Theme = "theme";
-enum Modes {
+export enum Modes {
   DARK = "dark",
   LIGHT = "light",
 }
 
 const ThemeToggleButton = () => {
-  const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
+  const { activeTheme, setActiveTheme } = useAuthContext();
 
   useLayoutEffect(() => {
     const isDarkTheme = localStorage.getItem(Theme) === Modes.DARK;

@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { queryKeys } from "@/utils/queryKeys";
 import { useIsMutating } from "@tanstack/react-query";
 import {
+  ErrorMessage,
   Field,
   FieldInputProps,
   FieldMetaProps,
@@ -16,7 +17,8 @@ import EmojiPicker from "../emojiPicker";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Dialog, DialogContent } from "../ui/dialog";
+import { EmojiClickData } from "emoji-picker-react";
 
 export interface CategoryFormValues {
   icon: string;
@@ -64,30 +66,32 @@ const CategoryForm = ({
               meta: FieldMetaProps<string>;
             }) => (
               <div className="my-2">
-                <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild disabled={isCategoryMutating > 0}>
-                    <Avatar
-                      className={`cursor-pointer p-1 border-2 ${
-                        meta.touched && meta.error
-                          ? "border-red-600"
-                          : "border-selected"
-                      }`}
-                      {...field}
-                    >
-                      <AvatarFallback>{field.value}</AvatarFallback>
-                    </Avatar>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                <Avatar
+                  className={`cursor-pointer p-1 border-2 ${
+                    meta.touched && meta.error
+                      ? "border-red-600"
+                      : "border-selected"
+                  }`}
+                  {...field}
+                  onClick={() => setOpen(true)}
+                >
+                  <AvatarFallback>{field.value}</AvatarFallback>
+                </Avatar>
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogContent
+                    onClose={() => setOpen(false)}
+                    className="w-fit"
+                  >
                     <EmojiPicker
-                      onClick={(emojiObject: { native: unknown }) => {
-                        setFieldValue("icon", emojiObject.native);
+                      onClick={(e) => {
+                        setFieldValue("icon", e.emoji);
                         setOpen(false);
                       }}
                     />
-                  </PopoverContent>
-                </Popover>
+                  </DialogContent>
+                </Dialog>
                 {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 pl-2">
+                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                     {meta.error}
                   </Label>
                 )}
@@ -119,7 +123,7 @@ const CategoryForm = ({
                   disabled={isCategoryMutating > 0}
                 />
                 {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 pl-2">
+                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                     {meta.error}
                   </Label>
                 )}
@@ -151,7 +155,7 @@ const CategoryForm = ({
                   disabled={isCategoryMutating > 0}
                 />
                 {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 pl-2">
+                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                     {meta.error}
                   </Label>
                 )}

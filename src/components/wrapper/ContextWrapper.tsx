@@ -3,6 +3,7 @@
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import React, { createContext, useLayoutEffect, useState } from "react";
+import { Modes } from "../common/ThemeToggle/ThemeToggle";
 
 // Use a type to define the context value shape
 type ContextWrapperType = {
@@ -10,6 +11,8 @@ type ContextWrapperType = {
   setIsAuthenticated: (value: boolean) => void;
   authenticateUser: (value: string) => void;
   logoutUser: () => void;
+  setActiveTheme: (value: Modes) => void;
+  activeTheme: Modes | null;
 };
 
 const MyContext = createContext<ContextWrapperType | null>(null);
@@ -17,6 +20,7 @@ const MyContext = createContext<ContextWrapperType | null>(null);
 export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
   const token = Cookies.get("token");
 
   const authenticateUser = (token: string) => {
@@ -35,6 +39,8 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     setIsAuthenticated,
     authenticateUser,
     logoutUser,
+    setActiveTheme,
+    activeTheme,
   };
 
   useLayoutEffect(() => {
