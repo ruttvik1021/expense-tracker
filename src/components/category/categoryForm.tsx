@@ -13,11 +13,10 @@ import { IndianRupee, Tag } from "lucide-react";
 import { useState } from "react";
 import * as Yup from "yup";
 import EmojiPicker from "../emojiPicker";
+import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 
 export interface CategoryFormValues {
   icon: string;
