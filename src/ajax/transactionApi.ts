@@ -8,7 +8,7 @@ export const createTransactionApi = (values: ITransaction) => {
 };
 
 export const getTransactionsApi = (filter: Partial<ITransactionFilter>) => {
-  let url = `/get-transactions`;
+  const url = `/get-transactions`;
   return AjaxUtils.postAjax(url, filter, true);
 };
 

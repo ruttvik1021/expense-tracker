@@ -1,19 +1,13 @@
 "use client";
 
 import { Field, Form, Formik } from "formik";
-import { CalendarIcon, CrossIcon, FilterIcon } from "lucide-react";
+import { CrossIcon, FilterIcon } from "lucide-react";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -30,14 +24,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import MonthYearPicker from "../common/MonthPicker";
-import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/utils/queryKeys";
-import { AxiosResponse } from "axios";
-import { CategoryDocument } from "@/models/CategoryModel";
-import React from "react";
 import { useCategories } from "../category/hooks/useCategoryQuery";
-import { useTransactions } from "./hooks/useTransactionQuery";
+import MonthYearPicker from "../common/MonthPicker";
 import {
   initialTransactionFilter,
   useAuthContext,
