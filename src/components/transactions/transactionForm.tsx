@@ -173,6 +173,7 @@ const TransactionForm = ({
                     setFieldValue("date", new Date(e.target.value))
                   }
                   disabled={isTransactionMutating > 0}
+                  max={moment().format("YYYY-MM-DD")}
                 />
                 {meta.touched && meta.error && (
                   <Label className="text-base text-red-600 dark:text-red-600 pl-2">
