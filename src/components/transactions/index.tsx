@@ -34,21 +34,24 @@ import {
 import { TransactionFormSkeleton } from "./skeleton";
 import TransactionForm, { TransactionFormValues } from "./transactionForm";
 import TransactionFilters from "./transactionFilters";
+import { useAuthContext } from "../wrapper/ContextWrapper";
 
 const Transactions = () => {
+  const { categoryFilter } = useAuthContext();
   const searchParams = useSearchParams();
   const addBycategoryId = searchParams.get("addBycategory") || "";
-  const filterByCategory = searchParams.get("filterByCategory") || "";
   const navigate = searchParams.get("navigate") || "";
   const queryClient = useQueryClient();
+  const categoryDate = categoryFilter.categoryDate;
   const categoryList = queryClient.getQueryData([
     queryKeys.categories,
+    categoryDate,
   ]) as AxiosResponse;
   const router = useRouter();
   const filter = {
-    categoryId: addBycategoryId || filterByCategory,
+    categoryId: addBycategoryId,
   };
-  const { data } = useTransactions(filter);
+  const { data } = useTransactions();
   const filteredCategory =
     filter.categoryId &&
     categoryList.data.categories.find(
@@ -82,7 +85,7 @@ const Transactions = () => {
 
   const validateDate = (value: string) => {
     // Check if the value is a valid date in DD/MM/YYYY format
-    return moment(value, "YYYY-MM-DD", true).isValid();
+    return moment(value).isValid();
   };
 
   const validationSchema = Yup.object({
@@ -95,7 +98,7 @@ const Transactions = () => {
       .test("is-valid-date", "Invalid Format", validateDate)
       .transform((value) => {
         // Transform the input value to standard format for further processing if needed
-        return moment(value, "DD/MM/YYYY").format("YYYY-MM-DD"); // Optional
+        return moment(value).format(); // Optional
       }),
   });
 
@@ -103,7 +106,10 @@ const Transactions = () => {
     amount: transactionData?.data.amount || 0,
     category: transactionData?.data.category || addBycategoryId || "",
     spentOn: transactionData?.data.spentOn || "",
-    date: transactionData?.data.date || moment().format("DD/MM/YYYY"),
+    date:
+      transactionData?.data.date ||
+      moment(categoryDate).format() ||
+      moment().format(),
   };
 
   const handleSubmit = async (values: TransactionFormValues) => {
@@ -185,7 +191,9 @@ const Transactions = () => {
                 </div>
               </TableCell>
               <TableCell>{transaction.amount}</TableCell>
-              <TableCell>{transaction.date}</TableCell>
+              <TableCell>
+                {moment(transaction.date).utc().format("DD/MM/YYYY")}
+              </TableCell>
               <TableCell className="flex justify-between items-center">
                 <EditIcon
                   onClick={() => {

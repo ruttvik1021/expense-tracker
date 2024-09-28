@@ -1,11 +1,13 @@
 import { getTransactionById, getTransactionsApi } from "@/ajax/transactionApi";
+import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { queryKeys } from "@/utils/queryKeys";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-export const useTransactions = (filter: Record<string, unknown>) => {
+export const useTransactions = () => {
+  const { transactionFilter } = useAuthContext();
   return useQuery({
-    queryKey: [queryKeys.transactions, filter],
-    queryFn: () => getTransactionsApi(filter),
+    queryKey: [queryKeys.transactions, transactionFilter],
+    queryFn: () => getTransactionsApi(transactionFilter),
   });
 };
 

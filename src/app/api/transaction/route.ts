@@ -2,8 +2,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import TransactionModel from "@/models/TransactionModel";
 import Joi from "joi";
 import { jwtVerify } from "jose";
-import mongoose from "mongoose";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const transactionSchema = Joi.object({
   amount: Joi.number().required(),
@@ -12,7 +11,7 @@ const transactionSchema = Joi.object({
   category: Joi.string().required(),
 });
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     // Parse the request body
     const body = await req.json();
@@ -32,7 +31,6 @@ export async function POST(req: Request) {
 
     // Validate the request body
     const { error } = transactionSchema.validate(body);
-    console.log("error", { error, body });
     if (error) {
       return NextResponse.json(
         { message: error.details[0]?.message },
@@ -63,100 +61,6 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("Error creating transaction:", err);
-    return NextResponse.json(
-      { message: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-}
-
-// Handler for GET requests to fetch transactions
-export async function GET(req: Request) {
-  try {
-    // Extract the token from the Authorization header
-    const authorizationHeader = req.headers.get("authorization");
-
-    if (!authorizationHeader) {
-      return NextResponse.json(
-        { message: "Unauthorized: Missing token" },
-        { status: 401 }
-      );
-    }
-
-    const token = authorizationHeader.split("Bearer ")[1].trim();
-
-    if (!token) {
-      return NextResponse.json(
-        { message: "Unauthorized: Invalid token format" },
-        { status: 401 }
-      );
-    }
-
-    // Verify the token
-    let decodedToken;
-    try {
-      decodedToken = await jwtVerify(
-        token,
-        new TextEncoder().encode(process.env.JWT_SECRET!)
-      );
-    } catch (error) {
-      console.error("JWT Verification Error:", error);
-      return NextResponse.json(
-        { message: "Unauthorized: Token verification failed" },
-        { status: 401 }
-      );
-    }
-
-    const userId = decodedToken.payload?.userId;
-    if (!userId) {
-      return NextResponse.json(
-        { message: "Unauthorized: User ID missing in token" },
-        { status: 401 }
-      );
-    }
-
-    // Connect to the database
-    await connectToDatabase();
-
-    const urlSearchParams = new URLSearchParams(req.url.split("?")[1]);
-    const categoryId = urlSearchParams.get("categoryId");
-
-    const transactions = await TransactionModel.aggregate([
-      {
-        $match: {
-          userId: new mongoose.Types.ObjectId(userId as string),
-          deletedAt: null,
-          ...(categoryId
-            ? { category: new mongoose.Types.ObjectId(categoryId) }
-            : {}),
-        },
-      },
-      { $sort: { createdAt: -1 } },
-      {
-        $lookup: {
-          from: "categories",
-          localField: "category",
-          foreignField: "_id",
-          as: "category",
-        },
-      },
-      { $unwind: "$category" },
-      {
-        $project: {
-          _id: 1,
-          amount: 1,
-          spentOn: 1,
-          date: 1,
-          category: { category: 1, icon: 1, _id: 1 },
-        },
-      },
-    ]);
-
-    return NextResponse.json({
-      transactions,
-    });
-  } catch (err) {
-    console.error("Error fetching transactions:", err);
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }

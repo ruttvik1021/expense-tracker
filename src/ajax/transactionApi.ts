@@ -1,17 +1,15 @@
 import { ITransaction } from "@/utils/types/transactionTypes";
 import { AjaxUtils } from "./ajax";
+import { ITransactionFilter } from "@/components/wrapper/ContextWrapper";
 
 export const createTransactionApi = (values: ITransaction) => {
   const url = "/transaction";
   return AjaxUtils.postAjax(url, values, true);
 };
 
-export const getTransactionsApi = (filter: Record<string, unknown>) => {
-  let url = `/transaction`;
-  if (filter.categoryId) {
-    url += `?categoryId=${filter.categoryId}`;
-  }
-  return AjaxUtils.getAjax(url, true);
+export const getTransactionsApi = (filter: Partial<ITransactionFilter>) => {
+  let url = `/get-transactions`;
+  return AjaxUtils.postAjax(url, filter, true);
 };
 
 export const deleteTransactionApi = (id: string) => {

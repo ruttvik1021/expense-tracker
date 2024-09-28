@@ -166,14 +166,11 @@ const TransactionForm = ({
                   className={`w-full justify-start text-left font-normal bg-transparent dark:border-white border-black mt-1`}
                   value={
                     field.value
-                      ? moment(field.value, "DD/MM/YYYY").format("YYYY-MM-DD")
+                      ? moment(field.value).utc().format("YYYY-MM-DD")
                       : ""
                   }
                   onChange={(e) =>
-                    setFieldValue(
-                      "date",
-                      moment(e.target.value, "YYYY-MM-DD").format("DD/MM/YYYY")
-                    )
+                    setFieldValue("date", new Date(e.target.value))
                   }
                   disabled={isTransactionMutating > 0}
                 />

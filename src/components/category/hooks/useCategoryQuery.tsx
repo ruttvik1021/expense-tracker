@@ -1,11 +1,13 @@
 import { getCategoryApi, getCategoryById } from "@/ajax/categoryApi";
+import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { queryKeys } from "@/utils/queryKeys";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useCategories = () => {
+  const { categoryFilter } = useAuthContext();
   return useQuery({
-    queryKey: [queryKeys.categories],
-    queryFn: getCategoryApi,
+    queryKey: [queryKeys.categories, categoryFilter.categoryDate.toISOString()],
+    queryFn: () => getCategoryApi(categoryFilter.categoryDate.toISOString()),
   });
 };
 

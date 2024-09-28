@@ -6,8 +6,8 @@ export const createCategoryApi = (values: ICategory) => {
   return AjaxUtils.postAjax(url, values, true);
 };
 
-export const getCategoryApi = () => {
-  const url = "/category";
+export const getCategoryApi = (date: string) => {
+  const url = "/category" + `?date=${date}`;
   return AjaxUtils.getAjax(url, true);
 };
 

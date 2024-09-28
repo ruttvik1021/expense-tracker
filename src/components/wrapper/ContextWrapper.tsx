@@ -5,14 +5,36 @@ import { useRouter } from "next/navigation";
 import React, { createContext, useLayoutEffect, useState } from "react";
 import { Modes } from "../common/ThemeToggle/ThemeToggle";
 
+export interface ICategoryFilter {
+  categoryDate: Date;
+}
+
+export interface ITransactionFilter {
+  month: string;
+  categoryId: string;
+  minAmount: number;
+  maxAmount: number;
+}
+
 // Use a type to define the context value shape
 type ContextWrapperType = {
   isAuthenticated: boolean;
   setIsAuthenticated: (value: boolean) => void;
   authenticateUser: (value: string) => void;
   logoutUser: () => void;
-  setActiveTheme: (value: Modes) => void;
   activeTheme: Modes | null;
+  setActiveTheme: (value: Modes) => void;
+  categoryFilter: ICategoryFilter;
+  setCategoryFilter: (value: ICategoryFilter) => void;
+  transactionFilter: Partial<ITransactionFilter>;
+  setTransactionFilter: (value: Partial<ITransactionFilter>) => void;
+};
+
+export const initialTransactionFilter = {
+  month: new Date().toISOString(),
+  categoryId: "",
+  minAmount: 0,
+  maxAmount: 1000,
 };
 
 const MyContext = createContext<ContextWrapperType | null>(null);
@@ -21,6 +43,12 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<ICategoryFilter>({
+    categoryDate: new Date(),
+  });
+  const [transactionFilter, setTransactionFilter] = useState<
+    Partial<ITransactionFilter>
+  >({});
   const token = Cookies.get("token");
 
   const authenticateUser = (token: string) => {
@@ -41,6 +69,10 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     logoutUser,
     setActiveTheme,
     activeTheme,
+    categoryFilter,
+    setCategoryFilter,
+    transactionFilter,
+    setTransactionFilter,
   };
 
   useLayoutEffect(() => {

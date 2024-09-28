@@ -8,4 +8,6 @@ export const queryKeys = {
   deleteCategory: "deleteCategory",
   emoji: "emoji",
   user: "user",
+  categoryDate: "categoryDate",
+  transactionFilter: "transactionFilter",
 };

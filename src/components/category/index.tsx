@@ -7,23 +7,30 @@ import { EditIcon, PlusIcon, Trash2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import * as Yup from "yup";
+import MonthYearPicker from "../common/MonthPicker";
 import PageHeader from "../common/Pageheader";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Label } from "../ui/label";
+import { useAuthContext } from "../wrapper/ContextWrapper";
 import CategoryForm, { CategoryFormValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
 
 const Category = () => {
+  const {
+    categoryFilter,
+    setCategoryFilter,
+    transactionFilter,
+    setTransactionFilter,
+  } = useAuthContext();
   const router = useRouter();
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const { data, isLoading } = useCategories();
   const { addCategory, deleteCategory, updateCategory } = useCategoryMutation();
-
   const [open, setOpen] = useState<{
     type: "ADD" | "EDIT" | "DELETE";
     open: boolean;
@@ -31,8 +38,12 @@ const Category = () => {
     type: "ADD",
     open: false,
   });
+
   const [categoryToEdit, setCategoryToEdit] = useState<string | null>(null);
   const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+  const updateCategoryDate = (value: Date) => {
+    setCategoryFilter({ ...categoryFilter, categoryDate: value });
+  };
 
   const { data: categoryData, isLoading: gettingCategoryById } =
     useCategoryById(categoryToEdit || "");
@@ -76,15 +87,23 @@ const Category = () => {
 
   return (
     <>
-      <div className="flex justify-between mb-3">
+      <div className="flex justify-between items-center mb-3">
         <PageHeader title="Category" />
-        <Button
-          onClick={() => {
-            setOpen({ type: "ADD", open: true });
-          }}
-        >
-          Add
-        </Button>
+        <div className="flex justify-between items-center gap-2">
+          <MonthYearPicker
+            handlePrevMonth={(value) => updateCategoryDate(value)}
+            handleNextMonth={(value) => updateCategoryDate(value)}
+            handleMonthChange={(value) => updateCategoryDate(value)}
+            date={categoryFilter.categoryDate}
+            navigationButton={true}
+          />
+          <PlusIcon
+            onClick={() => {
+              setOpen({ type: "ADD", open: true });
+            }}
+            className="icon"
+          />
+        </div>
       </div>
       <div className={`grid gap-4 md:grid-cols-3 lg:grid-cols-5`}>
         {isLoading
@@ -131,9 +150,14 @@ const Category = () => {
                       <p
                         className={`font-bold text-base cursor-pointer hover:text-selected`}
                         onClick={() => {
-                          router.push(
-                            `transactions?filterByCategory=${category._id}`
-                          );
+                          setTransactionFilter({
+                            ...(transactionFilter || {}),
+                            categoryId: category._id,
+                            month: new Date(
+                              categoryFilter.categoryDate
+                            ).toISOString(),
+                          });
+                          router.push(`transactions`);
                         }}
                       >
                         {category.category}

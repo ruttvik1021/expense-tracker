@@ -3,7 +3,7 @@ import CategoryModel from "@/models/CategoryModel";
 import Joi from "joi";
 import { jwtVerify } from "jose";
 import mongoose from "mongoose";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const schema = Joi.object({
   category: Joi.string().required(),
@@ -11,7 +11,7 @@ const schema = Joi.object({
   budget: Joi.number().required(),
 });
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
@@ -79,11 +79,10 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
     // Extract the token from the Authorization header
     const authorizationHeader = req.headers.get("authorization");
-
     if (!authorizationHeader) {
       return NextResponse.json(
         { message: "Unauthorized: Missing token" },
@@ -124,7 +123,9 @@ export async function GET(req: Request) {
     }
 
     await connectToDatabase();
-    const startOfMonth = new Date();
+    const url = new URL(req.url); // Create a URL object from the request URL
+    const dateParam = url.searchParams.get("date");
+    const startOfMonth = dateParam ? new Date(dateParam) : new Date();
     startOfMonth.setDate(1); // Set to the 1st day of the month
     startOfMonth.setHours(0, 0, 0, 0); // Start of the day
 
@@ -150,8 +151,26 @@ export async function GET(req: Request) {
                 $expr: {
                   $and: [
                     { $eq: ["$category", "$$categoryId"] },
-                    { $gte: ["$createdAt", startOfMonth] },
-                    { $lte: ["$createdAt", endOfMonth] },
+                    {
+                      $gte: [
+                        {
+                          $dateFromString: {
+                            dateString: "$date", // Convert the string date to Date
+                          },
+                        },
+                        startOfMonth, // Compare to the target date
+                      ],
+                    },
+                    {
+                      $lte: [
+                        {
+                          $dateFromString: {
+                            dateString: "$date", // Convert the string date to Date
+                          },
+                        },
+                        endOfMonth, // Compare to the target date
+                      ],
+                    },
                   ],
                 },
                 deletedAt: null,

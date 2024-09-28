@@ -1,9 +1,9 @@
 "use client";
 
 import { Field, Form, Formik } from "formik";
-import { CalendarIcon, FilterIcon } from "lucide-react";
+import { CalendarIcon, CrossIcon, FilterIcon } from "lucide-react";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -30,123 +30,98 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-
-const categories = [
-  "Food & Drink",
-  "Shopping",
-  "Housing",
-  "Transportation",
-  "Entertainment",
-  "Healthcare",
-  "Personal",
-  "Education",
-  "Travel",
-];
+import MonthYearPicker from "../common/MonthPicker";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/utils/queryKeys";
+import { AxiosResponse } from "axios";
+import { CategoryDocument } from "@/models/CategoryModel";
+import React from "react";
+import { useCategories } from "../category/hooks/useCategoryQuery";
+import { useTransactions } from "./hooks/useTransactionQuery";
+import {
+  initialTransactionFilter,
+  useAuthContext,
+} from "../wrapper/ContextWrapper";
 
 export default function TransactionFilters() {
+  const { transactionFilter, setTransactionFilter } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
-  const [dateRange, setDateRange] = useState<{
-    from: string;
-    to: string;
-  }>({
-    from: moment().format(),
-    to: moment().add(7, "days").format(),
-  });
+  const { data: categories } = useCategories();
 
-  const initialValues = {
-    dateRange: dateRange,
-    category: "",
-    minAmount: 0,
-    maxAmount: 1000,
-  };
+  const initialFormik = { ...initialTransactionFilter, ...transactionFilter };
+  const isFilterApplied = Object.keys(transactionFilter).length > 0;
 
-  const onSubmit = (values: typeof initialValues) => {
-    console.log(values);
+  const onSubmit = (values: typeof initialTransactionFilter) => {
+    const filterValues = {
+      ...values,
+      month: moment(values.month).format(),
+    };
+    setTransactionFilter(filterValues);
     setIsOpen(false);
   };
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" className="w-full sm:w-auto">
-          <FilterIcon className="icon" />
+        <Button
+          variant="outline"
+          className={cn(
+            "w-full sm:w-auto",
+            isFilterApplied ? "border-2 border-selected" : ""
+          )}
+        >
+          <FilterIcon
+            className={cn(
+              "icon",
+              isFilterApplied ? "text-selected fill-selected" : ""
+            )}
+          />
           <span className="sr-only">Filter transactions</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle>Transaction Filters</SheetTitle>
+        <SheetHeader className="text-left">
+          <div className="flex justify-between">
+            <SheetTitle>Transaction Filters</SheetTitle>
+            <CrossIcon
+              onClick={() => setIsOpen(false)}
+              className="rotate-45 w-4 h-4 text-red-900 fill-red-400 "
+            />
+          </div>
           <SheetDescription>
             Apply filters to your transactions
           </SheetDescription>
         </SheetHeader>
-        <Formik initialValues={initialValues} onSubmit={onSubmit}>
+        <Formik initialValues={initialFormik} onSubmit={onSubmit}>
           {({ values, setFieldValue }) => (
-            <Form className="space-y-6 mt-4">
+            <Form className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label htmlFor="dateRange" className="text-sm font-medium">
-                  Date Range
+                  Choose Month (Default Current Month)
                 </Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      id="dateRange"
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !values.dateRange && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {values.dateRange.from ? (
-                        values.dateRange.to ? (
-                          <>
-                            {moment(values.dateRange.from).format(
-                              "MMM DD, YYYY"
-                            )}{" "}
-                            -{" "}
-                            {moment(values.dateRange.to).format("MMM DD, YYYY")}
-                          </>
-                        ) : (
-                          moment(values.dateRange.from).format("MMM DD, YYYY")
-                        )
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      initialFocus
-                      mode="range"
-                      defaultMonth={moment(values.dateRange.from).toDate()}
-                      fromDate={moment(values.dateRange.from).toDate()}
-                      toDate={moment(values.dateRange.to).toDate()}
-                      onSelect={(newDateRange) => {
-                        newDateRange ? setDateRange(newDateRange as any) : null;
-                        setFieldValue("dateRange", newDateRange);
-                      }}
-                      numberOfMonths={1}
-                      className="sm:numberOfMonths-2"
-                    />
-                  </PopoverContent>
-                </Popover>
+                <MonthYearPicker
+                  navigationButton={false}
+                  handleMonthChange={(value) => setFieldValue("month", value)}
+                  date={new Date(values.month)}
+                  btnClassName="w-full"
+                />
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="category" className="text-sm font-medium">
                   Category
                 </Label>
                 <Select
-                  onValueChange={(value) => setFieldValue("category", value)}
-                  value={values.category}
+                  onValueChange={(value) => setFieldValue("categoryId", value)}
+                  value={values.categoryId}
                 >
-                  <SelectTrigger id="category" className="w-full">
+                  <SelectTrigger id="categoryId" className="w-full">
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
+                    {categories?.data?.categories.map((category: any) => (
+                      <SelectItem key={category._id} value={category._id}>
+                        {category.category}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -196,16 +171,19 @@ export default function TransactionFilters() {
                   </div>
                 </div>
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" variant="default">
                 Apply Filters
               </Button>
               <Button
                 type="button"
                 className="w-full"
-                onClick={() => setIsOpen(false)}
-                variant="destructive"
+                onClick={() => {
+                  setTransactionFilter({});
+                  setIsOpen(false);
+                }}
+                variant="secondary"
               >
-                Cancel
+                Reset
               </Button>
             </Form>
           )}
