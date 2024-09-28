@@ -71,11 +71,9 @@ const MonthYearPicker = ({
   };
 
   return (
-    <>
+    <div className="flex items-center">
       {navigationButton && (
-        <Button variant="outline" size="icon" onClick={handlePrevMonthClick}>
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
+        <ChevronLeft className="icon" onClick={handlePrevMonthClick} />
       )}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -109,7 +107,7 @@ const MonthYearPicker = ({
                   date.getFullYear() === parseInt(year)
                     ? "bg-selected text-white"
                     : parseInt(year) === currentYear && index > currentMonth
-                    ? "bg-gray-300"
+                    ? "bg-destructive/40"
                     : "bg-primary-foreground "
                 }`}
                 onClick={() => handleMonthChangeClick(month)}
@@ -125,11 +123,9 @@ const MonthYearPicker = ({
       </Popover>
       {navigationButton &&
         moment(date).endOf("month").isBefore(moment().endOf("month")) && (
-          <Button variant="outline" size="icon" onClick={handleNextMonthClick}>
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+          <ChevronRight className="icon" onClick={handleNextMonthClick} />
         )}
-    </>
+    </div>
   );
 };
 

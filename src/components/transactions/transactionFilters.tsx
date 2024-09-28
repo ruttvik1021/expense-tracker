@@ -51,21 +51,12 @@ export default function TransactionFilters() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button
-          variant="outline"
+        <FilterIcon
           className={cn(
-            "w-full sm:w-auto",
-            isFilterApplied ? "border-2 border-selected" : ""
+            "",
+            isFilterApplied ? "text-selected fill-selected" : ""
           )}
-        >
-          <FilterIcon
-            className={cn(
-              "icon",
-              isFilterApplied ? "text-selected fill-selected" : ""
-            )}
-          />
-          <span className="sr-only">Filter transactions</span>
-        </Button>
+        />
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md">
         <SheetHeader className="text-left">

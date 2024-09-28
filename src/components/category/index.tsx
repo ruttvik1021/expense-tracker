@@ -101,7 +101,7 @@ const Category = () => {
             onClick={() => {
               setOpen({ type: "ADD", open: true });
             }}
-            className="icon"
+            className="text-selected cursor-pointer border-2 border-foreground rounded-full"
           />
         </div>
       </div>

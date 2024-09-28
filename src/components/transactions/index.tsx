@@ -16,7 +16,7 @@ import {
 import { queryKeys } from "@/utils/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
-import { EditIcon, Trash2 } from "lucide-react";
+import { EditIcon, PlusIcon, Trash2 } from "lucide-react";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -144,15 +144,14 @@ const Transactions = () => {
             filteredCategory ? filteredCategory?.category : ""
           } Transactions`}
         />
-        <div className="flex gap-2">
+        <div className="flex gap-3 items-center">
           <TransactionFilters />
-          <Button
+          <PlusIcon
             onClick={() => {
               setOpen({ type: "ADD", open: true });
             }}
-          >
-            Add
-          </Button>
+            className="text-selected cursor-pointer border-2 border-foreground rounded-full"
+          />
         </div>
       </div>
       <Table className="overflow-auto">
