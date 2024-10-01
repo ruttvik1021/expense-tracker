@@ -190,7 +190,7 @@ const Category = () => {
 
       <ResponsiveDialogAndDrawer
         open={open.type === "DELETE" && open.open}
-        setOpen={() => setOpen({ type: "ADD", open: true })}
+        setOpen={() => handleClose()}
         handleClose={handleClose}
         title={"Delete Category"}
         content={
@@ -224,7 +224,7 @@ const Category = () => {
 
       <ResponsiveDialogAndDrawer
         open={(open.type === "ADD" || open.type === "EDIT") && open.open}
-        setOpen={setOpen}
+        setOpen={() => handleClose()}
         handleClose={handleClose}
         title={open.type === "ADD" ? "Add Category" : "Edit Category"}
         content={
