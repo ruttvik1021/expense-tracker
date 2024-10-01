@@ -26,7 +26,7 @@ const ResponsiveDialogAndDrawer = ({
   content,
 }: {
   open: boolean;
-  setOpen: () => void
+  setOpen: any
   handleClose: () => void;
   title: string;
   triggerButton?: React.ReactNode;
