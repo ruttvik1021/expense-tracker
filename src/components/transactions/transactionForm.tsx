@@ -212,7 +212,7 @@ const TransactionForm = ({
               onClick={handleReset}
               disabled={isTransactionMutating > 0}
             >
-              Clear
+              Cancel
             </Button>
             <Button
               type="submit"
