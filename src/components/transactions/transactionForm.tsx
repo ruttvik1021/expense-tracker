@@ -208,11 +208,11 @@ const TransactionForm = ({
           <div className="flex justify-between">
             <Button
               type="reset"
-              variant="outline"
+              variant="destructive"
               onClick={handleReset}
               disabled={isTransactionMutating > 0}
             >
-              Clear
+              Cancel
             </Button>
             <Button
               type="submit"
