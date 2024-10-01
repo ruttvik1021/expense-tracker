@@ -77,7 +77,7 @@ const CategoryForm = ({
                 </Avatar>
                 <ResponsiveDialogAndDrawer
                   open={open}
-                  setOpen={setOpen}
+                  setOpen={() => setOpen(false)}
                   handleClose={() => setOpen(false)}
                   title={"Pick Emoji for Category"}
                   content={
