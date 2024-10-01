@@ -46,6 +46,9 @@ const CategoryForm = ({
   const isCategoryMutating = useIsMutating({
     mutationKey: [queryKeys.mutateCategory],
   });
+  const handleClose = () => {
+    setOpen(false)
+  }
   return (
     <Formik
       initialValues={initialValues}
@@ -77,15 +80,15 @@ const CategoryForm = ({
                 </Avatar>
                 <ResponsiveDialogAndDrawer
                   open={open}
-                  setOpen={() => setOpen(false)}
-                  handleClose={() => setOpen(false)}
+                  setOpen={handleClose}
+                  handleClose={handleClose}
                   title={"Pick Emoji for Category"}
                   content={
                     <div className="flex justify-center">
                       <EmojiPicker
                         onClick={(e) => {
                           setFieldValue("icon", e.emoji);
-                          setOpen(false);
+                          handleClose()
                         }}
                       />
                     </div>
