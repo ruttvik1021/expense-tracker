@@ -215,7 +215,6 @@ const Transactions = () => {
       </Table>
       <ResponsiveDialogAndDrawer
         open={open.type === "DELETE" && open.open}
-        setOpen={() => handleClose()}
         handleClose={handleClose}
         title={"Delete Transaction"}
         content={
@@ -245,7 +244,6 @@ const Transactions = () => {
       />
       <ResponsiveDialogAndDrawer
         open={(open.type === "ADD" || open.type === "EDIT") && open.open}
-        setOpen={() => handleClose()}
         handleClose={handleClose}
         title={
           open.type === "ADD"

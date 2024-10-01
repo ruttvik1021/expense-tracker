@@ -19,14 +19,12 @@ import React from "react";
 
 const ResponsiveDialogAndDrawer = ({
   open,
-  setOpen,
   handleClose,
   title,
   triggerButton,
   content,
 }: {
   open: boolean;
-  setOpen: () => void
   handleClose: () => void;
   title: string;
   triggerButton?: React.ReactNode;
@@ -44,7 +42,7 @@ const ResponsiveDialogAndDrawer = ({
       </DialogContent>
     </Dialog>
   ) : (
-    <Drawer open={open} onOpenChange={() => setOpen()}>
+    <Drawer open={open} onOpenChange={handleClose}>
       {triggerButton && <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>}
       <DrawerContent>
         <DrawerHeader className="text-left">
