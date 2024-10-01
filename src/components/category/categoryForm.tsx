@@ -75,8 +75,7 @@ const CategoryForm = ({
                 >
                   <AvatarFallback>{field.value}</AvatarFallback>
                 </Avatar>
-                {open && (
-                  <ResponsiveDialogAndDrawer
+                <ResponsiveDialogAndDrawer
                   open={open}
                   setOpen={() => setOpen(false)}
                   handleClose={() => setOpen(false)}
@@ -92,7 +91,6 @@ const CategoryForm = ({
                     </div>
                   }
                 />
-                )}
                 {meta.touched && meta.error && (
                   <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                     {meta.error}
