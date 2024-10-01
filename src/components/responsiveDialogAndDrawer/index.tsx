@@ -26,7 +26,7 @@ const ResponsiveDialogAndDrawer = ({
   content,
 }: {
   open: boolean;
-  setOpen: any
+  setOpen: () => void
   handleClose: () => void;
   title: string;
   triggerButton?: React.ReactNode;
@@ -44,7 +44,7 @@ const ResponsiveDialogAndDrawer = ({
       </DialogContent>
     </Dialog>
   ) : (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={() => setOpen()}>
       {triggerButton && <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>}
       <DrawerContent>
         <DrawerHeader className="text-left">

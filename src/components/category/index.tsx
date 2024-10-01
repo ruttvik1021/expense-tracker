@@ -190,7 +190,7 @@ const Category = () => {
 
       <ResponsiveDialogAndDrawer
         open={open.type === "DELETE" && open.open}
-        setOpen={setOpen}
+        setOpen={() => setOpen({ type: "ADD", open: true })}
         handleClose={handleClose}
         title={"Delete Category"}
         content={
