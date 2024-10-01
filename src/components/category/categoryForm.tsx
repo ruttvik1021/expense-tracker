@@ -167,11 +167,11 @@ const CategoryForm = ({
           <div className="flex justify-between mt-3">
             <Button
               type="reset"
-              variant="destructive"
+              variant="outline"
               onClick={handleReset}
               disabled={isCategoryMutating > 0}
             >
-              Cancel
+              Clear
             </Button>
             <Button
               type="submit"
