@@ -38,6 +38,7 @@ import { TransactionFormSkeleton } from "./skeleton";
 import TransactionFilters from "./transactionFilters";
 import TransactionForm, { TransactionFormValues } from "./transactionForm";
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
+import { IndianRupee } from "lucide-react";
 
 const Transactions = () => {
   const { categoryFilter, transactionFilter } = useAuthContext();
@@ -131,11 +132,25 @@ const Transactions = () => {
     navigate && router.push(navigate);
   };
 
+  const { totalSpent } = useSpentVsBudgetData("Transactions");
+
   return (
     <>
       <div className="flex justify-between mb-3">
         <div className="flex items-center gap-3">
           <PageHeader title={`${filteredCategory || ""} Transactions`} />
+          <div
+            className={
+              "flex items-center text-foreground text-md font-semibold"
+            }
+          >
+            Overall spending for this month is:{" "}
+            <p className="flex items-center mx-2">
+              {" "}
+              <IndianRupee className="icon" />{" "}
+              <span className="font-bold text-lg">{totalSpent}</span>
+            </p>
+          </div>
         </div>
         <div className="flex gap-3 items-center">
           <TransactionFilters />
@@ -181,7 +196,10 @@ const Transactions = () => {
                   </Label>
                 </div>
               </TableCell>
-              <TableCell>{transaction.amount}</TableCell>
+              <TableCell className="flex items-center">
+                <IndianRupee className="icon" />
+                {transaction.amount}
+              </TableCell>
               <TableCell>
                 {moment(transaction.date).utc().format("DD/MM/YYYY")}
               </TableCell>

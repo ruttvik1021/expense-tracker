@@ -27,7 +27,7 @@ import CategoryForm, { CategoryFormValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
-import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
+import { ArrowDownIcon, ArrowUpIcon, IndianRupee } from "lucide-react";
 import { Progress } from "../ui/progress";
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
 
@@ -128,7 +128,7 @@ const Category = () => {
   };
 
   const { totalBudget, totalSpent, isOverBudget, percentageSpent } =
-    useSpentVsBudgetData();
+    useSpentVsBudgetData("Categories");
 
   return (
     <>
@@ -175,13 +175,21 @@ const Category = () => {
         >
           <CardHeader className="pb-2">
             <div
-              className={`text-md font-bold ${
+              className={`flex items-center text-md font-bold ${
                 isOverBudget ? "text-red-500" : "text-green-500"
               }`}
             >
-              {isOverBudget
-                ? `You're over budget by ${totalSpent - totalBudget}`
-                : `You're under budget by ${totalBudget - totalSpent}`}
+              {isOverBudget ? (
+                <>
+                  You're over budget by: <IndianRupee className="icon" />
+                  {totalSpent - totalBudget}
+                </>
+              ) : (
+                <>
+                  You're under budget by: <IndianRupee className="icon" />
+                  {totalBudget - totalSpent}
+                </>
+              )}
             </div>
           </CardHeader>
           <CardContent className="space-y-1">
