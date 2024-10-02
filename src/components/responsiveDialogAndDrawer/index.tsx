@@ -1,4 +1,4 @@
-import {
+ import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -42,7 +42,7 @@ const ResponsiveDialogAndDrawer = ({
       </DialogContent>
     </Dialog>
   ) : (
-    <Drawer open={open} onDrag={handleClose} modal={true} repositionInputs={true}>
+    <Drawer open={open} onDrag={handleClose} modal>
       {triggerButton && <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>}
       <DrawerContent>
         <DrawerHeader className="text-left">
