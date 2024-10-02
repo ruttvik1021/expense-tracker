@@ -1,8 +1,10 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
+import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
 import { cn } from "@/lib/utils";
 import { queryKeys } from "@/utils/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
+import { IndianRupee } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import * as Yup from "yup";
@@ -13,8 +15,9 @@ import CustomDeleteIcon from "../icons/customDeleteIcon";
 import CustomEditIcon from "../icons/customEditIcon";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import { Label } from "../ui/label";
+import { Progress } from "../ui/progress";
 import {
   Select,
   SelectContent,
@@ -27,9 +30,6 @@ import CategoryForm, { CategoryFormValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
-import { ArrowDownIcon, ArrowUpIcon, IndianRupee } from "lucide-react";
-import { Progress } from "../ui/progress";
-import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
 
 export enum CategorySortBy {
   CATEGORY = "category",
