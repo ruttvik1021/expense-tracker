@@ -132,10 +132,7 @@ const Category = () => {
               onValueChange={updateCategorySort}
               value={categoryFilter.sortBy}
             >
-              <SelectTrigger
-                id="categoryId"
-                className="min-w-[150px] border-foreground rounded-full"
-              >
+              <SelectTrigger id="categoryId" className="min-w-[150px]  ">
                 <SelectValue placeholder="Sort category by" />
               </SelectTrigger>
               <SelectContent>
@@ -158,7 +155,7 @@ const Category = () => {
             onClick={() => {
               setOpen({ type: "ADD", open: true });
             }}
-            className="text-selected cursor-pointer border-2 border-foreground rounded-full"
+            className="text-selected cursor-pointer border-2  "
           />
         </div>
       </div>

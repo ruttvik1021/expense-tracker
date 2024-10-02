@@ -79,7 +79,10 @@ const MonthYearPicker = ({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className={cn("w-[150px]", btnClassName)}
+            className={cn(
+              "w-[150px] border border-foreground rounded-full",
+              btnClassName
+            )}
             disabled
           >
             {months[date.getMonth()]} {date.getFullYear()}

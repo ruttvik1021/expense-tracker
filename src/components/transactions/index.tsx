@@ -150,7 +150,7 @@ const Transactions = () => {
             onClick={() => {
               setOpen({ type: "ADD", open: true });
             }}
-            className="text-selected cursor-pointer border-2 border-foreground rounded-full"
+            className="text-selected cursor-pointer border-2  "
           />
         </div>
       </div>
