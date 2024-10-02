@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import "./globals.css";
+import IconPreferenceAlert from "@/components/alerts/IconPreferences";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
@@ -27,6 +28,7 @@ export default function RootLayout({
             </main>
             <Toaster richColors position="top-center" />
             <SpeedInsights />
+            <IconPreferenceAlert />
           </ContextWrapper>
         </QueryWrapper>
       </body>

@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import React, { createContext, useLayoutEffect, useState } from "react";
 import { CategorySortBy } from "../category";
-import { Modes } from "../common/Toggles/ThemeToggle";
+import { Modes, Theme } from "../common/Toggles/ThemeToggle";
 import { IS_ICON_PREFERRED } from "../common/Toggles/IconToggle";
 
 export interface ICategoryFilter {
@@ -46,9 +46,20 @@ const MyContext = createContext<ContextWrapperType | null>(null);
 
 export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isIconPreferred, setIsIconPreferred] = useState(false);
-  const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
+
+  const token = Cookies.get("token");
+  const [isAuthenticated, setIsAuthenticated] = useState(token ? true : false);
+
+  const isIconPreferredStored =
+    localStorage.getItem(IS_ICON_PREFERRED) === "true";
+  const [isIconPreferred, setIsIconPreferred] = useState(isIconPreferredStored);
+
+  const localStoredTheme =
+    localStorage.getItem(Theme) === Modes.DARK ? Modes.DARK : Modes.LIGHT;
+  const [activeTheme, setActiveTheme] = useState<Modes | null>(
+    localStoredTheme
+  );
+
   const [categoryFilter, setCategoryFilter] = useState<ICategoryFilter>({
     categoryDate: new Date(),
     sortBy: CategorySortBy.RECENT_TRANSACTIONS,
@@ -56,7 +67,6 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const [transactionFilter, setTransactionFilter] = useState<
     Partial<ITransactionFilter>
   >({});
-  const token = Cookies.get("token");
 
   const authenticateUser = (token: string) => {
     Cookies.set("token", token);
@@ -91,12 +101,6 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
       logoutUser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useLayoutEffect(() => {
-    const isIconPreferred =
-      localStorage.getItem(IS_ICON_PREFERRED) === "true" ? true : false;
-    setIsIconPreferred(isIconPreferred);
   }, []);
 
   return (

@@ -1,10 +1,9 @@
 "use client";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
-// import useThemeToggle from "../../../hooks/useThemeToggle";
 import { Moon, Sun } from "lucide-react";
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 
-const Theme = "theme";
+export const Theme = "theme";
 export enum Modes {
   DARK = "dark",
   LIGHT = "light",
@@ -12,29 +11,34 @@ export enum Modes {
 
 const ThemeToggleButton = () => {
   const { activeTheme, setActiveTheme } = useAuthContext();
+  const htmlElement = document.documentElement;
 
-  useLayoutEffect(() => {
-    const isDarkTheme = localStorage.getItem(Theme) === Modes.DARK;
-    toggleTheme(isDarkTheme ? Modes.DARK : Modes.LIGHT);
+  useEffect(() => {
+    if (activeTheme) {
+      toggleTheme(activeTheme);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activeTheme]);
 
   const toggleTheme = (theme: Modes) => {
-    const htmlElement = document.documentElement;
-
-    if (activeTheme) {
-      htmlElement.classList.remove(activeTheme);
-    }
-
     localStorage.setItem(Theme, theme);
     htmlElement.classList.add(theme);
-    setActiveTheme(theme);
   };
 
   return activeTheme === Modes.DARK ? (
-    <Sun onClick={() => toggleTheme(Modes.LIGHT)} />
+    <Sun
+      onClick={() => {
+        setActiveTheme(Modes.LIGHT);
+        htmlElement.classList.remove(Modes.DARK);
+      }}
+    />
   ) : (
-    <Moon onClick={() => toggleTheme(Modes.DARK)} />
+    <Moon
+      onClick={() => {
+        setActiveTheme(Modes.DARK);
+        htmlElement.classList.remove(Modes.LIGHT);
+      }}
+    />
   );
 };
 
