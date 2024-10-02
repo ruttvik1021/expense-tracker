@@ -4,7 +4,7 @@ import EmojiPicker, {
   Theme,
 } from "emoji-picker-react";
 import { useAuthContext } from "../wrapper/ContextWrapper";
-import { Modes } from "../common/ThemeToggle/ThemeToggle";
+import { Modes } from "../common/Toggles/ThemeToggle";
 
 const Emoji = ({ onClick }: { onClick: (value: EmojiClickData) => void }) => {
   const { activeTheme } = useAuthContext();

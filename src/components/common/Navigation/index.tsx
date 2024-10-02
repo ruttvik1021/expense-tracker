@@ -1,11 +1,10 @@
 "use client";
 
-import CustomDeleteIcon from "@/components/icons/customDeleteIcon";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { cn } from "@/lib/utils";
-import { IndianRupee, Menu } from "lucide-react";
+import { Circle, IndianRupee, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -36,7 +35,7 @@ export const Navlink = ({ link }: { link: ILink }) => {
   );
 };
 
-const Brand = () => {
+export const Brand = () => {
   return <IndianRupee className="h-8 w-8 text-selected" />;
 };
 
@@ -81,7 +80,10 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
         <nav className="grid gap-6 text-lg font-medium">
           <div className="flex justify-between items-center">
             <Brand />
-            <CustomDeleteIcon onClick={toggleDrawer} />
+            <Circle
+              onClick={toggleDrawer}
+              className="fill-destructive rounded-full icon border"
+            />
           </div>
           {links.map((item) => (
             <Navlink

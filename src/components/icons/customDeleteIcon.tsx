@@ -1,10 +1,12 @@
-import { Circle } from "lucide-react";
+"use client";
+import { Circle, Trash2Icon } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAuthContext } from "../wrapper/ContextWrapper";
 
 const CustomDeleteIcon = ({
   onClick,
@@ -13,14 +15,19 @@ const CustomDeleteIcon = ({
   onClick: () => void;
   tooltip?: string;
 }) => {
+  const { isIconPreferred } = useAuthContext();
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Circle
-            onClick={onClick}
-            className="fill-destructive rounded-full icon border"
-          />
+          {isIconPreferred ? (
+            <Trash2Icon onClick={onClick} className="icon" />
+          ) : (
+            <Circle
+              onClick={onClick}
+              className="fill-destructive rounded-full icon border"
+            />
+          )}
         </TooltipTrigger>
         <TooltipContent className="bg-red-400 text-black">
           <p>{tooltip || "Delete"}</p>

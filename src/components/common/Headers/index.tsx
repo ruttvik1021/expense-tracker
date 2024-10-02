@@ -12,7 +12,8 @@ import { Label } from "@/components/ui/label";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { User } from "lucide-react";
 import { LogoutButton, Navbar, NavDrawer } from "../Navigation";
-import ThemeToggleButton from "../ThemeToggle/ThemeToggle";
+import IconToggle from "../Toggles/IconToggle";
+import ThemeToggleButton from "../Toggles/ThemeToggle";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -33,14 +34,23 @@ export const NavHeader = () => {
           <div className="flex gap-2 items-center">
             <ThemeToggleButton />
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger>
                 <User />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent dropdown from closing
+                    }}
+                    className="w-full"
+                  >
+                    <IconToggle />
+                  </div>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <LogoutButton />
               </DropdownMenuContent>

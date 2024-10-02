@@ -3,8 +3,9 @@
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import React, { createContext, useLayoutEffect, useState } from "react";
-import { Modes } from "../common/ThemeToggle/ThemeToggle";
 import { CategorySortBy } from "../category";
+import { Modes } from "../common/Toggles/ThemeToggle";
+import { IS_ICON_PREFERRED } from "../common/Toggles/IconToggle";
 
 export interface ICategoryFilter {
   categoryDate: Date;
@@ -30,6 +31,8 @@ type ContextWrapperType = {
   setCategoryFilter: (value: ICategoryFilter) => void;
   transactionFilter: Partial<ITransactionFilter>;
   setTransactionFilter: (value: Partial<ITransactionFilter>) => void;
+  isIconPreferred: boolean;
+  setIsIconPreferred: (value: boolean) => void;
 };
 
 export const initialTransactionFilter = {
@@ -44,6 +47,7 @@ const MyContext = createContext<ContextWrapperType | null>(null);
 export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isIconPreferred, setIsIconPreferred] = useState(false);
   const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<ICategoryFilter>({
     categoryDate: new Date(),
@@ -76,6 +80,8 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     setCategoryFilter,
     transactionFilter,
     setTransactionFilter,
+    isIconPreferred,
+    setIsIconPreferred,
   };
 
   useLayoutEffect(() => {
@@ -85,6 +91,12 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
       logoutUser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useLayoutEffect(() => {
+    const isIconPreferred =
+      localStorage.getItem(IS_ICON_PREFERRED) === "true" ? true : false;
+    setIsIconPreferred(isIconPreferred);
   }, []);
 
   return (
