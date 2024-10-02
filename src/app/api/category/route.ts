@@ -201,7 +201,9 @@ export async function GET(req: NextRequest) {
           totalAmountSpent: { $sum: "$transactions.amount" },
         },
       },
-      { $sort: { updatedAt: -1 } },
+      {
+        $sort: { budget: -1 },
+      },
     ]);
 
     return NextResponse.json({
