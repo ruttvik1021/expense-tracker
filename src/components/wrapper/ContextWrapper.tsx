@@ -2,7 +2,7 @@
 
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import React, { createContext, useLayoutEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { CategorySortBy } from "../category";
 import { Modes, Theme } from "../common/Toggles/ThemeToggle";
 import { IS_ICON_PREFERRED } from "../common/Toggles/IconToggle";
@@ -19,7 +19,7 @@ export interface ITransactionFilter {
   maxAmount: number;
 }
 
-// Use a type to define the context value shape
+// Define the context value type
 type ContextWrapperType = {
   isAuthenticated: boolean;
   setIsAuthenticated: (value: boolean) => void;
@@ -46,20 +46,10 @@ const MyContext = createContext<ContextWrapperType | null>(null);
 
 export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-
   const token = Cookies.get("token");
-  const [isAuthenticated, setIsAuthenticated] = useState(token ? true : false);
-
-  const isIconPreferredStored =
-    localStorage.getItem(IS_ICON_PREFERRED) === "true";
-  const [isIconPreferred, setIsIconPreferred] = useState(isIconPreferredStored);
-
-  const localStoredTheme =
-    localStorage.getItem(Theme) === Modes.DARK ? Modes.DARK : Modes.LIGHT;
-  const [activeTheme, setActiveTheme] = useState<Modes | null>(
-    localStoredTheme
-  );
-
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
+  const [isIconPreferred, setIsIconPreferred] = useState<boolean>(false);
+  const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<ICategoryFilter>({
     categoryDate: new Date(),
     sortBy: CategorySortBy.RECENT_TRANSACTIONS,
@@ -79,6 +69,22 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     router.push("/login");
   };
 
+  useEffect(() => {
+    const isIconPreferredStored =
+      localStorage.getItem(IS_ICON_PREFERRED) === "true";
+    setIsIconPreferred(isIconPreferredStored);
+
+    const localStoredTheme =
+      localStorage.getItem(Theme) === Modes.DARK ? Modes.DARK : Modes.LIGHT;
+    setActiveTheme(localStoredTheme);
+
+    if (token) {
+      authenticateUser(token);
+    } else {
+      logoutUser();
+    }
+  }, [token]);
+
   const contextValue: ContextWrapperType = {
     isAuthenticated,
     setIsAuthenticated,
@@ -94,22 +100,12 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     setIsIconPreferred,
   };
 
-  useLayoutEffect(() => {
-    if (token) {
-      authenticateUser(token);
-    } else {
-      logoutUser();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <MyContext.Provider value={contextValue}>{children}</MyContext.Provider>
   );
 };
 
 export const useAuthContext = () => {
-  // Ensure that the context value is not null
   const contextValue = React.useContext(MyContext);
   if (!contextValue) {
     throw new Error("useAuthContext must be used within a MyContext.Provider");
