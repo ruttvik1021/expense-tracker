@@ -39,7 +39,7 @@ const IconPreferenceAlert = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[90%]" onClose={handleClose}>
+      <DialogContent className="w-[90%] rounded-md" onClose={handleClose}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserIcon className="h-5 w-5" />
