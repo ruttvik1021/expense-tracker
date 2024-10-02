@@ -193,6 +193,11 @@ export async function GET(req: NextRequest) {
         },
       },
       {
+        $sort: {
+          "transactions.createdAt": -1, // Sort by the most recent transaction
+        },
+      },
+      {
         $group: {
           _id: "$_id",
           category: { $first: "$category" },
@@ -200,9 +205,6 @@ export async function GET(req: NextRequest) {
           budget: { $first: "$budget" },
           totalAmountSpent: { $sum: "$transactions.amount" },
         },
-      },
-      {
-        $sort: { budget: -1 },
       },
     ]);
 
