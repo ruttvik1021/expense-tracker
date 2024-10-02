@@ -70,18 +70,20 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    const isIconPreferredStored =
-      localStorage.getItem(IS_ICON_PREFERRED) === "true";
-    setIsIconPreferred(isIconPreferredStored);
+    if (typeof window !== "undefined") {
+      const isIconPreferredStored =
+        localStorage.getItem(IS_ICON_PREFERRED) === "true";
+      setIsIconPreferred(isIconPreferredStored);
 
-    const localStoredTheme =
-      localStorage.getItem(Theme) === Modes.DARK ? Modes.DARK : Modes.LIGHT;
-    setActiveTheme(localStoredTheme);
+      const localStoredTheme =
+        localStorage.getItem(Theme) === Modes.DARK ? Modes.DARK : Modes.LIGHT;
+      setActiveTheme(localStoredTheme);
 
-    if (token) {
-      authenticateUser(token);
-    } else {
-      logoutUser();
+      if (token) {
+        authenticateUser(token);
+      } else {
+        logoutUser();
+      }
     }
   }, [token]);
 
