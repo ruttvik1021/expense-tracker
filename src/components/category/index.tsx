@@ -218,17 +218,29 @@ const Category = () => {
                     <div className="text-right">
                       <p className="text-base">
                         Budget:{" "}
-                        <Badge className="font-bold">{category.budget}</Badge>
+                        <Badge className="font-bold hover:bg-none">
+                          {category.budget}
+                        </Badge>
                       </p>
                       <p className="text-base">
                         Spent:{" "}
                         <Badge
-                          className={cn("font-bold", {
+                          className={cn("font-bold cursor-pointer", {
                             "bg-red-500":
                               category.totalAmountSpent > category.budget,
                             "bg-green-500":
                               category.totalAmountSpent <= category.budget,
                           })}
+                          onClick={() => {
+                            setTransactionFilter({
+                              ...(transactionFilter || {}),
+                              categoryId: category._id,
+                              month: new Date(
+                                categoryFilter.categoryDate
+                              ).toISOString(),
+                            });
+                            router.push(`transactions`);
+                          }}
                         >
                           {category.totalAmountSpent}
                         </Badge>
