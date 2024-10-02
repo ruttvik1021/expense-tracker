@@ -1,3 +1,4 @@
+"use client";
 import { Switch } from "@/components/ui/switch";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { Circle, PlusCircleIcon } from "lucide-react";
