@@ -37,6 +37,7 @@ import {
 import { TransactionFormSkeleton } from "./skeleton";
 import TransactionFilters from "./transactionFilters";
 import TransactionForm, { TransactionFormValues } from "./transactionForm";
+import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
 
 const Transactions = () => {
   const { categoryFilter, transactionFilter } = useAuthContext();
@@ -133,7 +134,9 @@ const Transactions = () => {
   return (
     <>
       <div className="flex justify-between mb-3">
-        <PageHeader title={`${filteredCategory || ""} Transactions`} />
+        <div className="flex items-center gap-3">
+          <PageHeader title={`${filteredCategory || ""} Transactions`} />
+        </div>
         <div className="flex gap-3 items-center">
           <TransactionFilters />
           <CustomAddIcon

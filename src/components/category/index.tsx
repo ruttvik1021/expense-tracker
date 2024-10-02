@@ -13,7 +13,7 @@ import CustomDeleteIcon from "../icons/customDeleteIcon";
 import CustomEditIcon from "../icons/customEditIcon";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
 import {
   Select,
@@ -27,6 +27,9 @@ import CategoryForm, { CategoryFormValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
+import { Progress } from "../ui/progress";
+import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
 
 export enum CategorySortBy {
   CATEGORY = "category",
@@ -124,6 +127,9 @@ const Category = () => {
     setOpen({ type: "ADD", open: false });
   };
 
+  const { totalBudget, totalSpent, isOverBudget, percentageSpent } =
+    useSpentVsBudgetData();
+
   return (
     <>
       <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
@@ -161,6 +167,42 @@ const Category = () => {
         </div>
       </div>
       <div className={`grid gap-4 md:grid-cols-3 lg:grid-cols-5`}>
+        <Card
+          className={cn(
+            "w-full max-w-md shadow-md",
+            isOverBudget ? "shadow-red-500" : "shadow-green-500"
+          )}
+        >
+          <CardHeader className="pb-2">
+            <div
+              className={`text-md font-bold ${
+                isOverBudget ? "text-red-500" : "text-green-500"
+              }`}
+            >
+              {isOverBudget
+                ? `You're over budget by ${totalSpent - totalBudget}`
+                : `You're under budget by ${totalBudget - totalSpent}`}
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-1">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">Spent/Budget</span>
+              <span
+                className={cn(
+                  "text-2xl font-bold",
+                  isOverBudget ? "text-red-500" : "text-green-500"
+                )}
+              >
+                {totalSpent}/{totalBudget}
+              </span>
+            </div>
+            <Progress
+              value={percentageSpent}
+              className="h-2 w-full"
+              fillColor={isOverBudget ? "red-500" : "green-500"}
+            />
+          </CardContent>
+        </Card>
         {isLoading
           ? Array.from({ length: 5 }).map((_, i) => (
               <CategorySkeleton key={i} />
