@@ -139,18 +139,6 @@ const Transactions = () => {
       <div className="flex justify-between mb-3">
         <div className="flex items-center gap-3">
           <PageHeader title={`${filteredCategory || ""} Transactions`} />
-          <div
-            className={
-              "flex items-center text-foreground text-md font-semibold"
-            }
-          >
-            Overall spending for this month is:{" "}
-            <p className="flex items-center mx-2">
-              {" "}
-              <IndianRupee className="icon" />{" "}
-              <span className="font-bold text-lg">{totalSpent}</span>
-            </p>
-          </div>
         </div>
         <div className="flex gap-3 items-center">
           <TransactionFilters />
@@ -160,6 +148,16 @@ const Transactions = () => {
             }}
           />
         </div>
+      </div>
+      <div
+        className={"flex items-center text-foreground text-md font-semibold"}
+      >
+        Overall spending for this month is:{" "}
+        <p className="flex items-center mx-2">
+          {" "}
+          <IndianRupee className="icon" />{" "}
+          <span className="font-bold text-lg">{totalSpent}</span>
+        </p>
       </div>
       <Table className="overflow-auto">
         <TableHeader>
