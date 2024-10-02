@@ -16,12 +16,11 @@ import {
   Trash2Icon,
   UserIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Separator } from "../ui/separator";
 
 const IconPreferenceAlert = () => {
-  const isIconAlertRead = localStorage.getItem("isIconAlertRead") !== "true";
-  const [open, setOpen] = useState(isIconAlertRead);
+  const [open, setOpen] = useState(false);
   const [dontRemind, setDontRemind] = useState<boolean>(false);
 
   const handleClose = () => {
@@ -32,6 +31,11 @@ const IconPreferenceAlert = () => {
     localStorage.setItem("isIconAlertRead", "true");
     setDontRemind(value);
   };
+
+  useLayoutEffect(() => {
+    const isIconAlertRead = localStorage.getItem("isIconAlertRead") !== "true";
+    setOpen(isIconAlertRead);
+  }, []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
