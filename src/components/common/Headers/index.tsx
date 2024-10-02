@@ -40,7 +40,6 @@ export const NavHeader = () => {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
                 <DropdownMenuItem>
                   <div
                     onClick={(e) => {
@@ -48,6 +47,7 @@ export const NavHeader = () => {
                     }}
                     className="w-full"
                   >
+                    Icon Preference
                     <IconToggle />
                   </div>
                 </DropdownMenuItem>

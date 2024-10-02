@@ -16,6 +16,7 @@ const ThemeToggleButton = () => {
   useLayoutEffect(() => {
     const isDarkTheme = localStorage.getItem(Theme) === Modes.DARK;
     toggleTheme(isDarkTheme ? Modes.DARK : Modes.LIGHT);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleTheme = (theme: Modes) => {

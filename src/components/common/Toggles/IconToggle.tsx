@@ -1,8 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { Circle, PlusCircleIcon } from "lucide-react";
-import React, { useEffect } from "react";
 
 export const IS_ICON_PREFERRED = "IsIconPreferred";
 const IconToggle = () => {
