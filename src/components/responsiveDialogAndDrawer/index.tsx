@@ -42,7 +42,7 @@ const ResponsiveDialogAndDrawer = ({
       </DialogContent>
     </Dialog>
   ) : (
-    <Drawer open={open} onDrag={handleClose} modal={true} repositionInputs>
+    <Drawer open={open} onDrag={handleClose} modal={true} repositionInputs={true}>
       {triggerButton && <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>}
       <DrawerContent>
         <DrawerHeader className="text-left">
