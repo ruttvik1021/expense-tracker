@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -18,7 +17,6 @@ import {
   UserIcon,
 } from "lucide-react";
 import { useState } from "react";
-import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
 const IconPreferenceAlert = () => {
