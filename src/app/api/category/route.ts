@@ -11,7 +11,7 @@ const schema = Joi.object({
   budget: Joi.number().required(),
 });
 
-export enum CategorySortBy {
+enum CategorySortBy {
   CATEGORY = "category",
   BUDGET = "budget",
   RECENT_TRANSACTIONS = "recentTransactions",
