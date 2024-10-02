@@ -4,9 +4,11 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import React, { createContext, useLayoutEffect, useState } from "react";
 import { Modes } from "../common/ThemeToggle/ThemeToggle";
+import { CategorySortBy } from "../category";
 
 export interface ICategoryFilter {
   categoryDate: Date;
+  sortBy: CategorySortBy;
 }
 
 export interface ITransactionFilter {
@@ -45,6 +47,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<ICategoryFilter>({
     categoryDate: new Date(),
+    sortBy: CategorySortBy.RECENT_TRANSACTIONS,
   });
   const [transactionFilter, setTransactionFilter] = useState<
     Partial<ITransactionFilter>

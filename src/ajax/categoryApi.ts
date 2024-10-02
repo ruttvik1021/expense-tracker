@@ -1,13 +1,21 @@
 import { ICategory } from "@/utils/types/categoryTypes";
 import { AjaxUtils } from "./ajax";
+import { CategorySortBy } from "@/components/category";
 
 export const createCategoryApi = (values: ICategory) => {
   const url = "/category";
   return AjaxUtils.postAjax(url, values, true);
 };
 
-export const getCategoryApi = (date: string) => {
-  const url = "/category" + `?date=${date}`;
+export const getCategoryApi = ({
+  categoryDate,
+  sortBy,
+}: {
+  categoryDate: Date;
+  sortBy: CategorySortBy;
+}) => {
+  const url =
+    "/category" + `?date=${categoryDate.toISOString()}&sortBy=${sortBy}`;
   return AjaxUtils.getAjax(url, true);
 };
 

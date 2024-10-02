@@ -6,8 +6,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 export const useCategories = () => {
   const { categoryFilter } = useAuthContext();
   return useQuery({
-    queryKey: [queryKeys.categories, categoryFilter.categoryDate.toISOString()],
-    queryFn: () => getCategoryApi(categoryFilter.categoryDate.toISOString()),
+    queryKey: [queryKeys.categories, categoryFilter],
+    queryFn: () => getCategoryApi(categoryFilter),
   });
 };
 

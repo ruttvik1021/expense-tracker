@@ -11,6 +11,13 @@ const schema = Joi.object({
   budget: Joi.number().required(),
 });
 
+export enum CategorySortBy {
+  CATEGORY = "category",
+  BUDGET = "budget",
+  RECENT_TRANSACTIONS = "recentTransactions",
+  AMOUNT_SPENT = "amountSpent",
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -125,6 +132,7 @@ export async function GET(req: NextRequest) {
     await connectToDatabase();
     const url = new URL(req.url); // Create a URL object from the request URL
     const dateParam = url.searchParams.get("date");
+    const sortBy = url.searchParams.get("sortBy") || "";
     const startOfMonth = dateParam ? new Date(dateParam) : new Date();
     startOfMonth.setDate(1); // Set to the 1st day of the month
     startOfMonth.setHours(0, 0, 0, 0); // Start of the day
@@ -134,7 +142,44 @@ export async function GET(req: NextRequest) {
     endOfMonth.setDate(0); // Go back to the last day of the current month
     endOfMonth.setHours(23, 59, 59, 999); // End of the day
 
-    const categories = await CategoryModel.aggregate([
+    let sortStage: any[] = [];
+
+    switch (sortBy) {
+      case CategorySortBy.BUDGET:
+        sortStage = [{ $sort: { budget: -1 } }];
+        break;
+      case CategorySortBy.CATEGORY:
+        sortStage = [{ $sort: { category: 1 } }];
+        break;
+      case CategorySortBy.RECENT_TRANSACTIONS:
+        sortStage = [
+          {
+            $sort: {
+              "transactions.createdAt": -1, // Sort by the most recent transaction
+            },
+          },
+        ];
+        break;
+      case CategorySortBy.AMOUNT_SPENT:
+        sortStage = [
+          {
+            $addFields: {
+              totalAmountSpent: { $sum: "$transactions.amount" }, // Calculate total amount spent
+            },
+          },
+          {
+            $sort: {
+              totalAmountSpent: -1, // Sort by totalAmountSpent in descending order
+            },
+          },
+        ];
+        break;
+      default:
+        sortStage.push({ $sort: { budget: -1 } });
+        break;
+    }
+
+    const pipeline = [
       {
         $match: {
           userId: new mongoose.Types.ObjectId(userId as string),
@@ -192,11 +237,7 @@ export async function GET(req: NextRequest) {
           preserveNullAndEmptyArrays: true, // Keep categories with no transactions
         },
       },
-      {
-        $sort: {
-          "transactions.createdAt": -1, // Sort by the most recent transaction
-        },
-      },
+      ...sortStage,
       {
         $group: {
           _id: "$_id",
@@ -206,7 +247,9 @@ export async function GET(req: NextRequest) {
           totalAmountSpent: { $sum: "$transactions.amount" },
         },
       },
-    ]);
+    ];
+
+    const categories = await CategoryModel.aggregate(pipeline);
 
     return NextResponse.json({
       categories,

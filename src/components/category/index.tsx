@@ -18,8 +18,41 @@ import CategoryForm, { CategoryFormValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+
+export enum CategorySortBy {
+  CATEGORY = "category",
+  BUDGET = "budget",
+  RECENT_TRANSACTIONS = "recentTransactions",
+  AMOUNT_SPENT = "amountSpent",
+}
 
 const Category = () => {
+  const sortFilters = [
+    {
+      label: "Category Name",
+      value: CategorySortBy.CATEGORY,
+    },
+    {
+      label: "Recent transaction",
+      value: CategorySortBy.RECENT_TRANSACTIONS,
+    },
+    {
+      label: "Budget",
+      value: CategorySortBy.BUDGET,
+    },
+    {
+      label: "Amount Spent",
+      value: CategorySortBy.AMOUNT_SPENT,
+    },
+  ];
+
   const {
     categoryFilter,
     setCategoryFilter,
@@ -43,6 +76,10 @@ const Category = () => {
   const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
   const updateCategoryDate = (value: Date) => {
     setCategoryFilter({ ...categoryFilter, categoryDate: value });
+  };
+
+  const updateCategorySort = (sortBy: CategorySortBy) => {
+    setCategoryFilter({ ...categoryFilter, sortBy });
   };
 
   const { data: categoryData, isLoading: gettingCategoryById } =
@@ -87,15 +124,35 @@ const Category = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-3">
+      <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
         <PageHeader title="Category" />
         <div className="flex justify-between items-center gap-2">
+          <div className="space-y-2">
+            <Select
+              onValueChange={updateCategorySort}
+              value={categoryFilter.sortBy}
+            >
+              <SelectTrigger
+                id="categoryId"
+                className="min-w-[150px] border-foreground rounded-full"
+              >
+                <SelectValue placeholder="Sort category by" />
+              </SelectTrigger>
+              <SelectContent>
+                {sortFilters.map((sort: { label: string; value: string }) => (
+                  <SelectItem key={sort.value} value={sort.value}>
+                    {sort.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <MonthYearPicker
             handlePrevMonth={(value) => updateCategoryDate(value)}
             handleNextMonth={(value) => updateCategoryDate(value)}
             handleMonthChange={(value) => updateCategoryDate(value)}
             date={categoryFilter.categoryDate}
-            navigationButton={true}
+            navigationButton={false}
           />
           <PlusIcon
             onClick={() => {
