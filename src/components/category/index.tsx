@@ -3,21 +3,18 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { queryKeys } from "@/utils/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
-import { EditIcon, PlusIcon, Trash2 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import * as Yup from "yup";
 import MonthYearPicker from "../common/MonthPicker";
 import PageHeader from "../common/Pageheader";
+import CustomAddIcon from "../icons/customAddIcon";
+import CustomDeleteIcon from "../icons/customDeleteIcon";
+import CustomEditIcon from "../icons/customEditIcon";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Label } from "../ui/label";
-import { useAuthContext } from "../wrapper/ContextWrapper";
-import CategoryForm, { CategoryFormValues } from "./categoryForm";
-import { useCategoryMutation } from "./hooks/useCategoryMutation";
-import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
-import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
 import {
   Select,
   SelectContent,
@@ -25,6 +22,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { useAuthContext } from "../wrapper/ContextWrapper";
+import CategoryForm, { CategoryFormValues } from "./categoryForm";
+import { useCategoryMutation } from "./hooks/useCategoryMutation";
+import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
+import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
 
 export enum CategorySortBy {
   CATEGORY = "category",
@@ -151,11 +153,10 @@ const Category = () => {
             date={categoryFilter.categoryDate}
             navigationButton={false}
           />
-          <PlusIcon
+          <CustomAddIcon
             onClick={() => {
               setOpen({ type: "ADD", open: true });
             }}
-            className="text-selected cursor-pointer border-2  "
           />
         </div>
       </div>
@@ -174,27 +175,24 @@ const Category = () => {
                     <div className="flex justify-between">
                       <p className="text-4xl">{category.icon}</p>
                       <div className="flex gap-2">
-                        <PlusIcon
-                          className="icon"
+                        <CustomAddIcon
                           onClick={() =>
                             router.push(
                               `transactions?addBycategory=${category._id}&navigate=${pathname}`
                             )
                           }
                         />
-                        <EditIcon
+                        <CustomEditIcon
                           onClick={() => {
                             setCategoryToEdit(category._id);
                             setOpen({ type: "EDIT", open: true });
                           }}
-                          className="icon"
                         />
-                        <Trash2
+                        <CustomDeleteIcon
                           onClick={() => {
                             setCategoryToDelete(category._id);
                             setOpen({ type: "DELETE", open: true });
                           }}
-                          className="icon"
                         />
                       </div>
                     </div>

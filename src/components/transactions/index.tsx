@@ -15,48 +15,42 @@ import {
 } from "@/components/ui/tooltip";
 import { queryKeys } from "@/utils/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
-import { EditIcon, PlusIcon, Trash2 } from "lucide-react";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import * as Yup from "yup";
+import { useCategories } from "../category/hooks/useCategoryQuery";
 import PageHeader from "../common/Pageheader";
+import CustomAddIcon from "../icons/customAddIcon";
+import CustomDeleteIcon from "../icons/customDeleteIcon";
+import CustomEditIcon from "../icons/customEditIcon";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
+import { useAuthContext } from "../wrapper/ContextWrapper";
 import { useTransactionMutation } from "./hooks/useTransactionMutation";
 import {
   useTransactionById,
   useTransactions,
 } from "./hooks/useTransactionQuery";
 import { TransactionFormSkeleton } from "./skeleton";
-import TransactionForm, { TransactionFormValues } from "./transactionForm";
 import TransactionFilters from "./transactionFilters";
-import { useAuthContext } from "../wrapper/ContextWrapper";
+import TransactionForm, { TransactionFormValues } from "./transactionForm";
 
 const Transactions = () => {
-  const { categoryFilter } = useAuthContext();
+  const { categoryFilter, transactionFilter } = useAuthContext();
   const searchParams = useSearchParams();
   const addBycategoryId = searchParams.get("addBycategory") || "";
   const navigate = searchParams.get("navigate") || "";
   const queryClient = useQueryClient();
   const categoryDate = categoryFilter.categoryDate;
-  const categoryList = queryClient.getQueryData([
-    queryKeys.categories,
-    categoryDate,
-  ]) as AxiosResponse;
+  const { data: categoryList } = useCategories();
   const router = useRouter();
-  const filter = {
-    categoryId: addBycategoryId,
-  };
   const { data } = useTransactions();
-  const filteredCategory =
-    filter.categoryId &&
-    categoryList.data.categories.find(
-      (item: any) => item._id === filter.categoryId
-    );
+  const filteredCategory = categoryList?.data.categories?.find(
+    (category: any) => category._id === transactionFilter.categoryId
+  )?.category;
   const { addTransaction, deleteTransaction, updateTransaction } =
     useTransactionMutation();
   const [open, setOpen] = useState<{
@@ -139,18 +133,13 @@ const Transactions = () => {
   return (
     <>
       <div className="flex justify-between mb-3">
-        <PageHeader
-          title={`${
-            filteredCategory ? filteredCategory?.category : ""
-          } Transactions`}
-        />
+        <PageHeader title={`${filteredCategory || ""} Transactions`} />
         <div className="flex gap-3 items-center">
           <TransactionFilters />
-          <PlusIcon
+          <CustomAddIcon
             onClick={() => {
               setOpen({ type: "ADD", open: true });
             }}
-            className="text-selected cursor-pointer border-2  "
           />
         </div>
       </div>
@@ -193,20 +182,18 @@ const Transactions = () => {
               <TableCell>
                 {moment(transaction.date).utc().format("DD/MM/YYYY")}
               </TableCell>
-              <TableCell className="flex justify-between items-center">
-                <EditIcon
+              <TableCell className="flex justify-around items-center">
+                <CustomEditIcon
                   onClick={() => {
                     setTransactionToEdit(transaction._id);
                     setOpen({ type: "EDIT", open: true });
                   }}
-                  className="icon"
                 />
-                <Trash2
+                <CustomDeleteIcon
                   onClick={() => {
                     setTransactionToDelete(transaction._id);
                     setOpen({ type: "DELETE", open: true });
                   }}
-                  className="icon"
                 />
               </TableCell>
             </TableRow>

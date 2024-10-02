@@ -1,7 +1,7 @@
 "use client";
 
 import { Field, Form, Formik } from "formik";
-import { CrossIcon, FilterIcon } from "lucide-react";
+import { FilterIcon } from "lucide-react";
 import moment from "moment";
 import { useState } from "react";
 
@@ -26,6 +26,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useCategories } from "../category/hooks/useCategoryQuery";
 import MonthYearPicker from "../common/MonthPicker";
+import CustomDeleteIcon from "../icons/customDeleteIcon";
 import {
   initialTransactionFilter,
   useAuthContext,
@@ -62,10 +63,7 @@ export default function TransactionFilters() {
         <SheetHeader className="text-left">
           <div className="flex justify-between">
             <SheetTitle>Transaction Filters</SheetTitle>
-            <CrossIcon
-              onClick={() => setIsOpen(false)}
-              className="rotate-45 w-4 h-4 text-red-900 fill-red-400 "
-            />
+            <CustomDeleteIcon onClick={() => setIsOpen(false)} />
           </div>
           <SheetDescription>
             Apply filters to your transactions
