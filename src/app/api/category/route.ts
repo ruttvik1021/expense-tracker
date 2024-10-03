@@ -2,7 +2,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import CategoryModel from "@/models/CategoryModel";
 import Joi from "joi";
 import { jwtVerify } from "jose";
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 const schema = Joi.object({
@@ -154,32 +154,19 @@ export async function GET(req: NextRequest) {
       case CategorySortBy.RECENT_TRANSACTIONS:
         sortStage = [
           {
-            $sort: {
-              "transactions.createdAt": -1, // Sort by the most recent transaction
-            },
+            $sort: { "transactions.createdAt": -1 },
           },
         ];
         break;
       case CategorySortBy.AMOUNT_SPENT:
-        sortStage = [
-          {
-            $addFields: {
-              totalAmountSpent: { $sum: "$transactions.amount" }, // Calculate total amount spent
-            },
-          },
-          {
-            $sort: {
-              totalAmountSpent: -1, // Sort by totalAmountSpent in descending order
-            },
-          },
-        ];
+        sortStage = []; // Sorting will be handled after $group for amountSpent
         break;
       default:
         sortStage.push({ $sort: { budget: -1 } });
         break;
     }
 
-    const pipeline = [
+    const pipeline: PipelineStage[] = [
       {
         $match: {
           userId: new mongoose.Types.ObjectId(userId as string),
@@ -237,7 +224,6 @@ export async function GET(req: NextRequest) {
           preserveNullAndEmptyArrays: true, // Keep categories with no transactions
         },
       },
-      ...sortStage,
       {
         $group: {
           _id: "$_id",
@@ -247,7 +233,16 @@ export async function GET(req: NextRequest) {
           totalAmountSpent: { $sum: "$transactions.amount" },
         },
       },
+      ...sortStage, // Apply sorting after $group
     ];
+
+    if (sortBy === CategorySortBy.AMOUNT_SPENT) {
+      pipeline.push({
+        $sort: { totalAmountSpent: -1 }, // Sort by totalAmountSpent after grouping
+      });
+    }
+
+    console.log("pipeline", pipeline);
 
     const categories = await CategoryModel.aggregate(pipeline);
 
