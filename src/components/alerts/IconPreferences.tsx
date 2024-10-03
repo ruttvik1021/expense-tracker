@@ -28,7 +28,7 @@ const IconPreferenceAlert = () => {
   };
 
   const handleCheckbox = (value: boolean) => {
-    localStorage.setItem("isIconAlertRead", "true");
+    localStorage.setItem("isIconAlertRead", String(value));
     setDontRemind(value);
   };
 
