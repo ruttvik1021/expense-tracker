@@ -105,7 +105,7 @@ const MonthYearPicker = ({
             {months.map((month, index) => (
               <button
                 key={month}
-                className={`p-2 text-center ${
+                className={`p-2 text-center rounded-full ${
                   date.getMonth() === index &&
                   date.getFullYear() === parseInt(year)
                     ? "bg-selected text-white"
