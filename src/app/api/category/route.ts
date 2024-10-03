@@ -242,8 +242,6 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    console.log("pipeline", pipeline);
-
     const categories = await CategoryModel.aggregate(pipeline);
 
     return NextResponse.json({
