@@ -1,12 +1,12 @@
 "use client";
-import {
+{/*import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table";*/}
 import {
   Tooltip,
   TooltipContent,
@@ -134,6 +134,17 @@ const Transactions = () => {
 
   const { totalSpent } = useSpentVsBudgetData("Transactions");
 
+ const [groupedTransactions] = useState(() => {
+    return data?.data?.transactions.reduce((groups: { [key: string]: Transaction[] }, transaction) => {
+      const date = transaction.date;
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(transaction);
+      return groups;
+    }, {});
+  });
+
   return (
     <>
       <div className="flex justify-between mb-3">
@@ -159,7 +170,27 @@ const Transactions = () => {
           <span className="font-bold text-lg">{totalSpent}</span>
         </p>
       </div>
-      <Table className="overflow-auto">
+{Object.keys(groupedTransactions).map((date) => (
+        <div key={date} className="mb-6">
+          <h2 className="text-lg font-semibold mb-2">{date}</h2>
+          {groupedTransactions[date].map((transaction) => (
+            <div key={transaction._id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-3">
+              <div className="flex items-center">
+                <span className="text-2xl mr-3">{transaction.category.icon}</span>
+                <div>
+                  <p className="font-medium">{transaction.spentOn}</p>
+                  <p className="text-sm text-gray-400">{transaction.category.category}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-semibold">₹{transaction.amount.toLocaleString()}</p>
+                <span className="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Upcoming</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
+      {/* <Table className="overflow-auto">
         <TableHeader>
           <TableRow>
             <TableHead>Description</TableHead>
@@ -218,7 +249,7 @@ const Transactions = () => {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+      </Table> */}
       <ResponsiveDialogAndDrawer
         open={open.type === "DELETE" && open.open}
         handleClose={handleClose}
