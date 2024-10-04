@@ -6,13 +6,13 @@
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";*/}
+} from "@/components/ui/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/components/ui/tooltip";*/}
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
 import { queryKeys } from "@/utils/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
@@ -23,11 +23,11 @@ import { useState } from "react";
 import * as Yup from "yup";
 import { useCategories } from "../category/hooks/useCategoryQuery";
 import PageHeader from "../common/Pageheader";
-import CustomAddIcon from "../icons/customAddIcon";
-import CustomDeleteIcon from "../icons/customDeleteIcon";
+// import CustomAddIcon from "../icons/customAddIcon";
+// import CustomDeleteIcon from "../icons/customDeleteIcon";
 import CustomEditIcon from "../icons/customEditIcon";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
-import { Avatar, AvatarFallback } from "../ui/avatar";
+// import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { useAuthContext } from "../wrapper/ContextWrapper";
