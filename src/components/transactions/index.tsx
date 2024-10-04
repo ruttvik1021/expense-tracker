@@ -1,5 +1,5 @@
 "use client";
-{/*import {
+import {
   Table,
   TableBody,
   TableCell,
@@ -12,7 +12,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";*/}
+} from "@/components/ui/tooltip";
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
 import { queryKeys } from "@/utils/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
@@ -24,10 +24,10 @@ import * as Yup from "yup";
 import { useCategories } from "../category/hooks/useCategoryQuery";
 import PageHeader from "../common/Pageheader";
 import CustomAddIcon from "../icons/customAddIcon";
-// import CustomDeleteIcon from "../icons/customDeleteIcon";
-// import CustomEditIcon from "../icons/customEditIcon";
+import CustomDeleteIcon from "../icons/customDeleteIcon";
+import CustomEditIcon from "../icons/customEditIcon";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
-// import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { useAuthContext } from "../wrapper/ContextWrapper";
@@ -134,7 +134,7 @@ const Transactions = () => {
 
   const { totalSpent } = useSpentVsBudgetData("Transactions");
 
- const [groupedTransactions] = useState(() => {
+ {/*const [groupedTransactions] = useState(() => {
     return data?.data?.transactions.reduce((groups: { [key: string]: any[] }, transaction: any) => {
       const date = transaction.date;
       if (!groups[date]) {
@@ -143,7 +143,7 @@ const Transactions = () => {
       groups[date].push(transaction);
       return groups;
     }, {});
-  });
+  });*/}
 
   return (
     <>
@@ -170,7 +170,7 @@ const Transactions = () => {
           <span className="font-bold text-lg">{totalSpent}</span>
         </p>
       </div>
-{Object.keys(groupedTransactions).map((date) => (
+{/*{Object.keys(groupedTransactions).map((date) => (
         <div key={date} className="mb-6">
           <h2 className="text-lg font-semibold mb-2">{date}</h2>
           {groupedTransactions[date].map((transaction:any) => (
@@ -189,8 +189,8 @@ const Transactions = () => {
             </div>
           ))}
         </div>
-      ))}
-      {/* <Table className="overflow-auto">
+      ))}*/}
+      <Table className="overflow-auto">
         <TableHeader>
           <TableRow>
             <TableHead>Description</TableHead>
@@ -249,7 +249,7 @@ const Transactions = () => {
             </TableRow>
           ))}
         </TableBody>
-      </Table> */}
+      </Table>
       <ResponsiveDialogAndDrawer
         open={open.type === "DELETE" && open.open}
         handleClose={handleClose}
