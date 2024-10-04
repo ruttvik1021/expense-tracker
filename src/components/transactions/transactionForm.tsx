@@ -9,14 +9,8 @@ import {
 } from "@/components/ui/select";
 import { CategoryDocument } from "@/models/CategoryModel";
 import { queryKeys } from "@/utils/queryKeys";
-import { useIsMutating } from "@tanstack/react-query";
-import {
-  Field,
-  FieldInputProps,
-  FieldMetaProps,
-  Formik,
-  FormikHelpers,
-} from "formik";
+import { useIsMutating, useQueryClient } from "@tanstack/react-query";
+import { Field, FieldInputProps, FieldMetaProps, Formik } from "formik";
 import { CalendarIcon, IndianRupee, Notebook, Tag } from "lucide-react";
 import moment from "moment";
 import * as Yup from "yup";
@@ -24,6 +18,7 @@ import { useCategories } from "../category/hooks/useCategoryQuery";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { useTransactionMutation } from "./hooks/useTransactionMutation";
 
 export interface TransactionFormValues {
   spentOn: string;
@@ -33,32 +28,70 @@ export interface TransactionFormValues {
 }
 
 interface CategoryFormProps {
-  initialValues: TransactionFormValues;
-  validationSchema: Yup.Schema<any>;
-  onSubmit: (
-    values: TransactionFormValues,
-    formikHelpers: FormikHelpers<TransactionFormValues>
-  ) => void;
   onReset: () => void;
-  submitText?: string;
+  editTransaction?: string;
+  initialValues?: TransactionFormValues;
 }
+
+const validateDate = (value: string) => {
+  // Check if the value is a valid date in DD/MM/YYYY format
+  return moment(value).isValid();
+};
+
+export const transactionFormValidationSchema = Yup.object({
+  amount: Yup.number()
+    .required("Amount is required")
+    .positive("Amount must be positive"),
+  category: Yup.string().required("Category is required"),
+  spentOn: Yup.string().required("Spent on is required"),
+  date: Yup.string()
+    .required("Date is required")
+    .test("is-valid-date", "Invalid Format", validateDate)
+    .transform((value) => {
+      return moment(value).format(); // Optional
+    }),
+});
+
+export const transactionFormInitialValues = {
+  amount: 0,
+  category: "",
+  spentOn: "",
+  date: moment().format(),
+};
 
 const TransactionForm = ({
   initialValues,
-  validationSchema,
-  onSubmit,
   onReset,
-  submitText = "Add",
+  editTransaction = "",
 }: CategoryFormProps) => {
   const { data } = useCategories();
   const isTransactionMutating = useIsMutating({
     mutationKey: [queryKeys.mutateTransaction],
   });
+
+  const queryClient = useQueryClient();
+  const { addTransaction, updateTransaction } = useTransactionMutation();
+
+  const handleSubmit = async (values: TransactionFormValues) => {
+    if (editTransaction) {
+      await updateTransaction.mutateAsync({ id: editTransaction, values });
+      queryClient.removeQueries({
+        queryKey: [queryKeys.transactions, editTransaction],
+      });
+    } else {
+      await addTransaction.mutateAsync(values);
+    }
+    onReset();
+  };
+
   return (
     <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={onSubmit}
+      initialValues={{
+        ...transactionFormInitialValues,
+        ...initialValues,
+      }}
+      validationSchema={transactionFormValidationSchema}
+      onSubmit={handleSubmit}
       onReset={onReset}
     >
       {({ setFieldValue, handleSubmit, handleReset }) => (
@@ -230,7 +263,7 @@ const TransactionForm = ({
               variant="default"
               loading={isTransactionMutating > 0}
             >
-              {submitText}
+              {editTransaction ? "Update" : "Add"}
             </Button>
           </div>
         </form>

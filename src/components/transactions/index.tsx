@@ -14,13 +14,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
-import { queryKeys } from "@/utils/queryKeys";
-import { useQueryClient } from "@tanstack/react-query";
 import { IndianRupee } from "lucide-react";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import * as Yup from "yup";
 import { useCategories } from "../category/hooks/useCategoryQuery";
 import PageHeader from "../common/Pageheader";
 import CustomAddIcon from "../icons/customAddIcon";
@@ -47,7 +44,9 @@ import {
 } from "./hooks/useTransactionQuery";
 import { TransactionFormSkeleton } from "./skeleton";
 import TransactionFilters from "./transactionFilters";
-import TransactionForm, { TransactionFormValues } from "./transactionForm";
+import TransactionForm, {
+  transactionFormInitialValues,
+} from "./transactionForm";
 
 const groupTransactionsBy = [
   { label: "Table", value: "none" },
@@ -60,7 +59,6 @@ const Transactions = () => {
   const searchParams = useSearchParams();
   const addBycategoryId = searchParams.get("addBycategory") || "";
   const navigate = searchParams.get("navigate") || "";
-  const queryClient = useQueryClient();
   const categoryDate = categoryFilter.categoryDate;
   const { data: categoryList } = useCategories();
   const router = useRouter();
@@ -68,8 +66,7 @@ const Transactions = () => {
   const filteredCategory = categoryList?.data.categories?.find(
     (category: any) => category._id === transactionFilter.categoryId
   )?.category;
-  const { addTransaction, deleteTransaction, updateTransaction } =
-    useTransactionMutation();
+  const { deleteTransaction } = useTransactionMutation();
   const [open, setOpen] = useState<{
     type: "ADD" | "EDIT" | "DELETE";
     open: boolean;
@@ -84,36 +81,14 @@ const Transactions = () => {
           open: false,
         }
   );
-  const [transactionToEdit, setTransactionToEdit] = useState<string | null>(
-    null
-  );
-  const [transactionToDelete, setTransactionToDelete] = useState<string | null>(
-    null
-  );
+  const [transactionToEdit, setTransactionToEdit] = useState<string>("");
+  const [transactionToDelete, setTransactionToDelete] = useState<string>("");
 
   const { data: transactionData, isLoading: gettingTransactionById } =
     useTransactionById(transactionToEdit || "");
 
-  const validateDate = (value: string) => {
-    // Check if the value is a valid date in DD/MM/YYYY format
-    return moment(value).isValid();
-  };
-
-  const validationSchema = Yup.object({
-    amount: Yup.number()
-      .required("Amount is required")
-      .positive("Amount must be positive"),
-    category: Yup.string().required("Category is required"),
-    spentOn: Yup.string().required("Spent on is required"),
-    date: Yup.string()
-      .required("Date is required")
-      .test("is-valid-date", "Invalid Format", validateDate)
-      .transform((value) => {
-        return moment(value).format(); // Optional
-      }),
-  });
-
   const initialValues = {
+    ...transactionFormInitialValues,
     amount: transactionData?.data.amount || 0,
     category: transactionData?.data.category || addBycategoryId || "",
     spentOn: transactionData?.data.spentOn || "",
@@ -123,26 +98,14 @@ const Transactions = () => {
       moment().format(),
   };
 
-  const handleSubmit = async (values: TransactionFormValues) => {
-    if (transactionToEdit) {
-      await updateTransaction.mutateAsync({ id: transactionToEdit, values });
-      queryClient.removeQueries({
-        queryKey: [queryKeys.transactions, transactionToEdit],
-      });
-    } else {
-      await addTransaction.mutateAsync(values);
-    }
-    handleClose();
-  };
-
   const handleDeleteTransaction = async () => {
     await deleteTransaction.mutateAsync(transactionToDelete!);
     handleClose();
   };
 
   const handleClose = () => {
-    setTransactionToEdit(null);
-    setTransactionToDelete(null);
+    setTransactionToEdit("");
+    setTransactionToDelete("");
     setOpen({ type: "ADD", open: false });
     navigate && router.push(navigate);
   };
@@ -385,10 +348,8 @@ const Transactions = () => {
           ) : (
             <TransactionForm
               initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={handleSubmit}
               onReset={handleClose}
-              submitText={open.type === "ADD" ? "Add" : "Update"}
+              editTransaction={transactionToEdit}
             />
           )
         }

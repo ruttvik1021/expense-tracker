@@ -3,10 +3,10 @@ import {
   deleteCategoryApi,
   updateCategoryApi,
 } from "@/ajax/categoryApi";
+import { queryKeys } from "@/utils/queryKeys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CategoryFormValues } from "../categoryForm";
-import { queryKeys } from "@/utils/queryKeys";
 
 export const useCategoryMutation = () => {
   const queryClient = useQueryClient();
@@ -14,6 +14,7 @@ export const useCategoryMutation = () => {
   const onSuccessFn = (message: string) => {
     toast.success(message);
     queryClient.invalidateQueries({ queryKey: [queryKeys.categories] });
+    queryClient.invalidateQueries({ queryKey: [queryKeys.transactions] });
   };
 
   const addCategory = useMutation({

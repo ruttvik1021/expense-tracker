@@ -2,18 +2,18 @@
 import { Badge } from "@/components/ui/badge";
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
 import { cn } from "@/lib/utils";
-import { queryKeys } from "@/utils/queryKeys";
-import { useQueryClient } from "@tanstack/react-query";
 import { IndianRupee } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import * as Yup from "yup";
 import MonthYearPicker from "../common/MonthPicker";
 import PageHeader from "../common/Pageheader";
 import CustomAddIcon from "../icons/customAddIcon";
 import CustomDeleteIcon from "../icons/customDeleteIcon";
 import CustomEditIcon from "../icons/customEditIcon";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
+import TransactionForm, {
+  transactionFormInitialValues,
+} from "../transactions/transactionForm";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Label } from "../ui/label";
@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useAuthContext } from "../wrapper/ContextWrapper";
-import CategoryForm, { CategoryFormValues } from "./categoryForm";
+import CategoryForm, { categoryFormInitialValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
@@ -65,10 +65,8 @@ const Category = () => {
     setTransactionFilter,
   } = useAuthContext();
   const router = useRouter();
-  const pathname = usePathname();
-  const queryClient = useQueryClient();
   const { data, isLoading } = useCategories();
-  const { addCategory, deleteCategory, updateCategory } = useCategoryMutation();
+  const { deleteCategory } = useCategoryMutation();
   const [open, setOpen] = useState<{
     type: "ADD" | "EDIT" | "DELETE";
     open: boolean;
@@ -77,8 +75,10 @@ const Category = () => {
     open: false,
   });
 
-  const [categoryToEdit, setCategoryToEdit] = useState<string | null>(null);
-  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+  const [categoryToEdit, setCategoryToEdit] = useState<string>("");
+  const [categoryToDelete, setCategoryToDelete] = useState<string>("");
+  const [transactionToAddCategory, setTransactionToAddCategory] =
+    useState<string>("");
   const updateCategoryDate = (value: Date) => {
     setCategoryFilter({ ...categoryFilter, categoryDate: value });
   };
@@ -88,32 +88,13 @@ const Category = () => {
   };
 
   const { data: categoryData, isLoading: gettingCategoryById } =
-    useCategoryById(categoryToEdit || "");
+    useCategoryById(categoryToEdit);
 
-  const initialValues: CategoryFormValues = {
+  const initialValues = {
+    ...categoryFormInitialValues,
     icon: categoryData?.data.icon || "",
     category: categoryData?.data.category || "",
     budget: categoryData?.data.budget || 0,
-  };
-
-  const validationSchema = Yup.object({
-    icon: Yup.string().required("Icon is required"),
-    category: Yup.string().required("Category is required"),
-    budget: Yup.number()
-      .typeError("Must be a number")
-      .required("Budget is required"),
-  });
-
-  const handleSubmit = async (values: CategoryFormValues) => {
-    if (categoryToEdit) {
-      await updateCategory.mutateAsync({ id: categoryToEdit, values });
-      queryClient.removeQueries({
-        queryKey: [queryKeys.categories, categoryToEdit],
-      });
-    } else {
-      await addCategory.mutateAsync(values);
-    }
-    handleClose();
   };
 
   const handleDeleteCategory = async () => {
@@ -122,8 +103,8 @@ const Category = () => {
   };
 
   const handleClose = () => {
-    setCategoryToEdit(null);
-    setCategoryToDelete(null);
+    setCategoryToEdit("");
+    setCategoryToDelete("");
     setOpen({ type: "ADD", open: false });
   };
 
@@ -227,9 +208,7 @@ const Category = () => {
                       <div className="flex gap-2">
                         <CustomAddIcon
                           onClick={() =>
-                            router.push(
-                              `transactions?addBycategory=${category._id}&navigate=${pathname}`
-                            )
+                            setTransactionToAddCategory(category._id)
                           }
                         />
                         <CustomEditIcon
@@ -301,7 +280,6 @@ const Category = () => {
               );
             })}
       </div>
-
       <ResponsiveDialogAndDrawer
         open={open.type === "DELETE" && open.open}
         handleClose={handleClose}
@@ -334,7 +312,6 @@ const Category = () => {
           </>
         }
       />
-
       <ResponsiveDialogAndDrawer
         open={(open.type === "ADD" || open.type === "EDIT") && open.open}
         handleClose={handleClose}
@@ -345,12 +322,31 @@ const Category = () => {
           ) : (
             <CategoryForm
               initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={handleSubmit}
               onReset={handleClose}
-              submitText={open.type === "ADD" ? "Add" : "Update"}
+              editCategory={categoryToEdit}
             />
           )
+        }
+      />
+
+      <ResponsiveDialogAndDrawer
+        open={transactionToAddCategory ? true : false}
+        handleClose={() => setTransactionToAddCategory("")}
+        title={
+          open.type === "ADD"
+            ? "Add Transaction"
+            : open.type === "EDIT"
+            ? "Edit Transaction"
+            : ""
+        }
+        content={
+          <TransactionForm
+            initialValues={{
+              ...transactionFormInitialValues,
+              category: transactionToAddCategory,
+            }}
+            onReset={() => setTransactionToAddCategory("")}
+          />
         }
       />
     </>

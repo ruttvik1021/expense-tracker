@@ -1,14 +1,8 @@
 "use client";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { queryKeys } from "@/utils/queryKeys";
-import { useIsMutating } from "@tanstack/react-query";
-import {
-  Field,
-  FieldInputProps,
-  FieldMetaProps,
-  Formik,
-  FormikHelpers,
-} from "formik";
+import { useIsMutating, useQueryClient } from "@tanstack/react-query";
+import { Field, FieldInputProps, FieldMetaProps, Formik } from "formik";
 import { IndianRupee, Tag } from "lucide-react";
 import { useState } from "react";
 import * as Yup from "yup";
@@ -17,6 +11,7 @@ import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { useCategoryMutation } from "./hooks/useCategoryMutation";
 
 export interface CategoryFormValues {
   icon: string;
@@ -25,32 +20,53 @@ export interface CategoryFormValues {
 }
 
 interface CategoryFormProps {
-  initialValues: CategoryFormValues;
-  validationSchema: Yup.Schema<any>;
-  onSubmit: (
-    values: CategoryFormValues,
-    formikHelpers: FormikHelpers<CategoryFormValues>
-  ) => void;
   onReset: () => void;
-  submitText?: string;
+  editCategory?: string;
+  initialValues?: CategoryFormValues;
 }
+
+export const categoryFormInitialValues: CategoryFormValues = {
+  icon: "",
+  category: "",
+  budget: 0,
+};
+
+const validationSchema = Yup.object({
+  icon: Yup.string().required("Icon is required"),
+  category: Yup.string().required("Category is required"),
+  budget: Yup.number()
+    .min(1, "Budget must be greater than or equal to 1")
+    .typeError("Must be a number")
+    .required("Budget is required"),
+});
 
 const CategoryForm = ({
   initialValues,
-  validationSchema,
-  onSubmit,
   onReset,
-  submitText = "Add",
+  editCategory = "",
 }: CategoryFormProps) => {
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
   const isCategoryMutating = useIsMutating({
     mutationKey: [queryKeys.mutateCategory],
   });
+  const { addCategory, updateCategory } = useCategoryMutation();
+  const handleSubmit = async (values: CategoryFormValues) => {
+    if (editCategory) {
+      await updateCategory.mutateAsync({ id: editCategory, values });
+      queryClient.removeQueries({
+        queryKey: [queryKeys.categories, editCategory],
+      });
+    } else {
+      await addCategory.mutateAsync(values);
+    }
+    onReset();
+  };
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{ ...categoryFormInitialValues, ...initialValues }}
       validationSchema={validationSchema}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
       onReset={onReset}
     >
       {({ setFieldValue, handleSubmit, handleReset }) => (
@@ -66,10 +82,11 @@ const CategoryForm = ({
               }) => (
                 <div className="my-2">
                   <Avatar
-                    className={`cursor-pointer p-1 border-2 ${meta.touched && meta.error
+                    className={`cursor-pointer p-1 border-2 ${
+                      meta.touched && meta.error
                         ? "border-red-600"
                         : "border-selected"
-                      }`}
+                    }`}
                     {...field}
                     onClick={() => setOpen(true)}
                   >
@@ -162,7 +179,7 @@ const CategoryForm = ({
                 variant="default"
                 loading={isCategoryMutating > 0}
               >
-                {submitText}
+                {editCategory ? "Update" : "Add"}
               </Button>
             </div>
           </form>
