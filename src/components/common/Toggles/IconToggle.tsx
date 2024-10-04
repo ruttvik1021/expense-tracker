@@ -12,13 +12,16 @@ const IconToggle = () => {
   };
   return (
     <div className="flex justify-between items-center w-full">
-      <Circle className="fill-green-600 rounded-full icon border" />
+      <Circle
+        className="fill-green-600 rounded-full icon border"
+        onClick={() => handlePreferrenceChange(false)}
+      />
       <Switch
         id="icon toggle"
         checked={isIconPreferred}
         onCheckedChange={handlePreferrenceChange}
       />
-      <PlusCircleIcon />
+      <PlusCircleIcon onClick={() => handlePreferrenceChange(true)} />
     </div>
   );
 };

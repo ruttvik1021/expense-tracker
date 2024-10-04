@@ -29,7 +29,16 @@ import CustomEditIcon from "../icons/customEditIcon";
 import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Separator } from "../ui/separator";
 import { useAuthContext } from "../wrapper/ContextWrapper";
 import { useTransactionMutation } from "./hooks/useTransactionMutation";
 import {
@@ -39,15 +48,6 @@ import {
 import { TransactionFormSkeleton } from "./skeleton";
 import TransactionFilters from "./transactionFilters";
 import TransactionForm, { TransactionFormValues } from "./transactionForm";
-import { Card, CardContent } from "../ui/card";
-import { Separator } from "../ui/separator";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 
 const groupTransactionsBy = [
   { label: "Table", value: "none" },
@@ -233,8 +233,8 @@ const Transactions = () => {
                           key={index}
                         >
                           <div className="flex-col text-center">
-                            <p className="font-semibold">
-                              {moment(transaction.date).utc().format("DD/MMM")}
+                            <p className="text-sm">
+                              {moment(transaction.date).utc().format("DD/MM")}
                             </p>
                           </div>
 
@@ -250,7 +250,7 @@ const Transactions = () => {
                             {transaction.amount}
                           </div>
 
-                          <div className="flex gap-2">
+                          <div className="flex gap-1">
                             <CustomEditIcon
                               onClick={() => {
                                 setTransactionToEdit(transaction._id);
@@ -282,7 +282,7 @@ const Transactions = () => {
         <Table className="overflow-auto">
           <TableHeader>
             <TableRow>
-              <TableHead>Description</TableHead>
+              <TableHead>For:</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Date</TableHead>
               <TableHead className="w-2">Actions</TableHead>
@@ -318,8 +318,8 @@ const Transactions = () => {
                   <IndianRupee className="icon" />
                   {transaction.amount}
                 </TableCell>
-                <TableCell>
-                  {moment(transaction.date).utc().format("DD/MMM")}
+                <TableCell className="text-sm">
+                  {moment(transaction.date).utc().format("DD/MM")}
                 </TableCell>
                 <TableCell className="flex justify-around items-center">
                   <CustomEditIcon
