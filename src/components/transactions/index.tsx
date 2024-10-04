@@ -39,8 +39,23 @@ import {
 import { TransactionFormSkeleton } from "./skeleton";
 import TransactionFilters from "./transactionFilters";
 import TransactionForm, { TransactionFormValues } from "./transactionForm";
+import { Card, CardContent } from "../ui/card";
+import { Separator } from "../ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+
+const groupTransactionsBy = [
+  { label: "Table", value: "none" },
+  { label: "Category", value: "category" },
+];
 
 const Transactions = () => {
+  const [groupBy, setGroupBy] = useState(groupTransactionsBy[0].value);
   const { categoryFilter, transactionFilter } = useAuthContext();
   const searchParams = useSearchParams();
   const addBycategoryId = searchParams.get("addBycategory") || "";
@@ -89,11 +104,11 @@ const Transactions = () => {
       .required("Amount is required")
       .positive("Amount must be positive"),
     category: Yup.string().required("Category is required"),
+    spentOn: Yup.string().required("Spent on is required"),
     date: Yup.string()
       .required("Date is required")
       .test("is-valid-date", "Invalid Format", validateDate)
       .transform((value) => {
-        // Transform the input value to standard format for further processing if needed
         return moment(value).format(); // Optional
       }),
   });
@@ -134,16 +149,18 @@ const Transactions = () => {
 
   const { totalSpent } = useSpentVsBudgetData("Transactions");
 
- {/*const [groupedTransactions] = useState(() => {
-    return data?.data?.transactions.reduce((groups: { [key: string]: any[] }, transaction: any) => {
-      const date = transaction.date;
-      if (!groups[date]) {
-        groups[date] = [];
+  const groupedTransactions = data?.data?.transactions.reduce(
+    (groups: { [key: string]: any[] }, transaction: any) => {
+      const group =
+        groupBy === "date" ? transaction.date : transaction.category.category;
+      if (!groups[group]) {
+        groups[group] = [];
       }
-      groups[date].push(transaction);
+      groups[group].push(transaction);
       return groups;
-    }, {});
-  });*/}
+    },
+    {}
+  );
 
   return (
     <>
@@ -152,6 +169,22 @@ const Transactions = () => {
           <PageHeader title={`${filteredCategory || ""} Transactions`} />
         </div>
         <div className="flex gap-3 items-center">
+          <div className="space-y-2">
+            <Select onValueChange={setGroupBy} value={groupBy}>
+              <SelectTrigger id="groupBy" className="min-w-[150px]  ">
+                <SelectValue placeholder="Group Transactions by" />
+              </SelectTrigger>
+              <SelectContent>
+                {groupTransactionsBy.map(
+                  (groupBy: { label: string; value: string }) => (
+                    <SelectItem key={groupBy.value} value={groupBy.value}>
+                      {groupBy.label}
+                    </SelectItem>
+                  )
+                )}
+              </SelectContent>
+            </Select>
+          </div>
           <TransactionFilters />
           <CustomAddIcon
             onClick={() => {
@@ -170,86 +203,143 @@ const Transactions = () => {
           <span className="font-bold text-lg">{totalSpent}</span>
         </p>
       </div>
-{/*{Object.keys(groupedTransactions).map((date) => (
-        <div key={date} className="mb-6">
-          <h2 className="text-lg font-semibold mb-2">{date}</h2>
-          {groupedTransactions[date].map((transaction:any) => (
-            <div key={transaction._id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-3">
-              <div className="flex items-center">
-                <span className="text-2xl mr-3">{transaction.category.icon}</span>
-                <div>
-                  <p className="font-medium">{transaction.spentOn}</p>
-                  <p className="text-sm text-gray-400">{transaction.category.category}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-lg font-semibold">₹{transaction.amount.toLocaleString()}</p>
-                <span className="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded">Upcoming</span>
-              </div>
+      <Separator />
+      {groupBy !== "none" ? (
+        groupedTransactions &&
+        Object.keys(groupedTransactions).map((group) => (
+          <>
+            <div key={group} className="mb-6">
+              <h2 className="text-md my-2 font-bold text-selected">
+                {groupBy === "date" ? (
+                  moment(group).utc().format("DD/MM/YYYY")
+                ) : (
+                  <h2 className="flex items-center gap-2 text-md font-bold">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback>
+                        {groupedTransactions[group][0].category?.icon}
+                      </AvatarFallback>
+                    </Avatar>
+                    {group}
+                  </h2>
+                )}
+              </h2>
+              <Card className="w-full shadow-none border-none">
+                <CardContent className="p-0">
+                  {groupedTransactions[group].map(
+                    (transaction: any, index: number) => (
+                      <>
+                        <div
+                          className={`flex items-center m-3 gap-2`}
+                          key={index}
+                        >
+                          <div className="flex-col text-center">
+                            <p className="font-semibold">
+                              {moment(transaction.date).utc().format("DD/MMM")}
+                            </p>
+                          </div>
+
+                          <div className="flex-1">
+                            <h2 className="text-md font-bold">
+                              {transaction.spentOn ||
+                                transaction?.category?.category}
+                            </h2>
+                          </div>
+
+                          <div className="flex items-center text-center font-bold text-xl">
+                            <IndianRupee className="icon" />
+                            {transaction.amount}
+                          </div>
+
+                          <div className="flex gap-2">
+                            <CustomEditIcon
+                              onClick={() => {
+                                setTransactionToEdit(transaction._id);
+                                setOpen({ type: "EDIT", open: true });
+                              }}
+                            />
+                            <CustomDeleteIcon
+                              onClick={() => {
+                                setTransactionToDelete(transaction._id);
+                                setOpen({ type: "DELETE", open: true });
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        {index !== groupedTransactions[group].length - 1 && (
+                          <Separator />
+                        )}
+                      </>
+                    )
+                  )}
+                </CardContent>
+              </Card>
             </div>
-          ))}
-        </div>
-      ))}*/}
-      <Table className="overflow-auto">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Description</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead className="w-2">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.data?.transactions.map((transaction: any) => (
-            <TableRow key={transaction._id}>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Avatar className="w-6 h-6">
-                          <AvatarFallback>
-                            {transaction?.category?.icon}
-                          </AvatarFallback>
-                        </Avatar>
-                      </TooltipTrigger>
-                      <TooltipContent className="bg-background">
-                        <Label className="text-primary">
-                          {transaction?.category?.category}
-                        </Label>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <Label className="text-wrap">
-                    {transaction.spentOn || transaction?.category?.category}
-                  </Label>
-                </div>
-              </TableCell>
-              <TableCell className="flex items-center">
-                <IndianRupee className="icon" />
-                {transaction.amount}
-              </TableCell>
-              <TableCell>
-                {moment(transaction.date).utc().format("DD/MM/YYYY")}
-              </TableCell>
-              <TableCell className="flex justify-around items-center">
-                <CustomEditIcon
-                  onClick={() => {
-                    setTransactionToEdit(transaction._id);
-                    setOpen({ type: "EDIT", open: true });
-                  }}
-                />
-                <CustomDeleteIcon
-                  onClick={() => {
-                    setTransactionToDelete(transaction._id);
-                    setOpen({ type: "DELETE", open: true });
-                  }}
-                />
-              </TableCell>
+            <Separator />
+          </>
+        ))
+      ) : (
+        <Table className="overflow-auto">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Description</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead className="w-2">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {data?.data?.transactions.map((transaction: any) => (
+              <TableRow key={transaction._id}>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Avatar className="w-6 h-6">
+                            <AvatarFallback>
+                              {transaction?.category?.icon}
+                            </AvatarFallback>
+                          </Avatar>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-background">
+                          <Label className="text-primary">
+                            {transaction?.category?.category}
+                          </Label>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <Label className="text-wrap">
+                      {transaction.spentOn || transaction?.category?.category}
+                    </Label>
+                  </div>
+                </TableCell>
+                <TableCell className="flex items-center">
+                  <IndianRupee className="icon" />
+                  {transaction.amount}
+                </TableCell>
+                <TableCell>
+                  {moment(transaction.date).utc().format("DD/MMM")}
+                </TableCell>
+                <TableCell className="flex justify-around items-center">
+                  <CustomEditIcon
+                    onClick={() => {
+                      setTransactionToEdit(transaction._id);
+                      setOpen({ type: "EDIT", open: true });
+                    }}
+                  />
+                  <CustomDeleteIcon
+                    onClick={() => {
+                      setTransactionToDelete(transaction._id);
+                      setOpen({ type: "DELETE", open: true });
+                    }}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
       <ResponsiveDialogAndDrawer
         open={open.type === "DELETE" && open.open}
         handleClose={handleClose}

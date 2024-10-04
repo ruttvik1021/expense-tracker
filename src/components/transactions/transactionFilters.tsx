@@ -100,7 +100,10 @@ export default function TransactionFilters() {
                   <SelectContent>
                     {categories?.data?.categories.map((category: any) => (
                       <SelectItem key={category._id} value={category._id}>
-                        {category.category}
+                        <div className="flex items-center gap-2">
+                          <Label>{category.icon}</Label>
+                          <Label>{category.category}</Label>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>

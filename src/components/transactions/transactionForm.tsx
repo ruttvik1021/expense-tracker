@@ -185,7 +185,13 @@ const TransactionForm = ({
           </Field>
 
           <Field name="spentOn">
-            {({ field }: { field: FieldInputProps<string> }) => (
+            {({
+              field,
+              meta,
+            }: {
+              field: FieldInputProps<string>;
+              meta: FieldMetaProps<string>;
+            }) => (
               <div className="space-y-1 my-2">
                 <Label
                   htmlFor="spentOn"
@@ -201,6 +207,11 @@ const TransactionForm = ({
                   placeholder="What did you spend on?"
                   disabled={isTransactionMutating > 0}
                 />
+                {meta.touched && meta.error && (
+                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                    {meta.error}
+                  </Label>
+                )}
               </div>
             )}
           </Field>

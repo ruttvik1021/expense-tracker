@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const transactionSchema = Joi.object({
   amount: Joi.number().required(),
-  spentOn: Joi.string().empty(""),
+  spentOn: Joi.string().required(),
   date: Joi.string(),
   category: Joi.string().required(),
 });
