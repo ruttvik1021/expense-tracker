@@ -135,7 +135,7 @@ const Transactions = () => {
   const { totalSpent } = useSpentVsBudgetData("Transactions");
 
  const [groupedTransactions] = useState(() => {
-    return data?.data?.transactions.reduce((groups: { [key: string]: any[] }, transaction) => {
+    return data?.data?.transactions.reduce((groups: { [key: string]: any[] }, transaction: any) => {
       const date = transaction.date;
       if (!groups[date]) {
         groups[date] = [];
