@@ -173,7 +173,7 @@ const Transactions = () => {
 {Object.keys(groupedTransactions).map((date) => (
         <div key={date} className="mb-6">
           <h2 className="text-lg font-semibold mb-2">{date}</h2>
-          {groupedTransactions[date].map((transaction) => (
+          {groupedTransactions[date].map((transaction:any) => (
             <div key={transaction._id} className="flex justify-between items-center bg-gray-800 p-4 rounded-lg mb-3">
               <div className="flex items-center">
                 <span className="text-2xl mr-3">{transaction.category.icon}</span>
