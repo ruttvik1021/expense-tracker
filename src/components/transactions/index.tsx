@@ -315,7 +315,7 @@ const Transactions = () => {
             <div className="flex justify-between items-center mt-5">
               <Button
                 type="reset"
-                variant="outline"
+                variant="default"
                 onClick={handleClose}
                 disabled={deleteTransaction.isPending}
               >
