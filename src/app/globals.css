@@ -109,6 +109,9 @@ html {
   height: 100%;
   width: 100%;
   user-select: none;
+  background-color: #ffffff; /* Same as manifest background color */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  overscroll-behavior: none;
 }
 
 /* Add to your global CSS or a CSS module */
