@@ -110,6 +110,7 @@ html {
   width: 100%;
   user-select: none;
   overscroll-behavior: none;
+  padding-bottom: 10px
 }
 
 /* Add to your global CSS or a CSS module */
