@@ -16,4 +16,6 @@ export default withPWA({
   disable: false, // disable PWA in the development environment
   register: true, // register the PWA service worker
   skipWaiting: true, // skip waiting for service worker activation
+  cacheOnFrontEndNav: true, // cache on front end navigation
+  disableDevLogs: true, // disable development logs
 })(nextConfig);
