@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 import "./globals.css";
+import Head from "next/head";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
@@ -18,6 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#ffffff" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+      </Head>
       <body>
         <QueryWrapper>
           <ContextWrapper>
