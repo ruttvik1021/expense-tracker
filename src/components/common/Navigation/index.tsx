@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { cn } from "@/lib/utils";
-import { Circle, IndianRupee, Menu } from "lucide-react";
+import { Circle, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
