@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { cn } from "@/lib/utils";
-import { Circle, IndianRupee, Menu } from "lucide-react";
+import { Circle, Menu } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -36,7 +37,15 @@ export const Navlink = ({ link }: { link: ILink }) => {
 };
 
 export const Brand = () => {
-  return <IndianRupee className="h-8 w-8 text-selected" />;
+  return (
+    <Image
+      src={"/icon-512x512.png"}
+      alt={""}
+      width={36}
+      height={36}
+      style={{ borderRadius: "50%" }}
+    />
+  );
 };
 
 export const Navbar = ({ links }: { links: ILink[] }) => {

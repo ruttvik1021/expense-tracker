@@ -1,15 +1,22 @@
 import { NavHeader } from "@/components/common/Headers";
 import { ContextWrapper } from "@/components/wrapper/ContextWrapper";
 import QueryWrapper from "@/components/wrapper/QueryWrapper";
-import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
-import Head from "next/head";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
   description: "Track your daily expenses",
+  generator: "Next.js",
+  manifest: "/manifest.json",
+  viewport:
+    "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
+  icons: [
+    { rel: "apple-touch-icon", url: "icon-128x128.png" },
+    { rel: "icon", url: "icon-128x128.png" },
+  ],
 };
 
 export default function RootLayout({
@@ -19,11 +26,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Head>
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#ffffff" />
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-      </Head>
       <body>
         <QueryWrapper>
           <ContextWrapper>
