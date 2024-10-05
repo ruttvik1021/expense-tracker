@@ -42,7 +42,7 @@ const ResponsiveDialogAndDrawer = ({
       </DialogContent>
     </Dialog>
   ) : (
-    <Drawer open={open} onDrag={handleClose} disablePreventScroll>
+    <Drawer open={open} onDrag={handleClose} disablePreventScroll modal>
       {triggerButton && <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>}
       <DrawerContent className="rounded-3xl mx-4">
         <DrawerHeader className="text-left">
