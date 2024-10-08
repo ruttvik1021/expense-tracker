@@ -90,6 +90,7 @@ const UpdatePassword = () => {
                 }) => (
                   <div className="space-y-2">
                     <Label htmlFor="currentPassword">Current Password</Label>
+                    <span className="text-red-600 ml-1">*</span>
                     <Input {...field} id="currentPassword" type="password" />
                     {meta.touched && meta.error && (
                       <Label className="text-base text-red-600 dark:text-red-600 pl-2">
@@ -109,6 +110,7 @@ const UpdatePassword = () => {
                 }) => (
                   <div className="space-y-2">
                     <Label htmlFor="newPassword">New Password</Label>
+                    <span className="text-red-600 ml-1">*</span>
                     <Input {...field} id="newPassword" type="password" />
                     {meta.touched && meta.error && (
                       <Label className="text-base text-red-600 dark:text-red-600 pl-2">
@@ -130,6 +132,7 @@ const UpdatePassword = () => {
                     <Label htmlFor="confirmNewPassword">
                       Confirm New Password
                     </Label>
+                    <span className="text-red-600 ml-1">*</span>
                     <Input {...field} id="confirmNewPassword" type="password" />
                     {meta.touched && meta.error && (
                       <Label className="text-base text-red-600 dark:text-red-600 pl-2">
