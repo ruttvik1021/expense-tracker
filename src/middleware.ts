@@ -15,11 +15,6 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if ((token && pathname === "/login") || (token && pathname === "/register")) {
-    url.pathname = "/";
-    return NextResponse.redirect(url);
-  }
-
   try {
     await jwtVerify(
       token.value,
@@ -31,3 +26,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 }
+
+export const config = {
+  matcher: ["/", "/category", "/transactions"],
+};
