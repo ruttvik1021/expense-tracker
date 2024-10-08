@@ -24,13 +24,13 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
 const PasswordSchema = Yup.object().shape({
-  currentPassword: Yup.string().required("Current password is required"),
+  currentPassword: Yup.string().required("Required"),
   newPassword: Yup.string()
     .min(8, "Password must be at least 8 characters")
-    .required("New password is required"),
+    .required("Required"),
   confirmNewPassword: Yup.string()
     .oneOf([Yup.ref("newPassword")], "Passwords must match")
-    .required("Confirm new password is required"),
+    .required("Required"),
 });
 
 export const PasswordInitialValues = {
