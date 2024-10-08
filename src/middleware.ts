@@ -4,7 +4,6 @@ import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
   const cookieStore = cookies();
   const token = cookieStore.get("token");
   const url = req.nextUrl.clone();
