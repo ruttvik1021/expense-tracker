@@ -46,8 +46,11 @@ type UpdatePasswordPayload = Omit<
 
 const UpdatePassword = () => {
   const handlePasswordSubmit = (values: typeof PasswordInitialValues) => {
-    const { confirmNewPassword, ...rest } = values;
-    updatePasswordFn(rest);
+    const payload = {
+      currentPassword: values.currentPassword,
+      newPassword: values.newPassword,
+    };
+    updatePasswordFn(payload);
   };
 
   const { mutate: updatePasswordFn, isPending: isUpdating } = useMutation({
