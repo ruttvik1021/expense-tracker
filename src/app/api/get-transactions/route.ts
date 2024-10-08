@@ -51,7 +51,6 @@ export async function POST(req: Request) {
     await connectToDatabase();
     const body = await req.json();
 
-    console.log("body", body);
     const { categoryId, month } = body;
     const startOfMonth = month ? new Date(month) : new Date();
     startOfMonth.setDate(1); // Set to the 1st day of the month

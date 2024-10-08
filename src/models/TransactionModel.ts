@@ -26,7 +26,6 @@ const TransactionSchema: Schema<TransactionDocument> = new Schema(
     timestamps: true,
   }
 );
-console.log("modles", mongoose.models);
 
 // Create or retrieve the Category model
 const TransactionModel =
