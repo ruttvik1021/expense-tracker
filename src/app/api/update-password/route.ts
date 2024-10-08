@@ -10,7 +10,6 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 const schema = Joi.object({
   currentPassword: Joi.string().min(8).required(),
   newPassword: Joi.string().min(8).required(),
-  confirmPassword: Joi.ref('newPassword'), // Ensure both new and confirm passwords match
 });
 
 export async function POST(req: Request) {
@@ -33,16 +32,10 @@ export async function POST(req: Request) {
     const token = req.headers.get("authorization");
 
     if (!token) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const decodedToken = await jwtVerify(
-      token.split("Bearer ")[1],
-      secret
-    );
+    const decodedToken = await jwtVerify(token.split("Bearer ")[1], secret);
 
     const { userId } = decodedToken.payload;
 
@@ -52,14 +45,14 @@ export async function POST(req: Request) {
     // Find the user
     const user = await UserModel.findById(userId);
     if (!user) {
-      return NextResponse.json(
-        { message: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
     // Compare current password
-    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
     if (!isPasswordValid) {
       return NextResponse.json(
         { message: "Incorrect current password" },
@@ -74,8 +67,10 @@ export async function POST(req: Request) {
     user.password = hashedNewPassword;
     await user.save();
 
-    return NextResponse.json({ message: "Password updated successfully" }, { status: 200 });
-
+    return NextResponse.json(
+      { message: "Password updated successfully" },
+      { status: 200 }
+    );
   } catch (err) {
     console.error(err);
     return NextResponse.json(
