@@ -1,7 +1,8 @@
+import UpdatePassword from "@/components/updatepassword";
 import React from "react";
 
 const Profile = () => {
-  return <div>Profile</div>;
+  return <UpdatePassword />;
 };
 
 export default Profile;

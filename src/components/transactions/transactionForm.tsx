@@ -10,7 +10,15 @@ import {
 import { CategoryDocument } from "@/models/CategoryModel";
 import { queryKeys } from "@/utils/queryKeys";
 import { useIsMutating, useQueryClient } from "@tanstack/react-query";
-import { Field, FieldInputProps, FieldMetaProps, Formik } from "formik";
+import {
+  Field,
+  FieldInputProps,
+  FieldMetaProps,
+  Form,
+  Formik,
+  FormikProvider,
+  useFormik,
+} from "formik";
 import { CalendarIcon, IndianRupee, Notebook, Tag } from "lucide-react";
 import moment from "moment";
 import * as Yup from "yup";
@@ -84,191 +92,192 @@ const TransactionForm = ({
     onReset();
   };
 
+  const transactionFormik = useFormik({
+    initialValues: { ...transactionFormInitialValues, ...initialValues },
+    validationSchema: transactionFormValidationSchema,
+    onSubmit: handleSubmit,
+  });
+
   return (
-    <Formik
-      initialValues={{
-        ...transactionFormInitialValues,
-        ...initialValues,
-      }}
-      validationSchema={transactionFormValidationSchema}
-      onSubmit={handleSubmit}
-      onReset={onReset}
-    >
-      {({ setFieldValue, handleSubmit, handleReset }) => (
-        <form onSubmit={handleSubmit} onReset={handleReset}>
-          <Field name="amount">
-            {({
-              field,
-              meta,
-            }: {
-              field: FieldInputProps<number>;
-              meta: FieldMetaProps<number>;
-            }) => (
-              <div className="space-y-1 my-2">
-                <Label
-                  htmlFor="amount"
-                  className="flex items-center space-x-2 text-gray-700"
-                >
-                  <IndianRupee className="w-5 h-5" />
-                  <span>Amount</span>
+    <FormikProvider value={transactionFormik}>
+      <Form onSubmit={transactionFormik.handleSubmit}>
+        <Field name="amount">
+          {({
+            field,
+            meta,
+          }: {
+            field: FieldInputProps<number>;
+            meta: FieldMetaProps<number>;
+          }) => (
+            <div className="space-y-1 my-2">
+              <Label
+                htmlFor="amount"
+                className="flex items-center space-x-2 text-gray-700"
+              >
+                <IndianRupee className="w-5 h-5" />
+                <span>Amount</span>
+              </Label>
+              <Input
+                {...field}
+                type="number"
+                autoComplete="off"
+                placeholder="Amount"
+                disabled={isTransactionMutating > 0}
+              />
+              {meta.touched && meta.error && (
+                <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                  {meta.error}
                 </Label>
-                <Input
-                  {...field}
-                  type="number"
-                  autoComplete="off"
-                  placeholder="Amount"
-                  disabled={isTransactionMutating > 0}
-                />
-                {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
-                    {meta.error}
-                  </Label>
-                )}
-              </div>
-            )}
-          </Field>
-          <Field name="category">
-            {({
-              field,
-              meta,
-            }: {
-              field: FieldInputProps<string>;
-              meta: FieldMetaProps<string>;
-            }) => (
-              <div className="spcace-y-1 my-2">
-                <Label
-                  htmlFor="category"
-                  className="flex items-center space-x-2 text-gray-700"
-                >
-                  <Tag className="w-5 h-5" />
-                  <span>Category</span>
+              )}
+            </div>
+          )}
+        </Field>
+        <Field name="category">
+          {({
+            field,
+            meta,
+          }: {
+            field: FieldInputProps<string>;
+            meta: FieldMetaProps<string>;
+          }) => (
+            <div className="spcace-y-1 my-2">
+              <Label
+                htmlFor="category"
+                className="flex items-center space-x-2 text-gray-700"
+              >
+                <Tag className="w-5 h-5" />
+                <span>Category</span>
+              </Label>
+              <Select
+                onValueChange={(e) =>
+                  transactionFormik.setFieldValue("category", e)
+                }
+                value={field.value}
+                disabled={isTransactionMutating > 0}
+              >
+                <SelectTrigger className="mt-2">
+                  <SelectValue placeholder="Select a Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {data?.data?.categories.map(
+                      (category: CategoryDocument) => (
+                        <SelectItem
+                          value={category._id as string}
+                          key={category._id as string}
+                          disabled={isTransactionMutating > 0}
+                        >
+                          <div className="flex items-center gap-2">
+                            <Label>{category.icon}</Label>
+                            <Label>{category.category}</Label>
+                          </div>
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {meta.touched && meta.error && (
+                <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                  {meta.error}
                 </Label>
-                <Select
-                  onValueChange={(e) => setFieldValue("category", e)}
-                  value={field.value}
-                  disabled={isTransactionMutating > 0}
-                >
-                  <SelectTrigger className="mt-2">
-                    <SelectValue placeholder="Select a Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {data?.data?.categories.map(
-                        (category: CategoryDocument) => (
-                          <SelectItem
-                            value={category._id as string}
-                            key={category._id as string}
-                            disabled={isTransactionMutating > 0}
-                          >
-                            <div className="flex items-center gap-2">
-                              <Label>{category.icon}</Label>
-                              <Label>{category.category}</Label>
-                            </div>
-                          </SelectItem>
-                        )
-                      )}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
-                    {meta.error}
-                  </Label>
-                )}
-              </div>
-            )}
-          </Field>
-          <Field name="date">
-            {({
-              field,
-              meta,
-            }: {
-              field: FieldInputProps<string>;
-              meta: FieldMetaProps<string>;
-            }) => (
-              <div className="space-y-1 my-2">
-                <Label
-                  htmlFor="date"
-                  className="flex items-center space-x-2 text-gray-700"
-                >
-                  <CalendarIcon className="w-5 h-5" />
-                  <span>Date</span>
+              )}
+            </div>
+          )}
+        </Field>
+        <Field name="date">
+          {({
+            field,
+            meta,
+          }: {
+            field: FieldInputProps<string>;
+            meta: FieldMetaProps<string>;
+          }) => (
+            <div className="space-y-1 my-2">
+              <Label
+                htmlFor="date"
+                className="flex items-center space-x-2 text-gray-700"
+              >
+                <CalendarIcon className="w-5 h-5" />
+                <span>Date</span>
+              </Label>
+              <Input
+                type="date"
+                className={`w-full justify-start text-left font-normal bg-transparent dark:border-white border-black mt-1`}
+                value={
+                  field.value
+                    ? moment(field.value).utc().format("YYYY-MM-DD")
+                    : ""
+                }
+                onChange={(e) =>
+                  transactionFormik.setFieldValue(
+                    "date",
+                    new Date(e.target.value)
+                  )
+                }
+                disabled={isTransactionMutating > 0}
+                max={moment().format("YYYY-MM-DD")}
+              />
+              {meta.touched && meta.error && (
+                <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                  {meta.error}
                 </Label>
-                <Input
-                  type="date"
-                  className={`w-full justify-start text-left font-normal bg-transparent dark:border-white border-black mt-1`}
-                  value={
-                    field.value
-                      ? moment(field.value).utc().format("YYYY-MM-DD")
-                      : ""
-                  }
-                  onChange={(e) =>
-                    setFieldValue("date", new Date(e.target.value))
-                  }
-                  disabled={isTransactionMutating > 0}
-                  max={moment().format("YYYY-MM-DD")}
-                />
-                {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
-                    {meta.error}
-                  </Label>
-                )}
-              </div>
-            )}
-          </Field>
+              )}
+            </div>
+          )}
+        </Field>
 
-          <Field name="spentOn">
-            {({
-              field,
-              meta,
-            }: {
-              field: FieldInputProps<string>;
-              meta: FieldMetaProps<string>;
-            }) => (
-              <div className="space-y-1 my-2">
-                <Label
-                  htmlFor="spentOn"
-                  className="flex items-center space-x-2 text-gray-700"
-                >
-                  <Notebook className="w-5 h-5" />
-                  <span>For</span>
+        <Field name="spentOn">
+          {({
+            field,
+            meta,
+          }: {
+            field: FieldInputProps<string>;
+            meta: FieldMetaProps<string>;
+          }) => (
+            <div className="space-y-1 my-2">
+              <Label
+                htmlFor="spentOn"
+                className="flex items-center space-x-2 text-gray-700"
+              >
+                <Notebook className="w-5 h-5" />
+                <span>For</span>
+              </Label>
+              <Input
+                {...field}
+                type="text"
+                id="spentOn"
+                placeholder="What did you spend on?"
+                disabled={isTransactionMutating > 0}
+              />
+              {meta.touched && meta.error && (
+                <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                  {meta.error}
                 </Label>
-                <Input
-                  {...field}
-                  type="text"
-                  id="spentOn"
-                  placeholder="What did you spend on?"
-                  disabled={isTransactionMutating > 0}
-                />
-                {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
-                    {meta.error}
-                  </Label>
-                )}
-              </div>
-            )}
-          </Field>
+              )}
+            </div>
+          )}
+        </Field>
 
-          <div className="flex justify-between">
-            <Button
-              type="reset"
-              variant="destructive"
-              onClick={handleReset}
-              disabled={isTransactionMutating > 0}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="default"
-              loading={isTransactionMutating > 0}
-            >
-              {editTransaction ? "Update" : "Add"}
-            </Button>
-          </div>
-        </form>
-      )}
-    </Formik>
+        <div className="flex justify-between">
+          <Button
+            type="reset"
+            variant="destructive"
+            onClick={() => transactionFormik.resetForm()}
+            disabled={isTransactionMutating > 0}
+          >
+            Reset
+          </Button>
+          <Button
+            type="submit"
+            variant="default"
+            loading={isTransactionMutating > 0}
+          >
+            {editTransaction ? "Update" : "Add"}
+          </Button>
+        </div>
+      </Form>
+    </FormikProvider>
   );
 };
 

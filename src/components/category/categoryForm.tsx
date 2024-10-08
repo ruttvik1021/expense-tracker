@@ -2,7 +2,14 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { queryKeys } from "@/utils/queryKeys";
 import { useIsMutating, useQueryClient } from "@tanstack/react-query";
-import { Field, FieldInputProps, FieldMetaProps, Formik } from "formik";
+import {
+  Field,
+  FieldInputProps,
+  FieldMetaProps,
+  Form,
+  FormikProvider,
+  useFormik,
+} from "formik";
 import { IndianRupee, Tag } from "lucide-react";
 import { useState } from "react";
 import * as Yup from "yup";
@@ -62,145 +69,145 @@ const CategoryForm = ({
     }
     onReset();
   };
+
+  const categoryFormik = useFormik({
+    initialValues: { ...categoryFormInitialValues, ...initialValues },
+    validationSchema,
+    onSubmit: handleSubmit,
+  });
+
   return (
-    <Formik
-      initialValues={{ ...categoryFormInitialValues, ...initialValues }}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-      onReset={onReset}
-    >
-      {({ setFieldValue, handleSubmit, handleReset }) => (
-        <>
-          <form onSubmit={handleSubmit} onReset={handleReset}>
-            <Field name="icon">
-              {({
-                field,
-                meta,
-              }: {
-                field: FieldInputProps<string>;
-                meta: FieldMetaProps<string>;
-              }) => (
-                <div className="my-2">
-                  <Avatar
-                    className={`cursor-pointer p-1 border-2 ${
-                      meta.touched && meta.error
-                        ? "border-red-600"
-                        : "border-selected"
-                    }`}
-                    {...field}
-                    onClick={() => setOpen(true)}
-                  >
-                    <AvatarFallback>{field.value}</AvatarFallback>
-                  </Avatar>
-                  {meta.touched && meta.error && (
-                    <Label className="text-base text-red-600 dark:text-red-600 pl-2">
-                      {meta.error}
-                    </Label>
-                  )}
-                </div>
-              )}
-            </Field>
-
-            <Field name="category">
-              {({
-                field,
-                meta,
-              }: {
-                field: FieldInputProps<string>;
-                meta: FieldMetaProps<string>;
-              }) => (
-                <div className="space-y-1 my-2">
-                  <Label
-                    htmlFor="category"
-                    className="flex items-center space-x-2 text-gray-700"
-                  >
-                    <Tag className="w-5 h-5" />
-                    <span>Category</span>
+    <>
+      <FormikProvider value={categoryFormik}>
+        <Form onSubmit={categoryFormik.handleSubmit}>
+          <Field name="icon">
+            {({
+              field,
+              meta,
+            }: {
+              field: FieldInputProps<string>;
+              meta: FieldMetaProps<string>;
+            }) => (
+              <div className="my-2">
+                <Avatar
+                  className={`cursor-pointer p-1 border-2 ${
+                    meta.touched && meta.error
+                      ? "border-red-600"
+                      : "border-selected"
+                  }`}
+                  {...field}
+                  onClick={() => setOpen(true)}
+                >
+                  <AvatarFallback>{field.value}</AvatarFallback>
+                </Avatar>
+                {meta.touched && meta.error && (
+                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                    {meta.error}
                   </Label>
-                  <Input
-                    {...field}
-                    type="text"
-                    id="category"
-                    placeholder="Category Name"
-                    disabled={isCategoryMutating > 0}
-                  />
-                  {meta.touched && meta.error && (
-                    <Label className="text-base text-red-600 dark:text-red-600 pl-2">
-                      {meta.error}
-                    </Label>
-                  )}
-                </div>
-              )}
-            </Field>
-
-            <Field name="budget">
-              {({
-                field,
-                meta,
-              }: {
-                field: FieldInputProps<number>;
-                meta: FieldMetaProps<number>;
-              }) => (
-                <div className="space-y-1">
-                  <Label
-                    htmlFor="category"
-                    className="flex items-center space-x-2 text-gray-700"
-                  >
-                    <IndianRupee className="w-5 h-5" />
-                    <span>Budget</span>
-                  </Label>
-                  <Input
-                    {...field}
-                    type="number"
-                    autoComplete="off"
-                    placeholder="Budget (Monthly)"
-                    disabled={isCategoryMutating > 0}
-                  />
-                  {meta.touched && meta.error && (
-                    <Label className="text-base text-red-600 dark:text-red-600 pl-2">
-                      {meta.error}
-                    </Label>
-                  )}
-                </div>
-              )}
-            </Field>
-
-            <div className="flex justify-between mt-3">
-              <Button
-                type="reset"
-                variant="destructive"
-                onClick={handleReset}
-                disabled={isCategoryMutating > 0}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="default"
-                loading={isCategoryMutating > 0}
-              >
-                {editCategory ? "Update" : "Add"}
-              </Button>
-            </div>
-          </form>
-          <ResponsiveDialogAndDrawer
-            open={open}
-            handleClose={() => setOpen(false)}
-            title={"Pick Emoji for Category"}
-            content={
-              <div className="flex justify-center">
-                <EmojiPicker
-                  onClick={(e) => {
-                    setFieldValue("icon", e.emoji);
-                    setOpen(false);
-                  }}
-                />
+                )}
               </div>
-            }
-          />
-        </>
-      )}
-    </Formik>
+            )}
+          </Field>
+
+          <Field name="category">
+            {({
+              field,
+              meta,
+            }: {
+              field: FieldInputProps<string>;
+              meta: FieldMetaProps<string>;
+            }) => (
+              <div className="space-y-1 my-2">
+                <Label
+                  htmlFor="category"
+                  className="flex items-center space-x-2 text-gray-700"
+                >
+                  <Tag className="w-5 h-5" />
+                  <span>Category</span>
+                </Label>
+                <Input
+                  {...field}
+                  type="text"
+                  id="category"
+                  placeholder="Category Name"
+                  disabled={isCategoryMutating > 0}
+                />
+                {meta.touched && meta.error && (
+                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                    {meta.error}
+                  </Label>
+                )}
+              </div>
+            )}
+          </Field>
+
+          <Field name="budget">
+            {({
+              field,
+              meta,
+            }: {
+              field: FieldInputProps<number>;
+              meta: FieldMetaProps<number>;
+            }) => (
+              <div className="space-y-1">
+                <Label
+                  htmlFor="category"
+                  className="flex items-center space-x-2 text-gray-700"
+                >
+                  <IndianRupee className="w-5 h-5" />
+                  <span>Budget</span>
+                </Label>
+                <Input
+                  {...field}
+                  type="number"
+                  autoComplete="off"
+                  placeholder="Budget (Monthly)"
+                  disabled={isCategoryMutating > 0}
+                />
+                {meta.touched && meta.error && (
+                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                    {meta.error}
+                  </Label>
+                )}
+              </div>
+            )}
+          </Field>
+
+          <div className="flex justify-between mt-3">
+            <Button
+              type="reset"
+              variant="destructive"
+              onClick={() => categoryFormik.resetForm()}
+              disabled={isCategoryMutating > 0}
+            >
+              Reset
+            </Button>
+            <Button
+              type="submit"
+              variant="default"
+              loading={isCategoryMutating > 0}
+            >
+              {editCategory ? "Update" : "Add"}
+            </Button>
+          </div>
+        </Form>
+      </FormikProvider>
+      <ResponsiveDialogAndDrawer
+        open={open}
+        handleClose={() => setOpen(false)}
+        title={"Pick Emoji for Category"}
+        content={
+          <div className="flex justify-center">
+            <EmojiPicker
+              onClick={(e) => {
+                categoryFormik.setFieldValue("icon", e.emoji);
+                setOpen(false);
+              }}
+            />
+          </div>
+        }
+      />
+    </>
   );
 };
 

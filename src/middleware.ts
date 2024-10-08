@@ -4,6 +4,7 @@ import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
   const cookieStore = cookies();
   const token = cookieStore.get("token");
   const url = req.nextUrl.clone();
@@ -11,6 +12,11 @@ export async function middleware(req: NextRequest) {
   if (!token) {
     // Clone the request URL object
     url.pathname = "/login"; // Specify the absolute path
+    return NextResponse.redirect(url);
+  }
+
+  if ((token && pathname === "/login") || (token && pathname === "/register")) {
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 

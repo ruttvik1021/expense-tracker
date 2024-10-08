@@ -15,6 +15,7 @@ import { LogoutButton, Navbar, NavDrawer } from "../Navigation";
 import IconToggle from "../Toggles/IconToggle";
 import ThemeToggleButton from "../Toggles/ThemeToggle";
 import IconPreferenceAlert from "@/components/alerts/IconPreferences";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -23,6 +24,7 @@ const navLinks = [
 ];
 
 export const NavHeader = () => {
+  const router = useRouter();
   const { isAuthenticated } = useAuthContext();
   if (isAuthenticated) {
     return (
@@ -40,7 +42,9 @@ export const NavHeader = () => {
                   <User />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={() => router.push("profile")}>
+                    My Account
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <div
