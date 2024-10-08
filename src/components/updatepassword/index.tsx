@@ -1,18 +1,17 @@
 "use client";
-import React from "react";
+import { updatePassword } from "@/ajax/profileApi";
+import { useMutation } from "@tanstack/react-query";
 import {
   Field,
   FieldInputProps,
   FieldMetaProps,
   Form,
-  Formik,
   FormikProvider,
   useFormik,
 } from "formik";
+import { toast } from "sonner";
 import * as Yup from "yup";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import {
   Card,
   CardContent,
@@ -21,10 +20,8 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { queryKeys } from "@/utils/queryKeys";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { updatePassword } from "@/ajax/profileApi";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 const PasswordSchema = Yup.object().shape({
   currentPassword: Yup.string().required("Current password is required"),

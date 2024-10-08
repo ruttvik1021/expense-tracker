@@ -1,21 +1,20 @@
 "use client";
 
+import IconPreferenceAlert from "@/components/alerts/IconPreferences";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { User } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { LogoutButton, Navbar, NavDrawer } from "../Navigation";
 import IconToggle from "../Toggles/IconToggle";
 import ThemeToggleButton from "../Toggles/ThemeToggle";
-import IconPreferenceAlert from "@/components/alerts/IconPreferences";
-import { useRouter } from "next/navigation";
 
 const navLinks = [
   { label: "Home", href: "/" },
