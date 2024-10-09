@@ -37,7 +37,11 @@ export const getProfile = async () => {
     new TextEncoder().encode(process.env.JWT_SECRET!)
   );
   await connectToDatabase();
-  const user = await UserModel.findById(decodedToken.payload.userId);
+  const user = await UserModel.findById(decodedToken.payload.userId, {
+    name: 1,
+    budget: 1,
+    _id: 0,
+  });
   if (!user) return { error: "User not found" };
   return { data: JSON.stringify(user) };
 };

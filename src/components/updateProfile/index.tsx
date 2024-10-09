@@ -1,5 +1,6 @@
 "use client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { convertServerResponse } from "@/utils/convertServerResponse";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Field,
   FieldInputProps,
@@ -10,6 +11,8 @@ import {
 } from "formik";
 import React from "react";
 import { toast } from "sonner";
+import { getProfile, updateProfile } from "../../../server/actions/profile";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -18,50 +21,50 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { queryKeys } from "@/utils/queryKeys";
-import { updateProfile, getProfile } from "../../../server/actions/profile";
-import { convertServerResponse } from "@/utils/convertServerResponse";
+import { Label } from "../ui/label";
 // import { getProfileApi } from "@/ajax/profileApi";
 // import { updateProfile } from "@/ajax/profileApi";
 
 export const ProfileInitialValues = {
   name: "",
   budget: 0,
-  _id: "",
 };
 
 type UpdateProfilePayload = typeof ProfileInitialValues;
 
 const UpdateProfile = () => {
-  const queryClient = useQueryClient();
-  const { data: userData } = useQuery({
-    queryKey: [queryKeys.profile],
-    queryFn: () => getProfile(),
-  });
   const { mutate: updatePasswordFn, isPending: isProfileUpdating } =
     useMutation({
       mutationFn: (data: UpdateProfilePayload) => updateProfile(data),
-      onSuccess() {
-        queryClient.invalidateQueries({ queryKey: [queryKeys.profile] });
-      },
-      onError(error) {
-        toast.error(error?.message);
+      onSettled(data) {
+        if (data?.error) {
+          toast.error(data.error);
+        } else if (data?.data) {
+          toast.success("Details updated successfully");
+          updateProfileFormik.setValues(convertServerResponse(data.data));
+        }
       },
     });
 
-  React.useEffect(() => {
-    if (userData?.data) {
-      updateProfileFormik.setValues(convertServerResponse(userData.data));
-    }
-  }, [userData]);
+  const { data: userData } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => await getProfile(),
+  });
 
   const updateProfileFormik = useFormik({
     initialValues: ProfileInitialValues,
     onSubmit: (value) => updatePasswordFn(value),
   });
+
+  // Use useEffect to set form values when the query has data
+  React.useEffect(() => {
+    if (userData?.data) {
+      updateProfileFormik.setValues(convertServerResponse(userData.data));
+    } else if (userData?.error) {
+      toast.error(userData?.error);
+    }
+  }, [userData]);
 
   return (
     <FormikProvider value={updateProfileFormik}>
