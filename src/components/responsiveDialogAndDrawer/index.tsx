@@ -44,7 +44,7 @@ const ResponsiveDialogAndDrawer = ({
   ) : (
      <Dialog open={open}>
       {triggerButton && <DialogTrigger asChild>{triggerButton}</DialogTrigger>}
-      <DialogContent className="sm:max-w-[425px]" onClose={handleClose}>
+      <DialogContent className="sm:max-w-[350px] rounded-3xl" onClose={handleClose}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{content}</DialogDescription>
