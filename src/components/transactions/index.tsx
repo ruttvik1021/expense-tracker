@@ -208,7 +208,7 @@ const Transactions = () => {
                             </h2>
                           </div>
 
-                          <div className="flex items-center text-center font-bold text-lg">
+                          <div className="flex items-center text-center font-bold text-md">
                             <IndianRupee className="icon" />
                             {transaction.amount}
                           </div>
