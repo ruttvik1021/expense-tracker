@@ -5,12 +5,16 @@ export interface IUser extends Document {
   password: string;
   createdAt: Date;
   updatedAt: Date;
+  name: string;
+  budget: number;
 }
 
 const UserSchema: Schema<IUser> = new Schema(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    name: { type: String },
+    budget: { type: Number, default: 0 },
   },
   {
     timestamps: true,

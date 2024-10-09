@@ -10,4 +10,5 @@ export const queryKeys = {
   user: "user",
   categoryDate: "categoryDate",
   transactionFilter: "transactionFilter",
+  profile: "profile",
 };

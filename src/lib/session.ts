@@ -25,14 +25,10 @@ export async function encrypt(payload: Record<string, unknown>) {
 }
 
 export async function decrypt(session: string) {
-  try {
-    const { payload } = await jwtVerify(session, key, {
-      algorithms: ["HS256"],
-    });
-    return payload;
-  } catch (error) {
-    return null;
-  }
+  const { payload } = await jwtVerify(session, key, {
+    algorithms: ["HS256"],
+  });
+  return payload;
 }
 
 export async function createSession(userData: Record<string, unknown>) {
