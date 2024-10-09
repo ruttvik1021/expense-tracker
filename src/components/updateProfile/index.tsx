@@ -1,6 +1,7 @@
 "use client";
 import { convertServerResponse } from "@/utils/convertServerResponse";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryKeys } from "@/utils/queryKeys";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Field,
   FieldInputProps,
@@ -34,6 +35,7 @@ export const ProfileInitialValues = {
 type UpdateProfilePayload = typeof ProfileInitialValues;
 
 const UpdateProfile = () => {
+  const queryClient = useQueryClient();
   const { mutate: updatePasswordFn, isPending: isProfileUpdating } =
     useMutation({
       mutationFn: (data: UpdateProfilePayload) => updateProfile(data),
@@ -42,14 +44,14 @@ const UpdateProfile = () => {
           toast.error(data.error);
         } else if (data?.data) {
           toast.success("Details updated successfully");
-          updateProfileFormik.setValues(convertServerResponse(data.data));
+          queryClient.invalidateQueries({ queryKey: [queryKeys.profile] });
         }
       },
     });
 
-  const { data: userData } = useQuery({
-    queryKey: ["profile"],
-    queryFn: async () => await getProfile(),
+  const { data: userData, isLoading } = useQuery({
+    queryKey: [queryKeys.profile],
+    queryFn: () => getProfile(),
   });
 
   const updateProfileFormik = useFormik({
@@ -85,7 +87,12 @@ const UpdateProfile = () => {
               }) => (
                 <div className="space-y-2">
                   <Label htmlFor="userName">Name</Label>
-                  <Input {...field} id="userName" type="text" />
+                  <Input
+                    {...field}
+                    id="userName"
+                    type="text"
+                    disabled={isProfileUpdating || isLoading}
+                  />
                   {meta.touched && meta.error && (
                     <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                       {meta.error}
@@ -104,7 +111,12 @@ const UpdateProfile = () => {
               }) => (
                 <div className="space-y-2">
                   <Label htmlFor="monthlyBudget">Monthly Budget</Label>
-                  <Input {...field} id="monthlyBudget" type="number" />
+                  <Input
+                    {...field}
+                    id="monthlyBudget"
+                    type="number"
+                    disabled={isProfileUpdating || isLoading}
+                  />
                   {meta.touched && meta.error && (
                     <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                       {meta.error}
@@ -115,7 +127,7 @@ const UpdateProfile = () => {
             </Field>
           </CardContent>
           <CardFooter>
-            <Button type="submit" disabled={isProfileUpdating}>
+            <Button type="submit" loading={isProfileUpdating || isLoading}>
               Update Profile
             </Button>
           </CardFooter>

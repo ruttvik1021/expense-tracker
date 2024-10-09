@@ -24,7 +24,8 @@ export const updateProfile = async (profile: UpdateProfilePayload) => {
 
   const updatedUser = await UserModel.findOneAndUpdate(
     { _id: decodedToken.payload.userId },
-    { name, budget }
+    { name, budget },
+    { new: true, projection: { name: 1, budget: 1 } }
   );
   if (!updatedUser) return { error: "User not updated" };
   return { data: JSON.stringify(updatedUser) };

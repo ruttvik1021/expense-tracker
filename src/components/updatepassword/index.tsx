@@ -91,7 +91,12 @@ const UpdatePassword = () => {
               }) => (
                 <div className="space-y-2">
                   <Label htmlFor="currentPassword">Current Password</Label>
-                  <Input {...field} id="currentPassword" type="password" />
+                  <Input
+                    {...field}
+                    id="currentPassword"
+                    type="password"
+                    disabled={isUpdating}
+                  />
                   {meta.touched && meta.error && (
                     <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                       {meta.error}
@@ -110,7 +115,12 @@ const UpdatePassword = () => {
               }) => (
                 <div className="space-y-2">
                   <Label htmlFor="newPassword">New Password</Label>
-                  <Input {...field} id="newPassword" type="password" />
+                  <Input
+                    {...field}
+                    id="newPassword"
+                    type="password"
+                    disabled={isUpdating}
+                  />
                   {meta.touched && meta.error && (
                     <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                       {meta.error}
@@ -131,7 +141,12 @@ const UpdatePassword = () => {
                   <Label htmlFor="confirmNewPassword">
                     Confirm New Password
                   </Label>
-                  <Input {...field} id="confirmNewPassword" type="password" />
+                  <Input
+                    {...field}
+                    id="confirmNewPassword"
+                    type="password"
+                    disabled={isUpdating}
+                  />
                   {meta.touched && meta.error && (
                     <Label className="text-base text-red-600 dark:text-red-600 pl-2">
                       {meta.error}
@@ -142,7 +157,7 @@ const UpdatePassword = () => {
             </Field>
           </CardContent>
           <CardFooter>
-            <Button type="submit" disabled={isUpdating}>
+            <Button type="submit" loading={isUpdating}>
               Update Password
             </Button>
           </CardFooter>
