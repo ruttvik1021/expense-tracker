@@ -1,6 +1,8 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
-import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
+import useSpentVsBudgetData, {
+  formatNumber,
+} from "@/hooks/useSpentVsBudgetData";
 import { cn } from "@/lib/utils";
 import { IndianRupee } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -30,6 +32,7 @@ import CategoryForm, { categoryFormInitialValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
+import { Navlink } from "../common/Navigation";
 
 export enum CategorySortBy {
   CATEGORY = "category",
@@ -160,15 +163,22 @@ const Category = () => {
                 isOverBudget ? "text-red-500" : "text-green-500"
               }`}
             >
-              {isOverBudget ? (
+              {totalBudget === 0 ? (
+                <div>
+                  <Label className="mr-1">Update your monthly budget</Label>
+                  <Navlink
+                    link={{ href: "profile", label: "here", isActive: true }}
+                  />
+                </div>
+              ) : isOverBudget ? (
                 <>
                   You're over budget by: <IndianRupee className="icon" />
-                  {totalSpent - totalBudget}
+                  {formatNumber(totalSpent - totalBudget)}
                 </>
               ) : (
                 <>
                   You're under budget by: <IndianRupee className="icon" />
-                  {totalBudget - totalSpent}
+                  {formatNumber(totalBudget - totalSpent)}
                 </>
               )}
             </div>
@@ -182,7 +192,7 @@ const Category = () => {
                   isOverBudget ? "text-red-500" : "text-green-500"
                 )}
               >
-                {totalSpent}/{totalBudget}
+                {formatNumber(totalSpent)}/{formatNumber(totalBudget)}
               </span>
             </div>
             <Progress
