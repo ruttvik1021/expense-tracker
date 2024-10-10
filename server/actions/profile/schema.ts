@@ -9,5 +9,4 @@ const UpdatePasswordSchema = {
 };
 
 export type UpdateProfilePayload = typeof ProfileInitialValues;
-
 export type UpdatePasswordPayload = typeof UpdatePasswordSchema;

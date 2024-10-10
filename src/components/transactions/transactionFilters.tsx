@@ -98,7 +98,7 @@ export default function TransactionFilters() {
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories?.data?.categories.map((category: any) => (
+                    {categories?.categories.map((category: any) => (
                       <SelectItem key={category._id} value={category._id}>
                         <div className="flex items-center gap-2">
                           <Label>{category.icon}</Label>

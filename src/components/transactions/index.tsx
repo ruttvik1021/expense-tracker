@@ -63,7 +63,7 @@ const Transactions = () => {
   const { data: categoryList } = useCategories();
   const router = useRouter();
   const { data } = useTransactions();
-  const filteredCategory = categoryList?.data.categories?.find(
+  const filteredCategory = categoryList?.categories?.find(
     (category: any) => category._id === transactionFilter.categoryId
   )?.category;
   const { deleteTransaction } = useTransactionMutation();

@@ -1,12 +1,11 @@
 // import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 
 const key = new TextEncoder().encode(process.env.JWT_SECRET!);
 
 const cookie = {
-  name: "session",
+  name: "token",
   options: {
     sameSite: "lax" as const, // Ensure that the value is correctly typed
     httpOnly: true,
@@ -25,10 +24,13 @@ export async function encrypt(payload: Record<string, unknown>) {
 }
 
 export async function decrypt(session: string) {
-  const { payload } = await jwtVerify(session, key, {
-    algorithms: ["HS256"],
-  });
-  return payload;
+  try {
+    const { payload } = await jwtVerify(session, key);
+    return payload;
+  } catch (error) {
+    deleteSession();
+    return null;
+  }
 }
 
 export async function createSession(userData: Record<string, unknown>) {
@@ -38,29 +40,11 @@ export async function createSession(userData: Record<string, unknown>) {
 }
 
 export async function verifySession() {
-  const decryptCookie = cookies().get(cookie.name)?.value;
-  const userData = await decrypt(decryptCookie || "");
+  const decryptCookie = cookies().get(cookie.name)?.value || "";
+  const userData = await decrypt(decryptCookie);
   return userData;
 }
 
 export async function deleteSession() {
   cookies().delete(cookie.name);
-}
-
-export async function validateToken(req: Request) {
-  const authorizationHeader = req.headers.get("authorization");
-  if (!authorizationHeader) {
-    return NextResponse.json(
-      { message: "Unauthorized: Missing token" },
-      { status: 401 }
-    );
-  }
-  const token = authorizationHeader.split("Bearer ")[1].trim();
-  if (!token) {
-    return NextResponse.json(
-      { message: "Unauthorized: Invalid token format" },
-      { status: 401 }
-    );
-  }
-  return token;
 }

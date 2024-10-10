@@ -1,5 +1,4 @@
 "use client";
-// import { updatePassword } from "@/ajax/profileApi";
 import { useMutation } from "@tanstack/react-query";
 import {
   Field,
@@ -22,7 +21,7 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { updatePassword } from "../../../server/actions/profile";
+import { updatePassword } from "../../../server/actions/profile/profile";
 
 const PasswordSchema = Yup.object().shape({
   currentPassword: Yup.string().required("Current password is required"),
@@ -77,8 +76,8 @@ const UpdatePassword = () => {
       <Card className="w-full max-w-sm shadow-md shadow-selected">
         <Form onSubmit={updatePasswordFormik.handleSubmit}>
           <CardHeader>
-            <CardTitle>Account Settings</CardTitle>
-            <CardDescription>Update your password</CardDescription>
+            <CardTitle>Password</CardTitle>
+            <CardDescription>Change your password here</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Field name="currentPassword">
