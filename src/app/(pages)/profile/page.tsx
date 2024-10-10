@@ -1,15 +1,24 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UpdatePassword from "@/components/updatepassword";
 import UpdateProfile from "@/components/updateProfile";
 import React from "react";
 
 const Profile = () => {
   return (
-    <div className="flex gap-5 flex-wrap">
-      <div className="flex-1">
-        <UpdateProfile />
-      </div>
-      <div className="flex-1">
-        <UpdatePassword />
+    <div className="container mx-auto p-4">
+      <div className="max-w-2xl mx-auto">
+        <Tabs defaultValue="profile" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger value="password">Password</TabsTrigger>
+          </TabsList>
+          <TabsContent value="profile" className="flex justify-center">
+            <UpdateProfile />
+          </TabsContent>
+          <TabsContent value="password" className="flex justify-center">
+            <UpdatePassword />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

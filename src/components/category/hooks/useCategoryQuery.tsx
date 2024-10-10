@@ -1,13 +1,21 @@
-import { getCategoryApi, getCategoryById } from "@/ajax/categoryApi";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { queryKeys } from "@/utils/queryKeys";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import {
+  getCategories,
+  getCategoryById,
+} from "../../../../server/actions/category/category";
 
 export const useCategories = () => {
   const { categoryFilter } = useAuthContext();
   return useQuery({
     queryKey: [queryKeys.categories, categoryFilter],
-    queryFn: () => getCategoryApi(categoryFilter),
+    queryFn: () => getCategories(categoryFilter),
+    placeholderData: keepPreviousData,
   });
 };
 
@@ -20,6 +28,5 @@ export const useCategoryById = (categoryId: string | null) => {
     queryKey: [queryKeys.categories, categoryId],
     queryFn: () => getCategoryById(categoryId || ""),
     enabled: !!categoryId,
-    staleTime: 0,
   });
 };

@@ -12,7 +12,10 @@ import {
 } from "formik";
 import React from "react";
 import { toast } from "sonner";
-import { getProfile, updateProfile } from "../../../server/actions/profile";
+import {
+  getProfile,
+  updateProfile,
+} from "../../../server/actions/profile/profile";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -24,8 +27,6 @@ import {
 } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-// import { getProfileApi } from "@/ajax/profileApi";
-// import { updateProfile } from "@/ajax/profileApi";
 
 export const ProfileInitialValues = {
   name: "",
@@ -73,8 +74,8 @@ const UpdateProfile = () => {
       <Card className="w-full max-w-sm shadow-md shadow-selected">
         <Form onSubmit={updateProfileFormik.handleSubmit}>
           <CardHeader>
-            <CardTitle>Account Settings</CardTitle>
-            <CardDescription>Update your details</CardDescription>
+            <CardTitle>Profile</CardTitle>
+            <CardDescription>Update your account details here.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <Field name="name">
