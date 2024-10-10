@@ -1,5 +1,4 @@
 "use client";
-// import { updatePassword } from "@/ajax/profileApi";
 import { useMutation } from "@tanstack/react-query";
 import {
   Field,

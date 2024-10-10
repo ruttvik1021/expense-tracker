@@ -1,17 +1,11 @@
 "use server";
 
 import { connectToDatabase } from "@/lib/mongodb";
-import { UpdatePasswordPayload, UpdateProfilePayload } from "../schema";
 import UserModel from "@/models/UserModel";
-import { cookies } from "next/headers";
-import { jwtVerify } from "jose";
-import Joi from "joi";
 import bcrypt from "bcryptjs";
-
-const updatePasswordSchema = Joi.object({
-  currentPassword: Joi.string().min(8).required(),
-  newPassword: Joi.string().min(8).required(),
-});
+import { jwtVerify } from "jose";
+import { cookies } from "next/headers";
+import { UpdatePasswordPayload, UpdateProfilePayload } from "../schema";
 
 export const updateProfile = async (profile: UpdateProfilePayload) => {
   const cookie = cookies().get("token")?.value || "";
