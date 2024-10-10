@@ -159,20 +159,18 @@ const TransactionForm = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {data?.data?.categories.map(
-                      (category: CategoryDocument) => (
-                        <SelectItem
-                          value={category._id as string}
-                          key={category._id as string}
-                          disabled={isTransactionMutating > 0}
-                        >
-                          <div className="flex items-center gap-2">
-                            <Label>{category.icon}</Label>
-                            <Label>{category.category}</Label>
-                          </div>
-                        </SelectItem>
-                      )
-                    )}
+                    {data?.categories.map((category: CategoryDocument) => (
+                      <SelectItem
+                        value={category._id as string}
+                        key={category._id as string}
+                        disabled={isTransactionMutating > 0}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Label>{category.icon}</Label>
+                          <Label>{category.category}</Label>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
