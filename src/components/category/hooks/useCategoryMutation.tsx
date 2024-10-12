@@ -7,7 +7,6 @@ import {
   updateCategoryById,
 } from "../../../../server/actions/category/category";
 import { CategoryFormValues } from "../categoryForm";
-import { CategoryDocument } from "@/models/CategoryModel";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 
 export const useCategoryMutation = () => {
