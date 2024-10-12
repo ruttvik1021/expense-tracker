@@ -7,40 +7,72 @@ import {
   updateCategoryById,
 } from "../../../../server/actions/category/category";
 import { CategoryFormValues } from "../categoryForm";
+import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 
 export const useCategoryMutation = () => {
+  const { categoryFilter, transactionFilter } = useAuthContext();
   const queryClient = useQueryClient();
 
-  const onSuccessFn = (message: string) => {
-    toast.success(message);
-    queryClient.invalidateQueries({ queryKey: [queryKeys.categories] });
-    queryClient.invalidateQueries({ queryKey: [queryKeys.transactions] });
+  const onSuccessFn = (message?: string) => {
+    message && toast.success(message);
+    queryClient.invalidateQueries({
+      queryKey: [queryKeys.categories, categoryFilter],
+      refetchType: "none",
+    });
+    queryClient.invalidateQueries({
+      queryKey: [queryKeys.transactions, transactionFilter],
+      refetchType: "none",
+    });
   };
 
   const addCategory = useMutation({
-    mutationKey: [queryKeys.mutateCategory],
     mutationFn: createCategory,
-    onSettled: (data) => {
+    onSuccess: (data) => {
       if (data?.error) {
         toast.error(data.error);
-      } else if (data?.category) {
-        onSuccessFn(data?.message || "");
+        return;
       }
+      queryClient.setQueryData(
+        [queryKeys.categories, categoryFilter],
+        (prev: any) => {
+          return {
+            categories: [data.category].concat(prev.categories),
+          };
+        }
+      );
+      onSuccessFn(data.message);
     },
   });
 
   const deleteCategory = useMutation({
-    mutationKey: [queryKeys.deleteCategory],
     mutationFn: deleteCategoryById,
     onSettled: (data) => {
-      if (data?.message) {
-        onSuccessFn(data.message);
-      }
+      queryClient.setQueryData(
+        [queryKeys.categories, categoryFilter],
+        (prev: any) => {
+          return {
+            categories: prev.categories.filter(
+              (category: any) => category._id.toString() !== data?.id
+            ),
+          };
+        }
+      );
+      // queryClient.setQueryData(
+      //   [queryKeys.transactions, transactionFilter],
+      //   (prev: any) => {
+      //     return {
+      //       transactions: prev.transactions.filter(
+      //         (transaction: any) =>
+      //           transaction.category._id.toString() !== data?.id
+      //       ),
+      //     };
+      //   }
+      // );
+      onSuccessFn(data?.message);
     },
   });
 
   const updateCategory = useMutation({
-    mutationKey: [queryKeys.mutateCategory],
     mutationFn: ({ id, values }: { id: string; values: CategoryFormValues }) =>
       updateCategoryById({ id, values }),
     onSuccess: (data) => {

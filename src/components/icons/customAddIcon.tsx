@@ -7,16 +7,27 @@ import {
 } from "@/components/ui/tooltip";
 import { Circle, PlusCircleIcon } from "lucide-react";
 import { useAuthContext } from "../wrapper/ContextWrapper";
+import { Button } from "../ui/button";
 
 const CustomAddIcon = ({
   onClick,
   tooltip,
+  type = "ICON",
 }: {
   onClick: () => void;
   tooltip?: string;
+  type?: "ICON" | "TEXT";
 }) => {
   const { isIconPreferred } = useAuthContext();
-  return (
+  return type === "TEXT" ? (
+    <Button
+      variant="outline"
+      className="border border-green-600"
+      onClick={onClick}
+    >
+      Add
+    </Button>
+  ) : (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>

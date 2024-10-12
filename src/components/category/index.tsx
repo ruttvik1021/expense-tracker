@@ -206,7 +206,7 @@ const Category = () => {
           ? Array.from({ length: 5 }).map((_, i) => (
               <CategorySkeleton key={i} />
             ))
-          : data?.categories.map((category: any) => {
+          : data?.categories?.map((category: any) => {
               return (
                 <Card
                   key={category._id}
