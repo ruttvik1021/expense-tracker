@@ -1,7 +1,7 @@
 "use server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { verifySession } from "@/lib/session";
-import CategoryModel from "@/models/CategoryModel";
+import CategoryModel, { CategoryDocument } from "@/models/CategoryModel";
 import TransactionModel from "@/models/TransactionModel";
 import mongoose, { PipelineStage } from "mongoose";
 import { CategorySchema, CategorySortBy } from "./schema";
@@ -29,12 +29,17 @@ export const createCategory = async (body: CategorySchema) => {
 
   await newCategory.save();
 
+  const plainObject = {
+    _id: newCategory._id.toString(),
+    category: newCategory.category,
+    icon: newCategory.icon,
+    budget: newCategory.budget,
+    totalAmountSpent: 0,
+  };
+
   return {
     message: "Category created successfully",
-    category: {
-      ...newCategory,
-      _id: newCategory._id.toString(),
-    },
+    category: plainObject,
   };
 };
 
@@ -162,7 +167,7 @@ export const getCategories = async (body: {
     _id: category._id.toString(),
   }));
 
-  return { categories: serializedCategories };
+  return { categories: serializedCategories as CategoryDocument[] };
 };
 
 export const getCategoryById = async (id: string) => {
@@ -201,6 +206,7 @@ export const deleteCategoryById = async (id: string) => {
 
   return {
     message: "Category deleted successfully",
+    id,
   };
 };
 
@@ -216,8 +222,11 @@ export const updateCategoryById = async ({
   const updatedCategory = await CategoryModel.findByIdAndUpdate(id, values, {
     new: true,
   });
+
+  const plainObject = updatedCategory.toObject();
+
   return {
     message: "Category updated successfully",
-    category: updatedCategory,
+    category: plainObject,
   };
 };

@@ -31,14 +31,14 @@ const useSpentVsBudgetData = (page: "Categories" | "Transactions") => {
       ? convertServerResponse(userData?.data)?.budget
       : 0;
     totalSpent =
-      categoryData?.categories.reduce(
+      categoryData?.categories?.reduce(
         (acc: number, category: any) => acc + category.totalAmountSpent,
         0
       ) || 0;
   } else {
     totalBudget = 0;
     totalSpent =
-      transactionData?.data?.transactions.reduce(
+      transactionData?.data?.transactions?.reduce(
         (acc: number, transaction: any) => acc + transaction.amount,
         0
       ) || 0;

@@ -31,7 +31,7 @@ export default function RootLayout({
           <ContextWrapper>
             <main className="bg-background relative h-screen">
               <NavHeader />
-              <section className="px-5 py-3 pb-10">{children}</section>
+              <section className="px-3 py-3 pb-10">{children}</section>
             </main>
             <Toaster richColors position="top-center" />
             <SpeedInsights />
