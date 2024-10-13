@@ -48,7 +48,6 @@ const ResponsiveDialogAndDrawer = ({
         onDrag={handleClose}
         disablePreventScroll
         modal
-        fixed
         preventScrollRestoration
         shouldScaleBackground
       >
