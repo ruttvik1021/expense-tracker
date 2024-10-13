@@ -21,14 +21,6 @@ export const useTransactionMutation = () => {
   const queryClient = useQueryClient();
   const { data } = useCategories();
 
-  const msg = {
-    _id: "670bac2703bd0fbad48503b0",
-    amount: 1,
-    spentOn: "1",
-    date: "2024-10-13T16:45:58+05:30",
-    category: { _id: "670abf3ab7a5dcd4f1a6eb11", category: "sa5", icon: "👆" },
-  };
-
   const getCategory = (id: string) => {
     console.log("data", data);
     const category = data?.categories.find((item) => item._id === id);
