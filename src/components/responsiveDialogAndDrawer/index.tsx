@@ -32,7 +32,7 @@ const ResponsiveDialogAndDrawer = ({
 }) => {
   const { isDesktop } = useDeviceType();
   return isDesktop ? (
-    <Dialog open={open}>
+    <Dialog open={open} modal>
       {triggerButton && <DialogTrigger asChild>{triggerButton}</DialogTrigger>}
       <DialogContent className="sm:max-w-[425px]" onClose={handleClose}>
         <DialogHeader>
@@ -52,7 +52,7 @@ const ResponsiveDialogAndDrawer = ({
     //   </DrawerContent>
     // </Drawer>
     <div className="m-3">
-      <Dialog open={open}>
+      <Dialog open={open} modal>
         {triggerButton && (
           <DialogTrigger asChild>{triggerButton}</DialogTrigger>
         )}
