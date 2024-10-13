@@ -72,7 +72,16 @@ export const getTransactions = async (body: Partial<ITransactionFilter>) => {
         },
       },
     },
-    { $sort: { createdAt: -1 } },
+    {
+      $addFields: {
+        dateAsDate: {
+          $dateFromString: {
+            dateString: "$date", // Convert the string date to a Date object
+          },
+        },
+      },
+    },
+    { $sort: { dateAsDate: -1 } },
     {
       $lookup: {
         from: "categories",
