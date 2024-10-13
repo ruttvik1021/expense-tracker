@@ -19,6 +19,7 @@ const CategorySchema: Schema<CategoryDocument> = new Schema(
     budget: { type: Number, required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     deletedAt: { type: Date, default: null },
+    createdAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,

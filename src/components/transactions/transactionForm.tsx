@@ -20,6 +20,7 @@ import {
 } from "formik";
 import { CalendarIcon, IndianRupee, Notebook, Tag } from "lucide-react";
 import moment from "moment";
+import { usePathname } from "next/navigation";
 import * as Yup from "yup";
 import { useCategories } from "../category/hooks/useCategoryQuery";
 import { Button } from "../ui/button";
@@ -71,6 +72,8 @@ const TransactionForm = ({
   onReset,
   editTransaction = "",
 }: CategoryFormProps) => {
+  const pathname = usePathname();
+  const disableDatePicker = pathname === "/transactions" ? false : true;
   const { data } = useCategories();
   const isTransactionMutating = useIsMutating({
     mutationKey: [queryKeys.mutateTransaction],
@@ -90,7 +93,6 @@ const TransactionForm = ({
     }
     onReset();
   };
-
   const transactionFormik = useFormik({
     initialValues: { ...transactionFormInitialValues, ...initialValues },
     validationSchema: transactionFormValidationSchema,
@@ -212,7 +214,7 @@ const TransactionForm = ({
                     new Date(e.target.value)
                   )
                 }
-                disabled={isTransactionMutating > 0}
+                disabled={disableDatePicker || isTransactionMutating > 0}
                 max={moment().format("YYYY-MM-DD")}
               />
               {meta.touched && meta.error && (

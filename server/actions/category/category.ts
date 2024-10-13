@@ -3,44 +3,145 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { verifySession } from "@/lib/session";
 import CategoryModel, { CategoryDocument } from "@/models/CategoryModel";
 import TransactionModel from "@/models/TransactionModel";
+import moment from "moment";
 import mongoose, { PipelineStage } from "mongoose";
-import { CategorySchema, CategorySortBy } from "./schema";
+import {
+  CategoryCreationDuration,
+  CategorySchema,
+  CategorySortBy,
+  PeriodType,
+} from "./schema";
 
 export const createCategory = async (body: CategorySchema) => {
   const decodedToken = await verifySession();
   await connectToDatabase();
-  const { category, icon, budget } = body;
-  const isCateogryAlreadyCreated = await CategoryModel.findOne({
+  const { category, icon, budget, periodType, startMonth, creationDuration } =
+    body;
+
+  // Check if category already exists
+  const isCategoryAlreadyCreated = await CategoryModel.findOne({
     category,
     userId: decodedToken?.userId,
     deletedAt: null,
   });
 
-  if (isCateogryAlreadyCreated) {
-    return { error: "Category already exists" };
+  if (periodType === PeriodType.ONCE) {
+    if (isCategoryAlreadyCreated) {
+      return { error: "Category already exists" };
+    }
+
+    const newCategory = new CategoryModel({
+      category,
+      icon,
+      budget,
+      userId: decodedToken?.userId,
+    });
+
+    await newCategory.save();
+
+    return {
+      message: "Category created successfully",
+      category: {
+        _id: newCategory._id.toString(),
+        category: newCategory.category,
+        icon: newCategory.icon,
+        budget: newCategory.budget,
+        totalAmountSpent: 0,
+      },
+    };
+  } else {
+    const categoriesToCreate = [];
+    const now = moment(); // Using moment.js for date manipulation
+    let periodStart: moment.Moment;
+
+    // Determine periodStart based on startMonth and creationDuration
+    if (creationDuration === CategoryCreationDuration.NEXT_12_MONTHS) {
+      periodStart = moment()
+        .month(startMonth - 1)
+        .date(1);
+      const endPeriod = moment().add(12, "months"); // 12 months from now
+
+      while (periodStart.isBefore(endPeriod)) {
+        categoriesToCreate.push(
+          new CategoryModel({
+            category,
+            icon,
+            budget,
+            userId: decodedToken?.userId,
+            createdAt: periodStart.toDate(),
+          })
+        );
+
+        // Increment based on periodType
+        switch (periodType) {
+          case PeriodType.MONTHLY:
+            periodStart.add(1, "months");
+            break;
+          case PeriodType.QUARTERLY:
+            periodStart.add(3, "months");
+            break;
+          case PeriodType.HALF_YEARLY:
+            periodStart.add(6, "months");
+            break;
+          case PeriodType.ANNUALLY:
+            periodStart.add(1, "years");
+            break;
+          default:
+            return { error: "Invalid period type" };
+        }
+      }
+    } else if (creationDuration === CategoryCreationDuration.YEAR_END) {
+      periodStart = moment()
+        .month(startMonth - 1)
+        .date(1);
+      const endOfYear = moment().endOf("year"); // End of the current year
+
+      while (periodStart.isBefore(endOfYear)) {
+        categoriesToCreate.push(
+          new CategoryModel({
+            category,
+            icon,
+            budget,
+            userId: decodedToken?.userId,
+            createdAt: periodStart.toDate(),
+          })
+        );
+
+        // Increment based on periodType
+        switch (periodType) {
+          case PeriodType.MONTHLY:
+            periodStart.add(1, "months");
+            break;
+          case PeriodType.QUARTERLY:
+            periodStart.add(3, "months");
+            break;
+          case PeriodType.HALF_YEARLY:
+            periodStart.add(6, "months");
+            break;
+          case PeriodType.ANNUALLY:
+            periodStart.add(1, "years");
+            break;
+          default:
+            return { error: "Invalid period type" };
+        }
+      }
+    } else {
+      return { error: "Invalid creation duration" };
+    }
+
+    await CategoryModel.insertMany(categoriesToCreate);
+
+    return {
+      message: `${categoriesToCreate.length} categories created successfully`,
+      categories: categoriesToCreate.map((cat) => ({
+        _id: cat._id.toString(),
+        category: cat.category,
+        icon: cat.icon,
+        budget: cat.budget,
+        totalAmountSpent: 0,
+      })),
+    };
   }
-
-  const newCategory = new CategoryModel({
-    category,
-    icon,
-    budget,
-    userId: decodedToken?.userId,
-  });
-
-  await newCategory.save();
-
-  const plainObject = {
-    _id: newCategory._id.toString(),
-    category: newCategory.category,
-    icon: newCategory.icon,
-    budget: newCategory.budget,
-    totalAmountSpent: 0,
-  };
-
-  return {
-    message: "Category created successfully",
-    category: plainObject,
-  };
 };
 
 export const getCategories = async (body: {

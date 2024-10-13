@@ -1,5 +1,4 @@
 "use client";
-import { convertServerResponse } from "@/utils/convertServerResponse";
 import { queryKeys } from "@/utils/queryKeys";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -63,7 +62,7 @@ const UpdateProfile = () => {
   // Use useEffect to set form values when the query has data
   React.useEffect(() => {
     if (userData?.data) {
-      updateProfileFormik.setValues(convertServerResponse(userData.data));
+      updateProfileFormik.setValues(userData?.data);
     } else if (userData?.error) {
       toast.error(userData?.error);
     }

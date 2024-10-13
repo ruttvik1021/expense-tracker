@@ -5,9 +5,11 @@ import useSpentVsBudgetData, {
 } from "@/hooks/useSpentVsBudgetData";
 import { cn } from "@/lib/utils";
 import { IndianRupee } from "lucide-react";
+import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import MonthYearPicker from "../common/MonthPicker";
+import { Navlink } from "../common/Navigation";
 import PageHeader from "../common/Pageheader";
 import CustomAddIcon from "../icons/customAddIcon";
 import CustomDeleteIcon from "../icons/customDeleteIcon";
@@ -32,7 +34,6 @@ import CategoryForm, { categoryFormInitialValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
-import { Navlink } from "../common/Navigation";
 
 export enum CategorySortBy {
   CATEGORY = "category",
@@ -80,8 +81,10 @@ const Category = () => {
 
   const [categoryToEdit, setCategoryToEdit] = useState<string>("");
   const [categoryToDelete, setCategoryToDelete] = useState<string>("");
-  const [transactionToAddCategory, setTransactionToAddCategory] =
-    useState<string>("");
+  const [transactionToAddCategory, setTransactionToAddCategory] = useState<{
+    id: "";
+    date: Date;
+  } | null>(null);
   const updateCategoryDate = (value: Date) => {
     setCategoryFilter({ ...categoryFilter, categoryDate: value });
   };
@@ -119,12 +122,16 @@ const Category = () => {
       <div className="mb-3">
         <div className="flex items-center justify-between mb-2">
           <PageHeader title="Category" />
-          <CustomAddIcon
-            onClick={() => {
-              setOpen({ type: "ADD", open: true });
-            }}
-            type="ICON"
-          />
+          {moment(categoryFilter.categoryDate).isBefore(
+            moment().add(1, "month").startOf("month")
+          ) && (
+            <CustomAddIcon
+              onClick={() => {
+                setOpen({ type: "ADD", open: true });
+              }}
+              type="ICON"
+            />
+          )}
         </div>
         <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
           <Select
@@ -222,23 +229,32 @@ const Category = () => {
                     <div className="flex justify-between">
                       <p className="text-4xl">{category.icon}</p>
                       <div className="flex gap-2">
-                        <CustomAddIcon
-                          onClick={() =>
-                            setTransactionToAddCategory(category._id)
-                          }
-                        />
-                        <CustomEditIcon
-                          onClick={() => {
-                            setCategoryToEdit(category._id);
-                            setOpen({ type: "EDIT", open: true });
-                          }}
-                        />
-                        <CustomDeleteIcon
-                          onClick={() => {
-                            setCategoryToDelete(category._id);
-                            setOpen({ type: "DELETE", open: true });
-                          }}
-                        />
+                        {moment(categoryFilter.categoryDate).isBefore(
+                          moment().add(1, "month").startOf("month")
+                        ) && (
+                          <>
+                            <CustomAddIcon
+                              onClick={() =>
+                                setTransactionToAddCategory({
+                                  id: category._id,
+                                  date: categoryFilter.categoryDate,
+                                })
+                              }
+                            />
+                            <CustomEditIcon
+                              onClick={() => {
+                                setCategoryToEdit(category._id);
+                                setOpen({ type: "EDIT", open: true });
+                              }}
+                            />
+                            <CustomDeleteIcon
+                              onClick={() => {
+                                setCategoryToDelete(category._id);
+                                setOpen({ type: "DELETE", open: true });
+                              }}
+                            />
+                          </>
+                        )}
                       </div>
                     </div>
                   </CardHeader>
@@ -347,7 +363,7 @@ const Category = () => {
 
       <ResponsiveDialogAndDrawer
         open={transactionToAddCategory ? true : false}
-        handleClose={() => setTransactionToAddCategory("")}
+        handleClose={() => setTransactionToAddCategory(null)}
         title={
           open.type === "ADD"
             ? "Add Transaction"
@@ -359,9 +375,10 @@ const Category = () => {
           <TransactionForm
             initialValues={{
               ...transactionFormInitialValues,
-              category: transactionToAddCategory,
+              category: transactionToAddCategory?.id || "",
+              date: moment(transactionToAddCategory?.date).format() || "",
             }}
-            onReset={() => setTransactionToAddCategory("")}
+            onReset={() => setTransactionToAddCategory(null)}
           />
         }
       />

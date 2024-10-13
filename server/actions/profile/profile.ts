@@ -26,10 +26,11 @@ export const getProfile = async () => {
   const user = await UserModel.findById(decodedToken?.userId, {
     name: 1,
     budget: 1,
+    createdAt: 1,
     _id: 0,
   });
   if (!user) return { error: "User not found" };
-  return { data: JSON.stringify(user) };
+  return { data: user.toObject() };
 };
 
 export const updatePassword = async (values: UpdatePasswordPayload) => {

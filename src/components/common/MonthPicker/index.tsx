@@ -14,9 +14,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { queryKeys } from "@/utils/queryKeys";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import moment from "moment";
 import { useState } from "react";
+import { getProfile } from "../../../../server/actions/profile/profile";
 
 const MonthYearPicker = ({
   handlePrevMonth,
@@ -33,17 +36,24 @@ const MonthYearPicker = ({
   navigationButton?: boolean;
   btnClassName?: string;
 }) => {
+  const { data: userData } = useQuery({
+    queryKey: [queryKeys.profile],
+    queryFn: () => getProfile(),
+  });
+
   const [open, setOpen] = useState<boolean>(false);
   const [year, setYear] = useState<string>(date.getFullYear().toString());
   const months = moment.months();
 
+  const userCreated = new Date(userData?.data.createdAt);
   const currentDate = new Date(); // Current date
   const currentMonth = currentDate.getMonth(); // Current month (0-11)
   const currentYear = currentDate.getFullYear(); // Current year
+  const createdAtYear = userCreated.getFullYear();
 
   const years = Array.from(
-    { length: 2 },
-    (_, i) => new Date().getFullYear() - 1 + i
+    { length: currentYear - createdAtYear + 1 },
+    (_, i) => createdAtYear + i
   );
 
   const handlePrevMonthClick = () => {
@@ -88,18 +98,23 @@ const MonthYearPicker = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80">
-          <Select value={year} onValueChange={handleYearChange}>
-            <SelectTrigger className="w-full mb-3">
-              <SelectValue placeholder="Year" />
-            </SelectTrigger>
-            <SelectContent>
-              {years.map((year) => (
-                <SelectItem key={year} value={year.toString()}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {years.length > 1 ? (
+            <>
+              <Select value={year} onValueChange={handleYearChange}>
+                <SelectTrigger className="w-full mb-3">
+                  <SelectValue placeholder="Year" />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </>
+          ) : null}
+
           <div className="grid grid-cols-3 gap-2">
             {months.map((month, index) => (
               <button

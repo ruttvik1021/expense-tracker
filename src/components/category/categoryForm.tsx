@@ -11,6 +11,7 @@ import {
   useFormik,
 } from "formik";
 import { IndianRupee, Tag } from "lucide-react";
+import moment from "moment";
 import { useState } from "react";
 import * as Yup from "yup";
 import EmojiPicker from "../emojiPicker";
@@ -18,12 +19,35 @@ import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 
 export interface CategoryFormValues {
   icon: string;
   category: string;
   budget: number;
+  periodType: PeriodType; // New field for period type
+  startMonth: number; // New field for start month
+  creationDuration: CategoryCreationDuration; // New field for creation duration
+}
+
+export enum PeriodType {
+  ONCE = "once",
+  MONTHLY = "monthly",
+  QUARTERLY = "quarterly",
+  HALF_YEARLY = "half-yearly",
+  ANNUALLY = "annually",
+}
+
+export enum CategoryCreationDuration {
+  // NEXT_12_MONTHS = "next12Months",
+  YEAR_END = "yearEnd",
 }
 
 interface CategoryFormProps {
@@ -36,6 +60,9 @@ export const categoryFormInitialValues: CategoryFormValues = {
   icon: "",
   category: "",
   budget: 0,
+  periodType: PeriodType.ONCE, // Default value
+  startMonth: moment().month() + 1, // Default to the current month
+  creationDuration: CategoryCreationDuration.YEAR_END, // Default value
 };
 
 const validationSchema = Yup.object({
@@ -45,6 +72,28 @@ const validationSchema = Yup.object({
     .min(1, "Budget must be greater than or equal to 1")
     .typeError("Must be a number")
     .required("Budget is required"),
+  startMonth: Yup.number().when("periodType", {
+    // Use a function to specify the condition
+    is: (periodType: PeriodType) => periodType !== PeriodType.ONCE,
+    then(schema) {
+      return schema
+        .required("Start month is required")
+        .min(1, "Start month must be between 1 and 12")
+        .max(12, "Start month must be between 1 and 12");
+    },
+    otherwise(schema) {
+      return schema.notRequired().nullable();
+    },
+  }),
+  creationDuration: Yup.string().when("periodType", {
+    is: (periodType: PeriodType) => periodType !== PeriodType.ONCE,
+    then(schema) {
+      return schema.required("Creation duration is required");
+    },
+    otherwise(schema) {
+      return schema.notRequired().nullable();
+    },
+  }),
 });
 
 const CategoryForm = ({
@@ -172,6 +221,146 @@ const CategoryForm = ({
               </div>
             )}
           </Field>
+
+          <Field name="periodType">
+            {({
+              field,
+              meta,
+            }: {
+              field: FieldInputProps<PeriodType>;
+              meta: FieldMetaProps<PeriodType>;
+            }) => (
+              <div className="space-y-1 my-2">
+                <Label
+                  htmlFor="periodType"
+                  className="flex items-center space-x-2 text-gray-700"
+                >
+                  <span>Period Type</span>
+                </Label>
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    categoryFormik.setFieldValue(field.name, value);
+                    if (value === PeriodType.ONCE) {
+                      categoryFormik.setFieldValue("startMonth", null);
+                      categoryFormik.setFieldValue("creationDuration", null);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="w-full mb-3">
+                    <SelectValue placeholder="Year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.values(PeriodType).map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {meta.touched && meta.error && (
+                  <Label className="text-base text-red-600 dark:text-red-600">
+                    {meta.error}
+                  </Label>
+                )}
+              </div>
+            )}
+          </Field>
+
+          {categoryFormik.values.periodType !== PeriodType.ONCE && (
+            <>
+              <Field name="startMonth">
+                {({
+                  field,
+                  meta,
+                }: {
+                  field: FieldInputProps<number>;
+                  meta: FieldMetaProps<number>;
+                }) => (
+                  <div className="space-y-1 my-2">
+                    <Label
+                      htmlFor="startMonth"
+                      className="flex items-center space-x-2 text-gray-700"
+                    >
+                      <span>Start Month</span>
+                    </Label>
+                    <Select
+                      value={String(field.value)}
+                      onValueChange={(value) =>
+                        categoryFormik.setFieldValue(field.name, value)
+                      }
+                    >
+                      <SelectTrigger className="w-full mb-3">
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {moment
+                          .months()
+                          .slice(moment().month())
+                          .map((month, index) => (
+                            <SelectItem
+                              key={index}
+                              value={String(moment().month() + index + 1)}
+                            >
+                              {month}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    {meta.touched && meta.error && (
+                      <Label className="text-base text-red-600 dark:text-red-600">
+                        {meta.error}
+                      </Label>
+                    )}
+                  </div>
+                )}
+              </Field>
+
+              <Field name="creationDuration">
+                {({
+                  field,
+                  meta,
+                }: {
+                  field: FieldInputProps<CategoryCreationDuration>;
+                  meta: FieldMetaProps<CategoryCreationDuration>;
+                }) => (
+                  <div className="space-y-1 my-2">
+                    <Label
+                      htmlFor="creationDuration"
+                      className="flex items-center space-x-2 text-gray-700"
+                    >
+                      <span>Creation Duration</span>
+                    </Label>
+                    <Select
+                      value={field.value}
+                      onValueChange={(value) =>
+                        categoryFormik.setFieldValue(field.name, value)
+                      }
+                    >
+                      <SelectTrigger className="w-full mb-3">
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.values(CategoryCreationDuration).map(
+                          (duration) => (
+                            <SelectItem key={duration} value={duration}>
+                              {duration.charAt(0).toUpperCase() +
+                                duration.slice(1)}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectContent>
+                    </Select>
+                    {meta.touched && meta.error && (
+                      <Label className="text-base text-red-600 dark:text-red-600">
+                        {meta.error}
+                      </Label>
+                    )}
+                  </div>
+                )}
+              </Field>
+            </>
+          )}
 
           <div className="flex justify-between mt-3">
             <Button
