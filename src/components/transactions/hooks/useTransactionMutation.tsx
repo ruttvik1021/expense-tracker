@@ -22,9 +22,7 @@ export const useTransactionMutation = () => {
   const { data } = useCategories();
 
   const getCategory = (id: string) => {
-    console.log("data", data);
     const category = data?.categories.find((item) => item._id === id);
-    console.log("category", category);
     return {
       category: category?.category,
       _id: category?._id,
@@ -36,33 +34,33 @@ export const useTransactionMutation = () => {
     message && toast.success(message);
     queryClient.invalidateQueries({
       queryKey: [queryKeys.categories, categoryFilter],
-      refetchType: "none",
+      // refetchType: "none",
     });
     queryClient.invalidateQueries({
       queryKey: [queryKeys.transactions, transactionFilter],
-      refetchType: "none",
+      // refetchType: "none",
     });
   };
   const addTransaction = useMutation({
     mutationFn: addTransactionFn,
 
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        [queryKeys.transactions, transactionFilter],
-        (prev: any) => {
-          return {
-            transactions: [
-              {
-                _id: data.transaction._id,
-                date: data.transaction.createdAt,
-                spentOn: data.transaction.spentOn,
-                amount: data.transaction.amount,
-                category: getCategory(data.transaction?.category),
-              },
-            ].concat(prev.transactions),
-          };
-        }
-      );
+      // queryClient.setQueryData(
+      //   [queryKeys.transactions, transactionFilter],
+      //   (prev: any) => {
+      //     return {
+      //       transactions: [
+      //         {
+      //           _id: data.transaction._id,
+      //           date: data.transaction.createdAt,
+      //           spentOn: data.transaction.spentOn,
+      //           amount: data.transaction.amount,
+      //           category: getCategory(data.transaction?.category),
+      //         },
+      //       ].concat(prev.transactions),
+      //     };
+      //   }
+      // );
       onSuccessFn(data.message);
     },
   });
@@ -70,19 +68,19 @@ export const useTransactionMutation = () => {
   const deleteTransaction = useMutation({
     mutationFn: deleteTransactionFn,
     onSettled(data) {
-      queryClient.setQueryData(
-        [queryKeys.transactions, transactionFilter],
-        (prev: any) => {
-          return {
-            transactions: prev.transactions.filter(
-              (transaction: any) => transaction._id.toString() !== data?.id
-            ),
-          };
-        }
-      );
-      queryClient.removeQueries({
-        queryKey: [queryKeys.category, data?.id],
-      });
+      // queryClient.setQueryData(
+      //   [queryKeys.transactions, transactionFilter],
+      //   (prev: any) => {
+      //     return {
+      //       transactions: prev.transactions.filter(
+      //         (transaction: any) => transaction._id.toString() !== data?.id
+      //       ),
+      //     };
+      //   }
+      // );
+      // queryClient.removeQueries({
+      //   queryKey: [queryKeys.category, data?.id],
+      // });
       onSuccessFn(data?.message);
     },
   });
@@ -96,9 +94,9 @@ export const useTransactionMutation = () => {
       values: TransactionFormValues;
     }) => updateTransactionFn({ id, values }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: [queryKeys.transactions, transactionFilter],
-      });
+      // queryClient.invalidateQueries({
+      //   queryKey: [queryKeys.transactions, transactionFilter],
+      // });
       onSuccessFn(data.message);
     },
   });

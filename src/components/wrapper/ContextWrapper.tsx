@@ -6,6 +6,7 @@ import React, { createContext, useEffect, useState } from "react";
 import { CategorySortBy } from "../category";
 import { Modes, Theme } from "../common/Toggles/ThemeToggle";
 import { IS_ICON_PREFERRED } from "../common/Toggles/IconToggle";
+import moment from "moment";
 
 export interface ICategoryFilter {
   categoryDate: Date;
@@ -56,7 +57,9 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   });
   const [transactionFilter, setTransactionFilter] = useState<
     Partial<ITransactionFilter>
-  >({});
+  >({
+    month: moment().format(),
+  });
 
   const authenticateUser = (token: string) => {
     Cookies.set("token", token);
