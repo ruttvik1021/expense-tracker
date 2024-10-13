@@ -21,14 +21,14 @@ export const useTransactionMutation = () => {
   const queryClient = useQueryClient();
   const { data } = useCategories();
 
-  const getCategory = (id: string) => {
-    const category = data?.categories.find((item) => item._id === id);
-    return {
-      category: category?.category,
-      _id: category?._id,
-      icon: category?.icon,
-    };
-  };
+  // const getCategory = (id: string) => {
+  //   const category = data?.categories.find((item) => item._id === id);
+  //   return {
+  //     category: category?.category,
+  //     _id: category?._id,
+  //     icon: category?.icon,
+  //   };
+  // };
 
   const onSuccessFn = (message?: string) => {
     message && toast.success(message);
