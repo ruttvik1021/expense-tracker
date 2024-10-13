@@ -39,6 +39,10 @@ export const useCategoryMutation = () => {
           };
         }
       );
+      queryClient.setQueryData(
+        [queryKeys.category, data.category?._id],
+        data.category
+      );
       onSuccessFn(data.message);
     },
   });
@@ -56,6 +60,9 @@ export const useCategoryMutation = () => {
           };
         }
       );
+      queryClient.removeQueries({
+        queryKey: [queryKeys.category, data?.id],
+      });
       onSuccessFn(data?.message);
     },
   });
@@ -82,6 +89,12 @@ export const useCategoryMutation = () => {
           };
         }
       );
+      queryClient.setQueryData([queryKeys.category, data.category?._id], {
+        ...data.category,
+        category: data.category.category,
+        icon: data.category.icon,
+        budget: data.category.budget,
+      });
       onSuccessFn(data.message);
     },
   });

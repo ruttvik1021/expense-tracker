@@ -38,7 +38,7 @@ const useSpentVsBudgetData = (page: "Categories" | "Transactions") => {
   } else {
     totalBudget = 0;
     totalSpent =
-      transactionData?.data?.transactions?.reduce(
+      transactionData?.transactions?.reduce(
         (acc: number, transaction: any) => acc + transaction.amount,
         0
       ) || 0;

@@ -112,7 +112,7 @@ const Transactions = () => {
 
   const { totalSpent } = useSpentVsBudgetData("Transactions");
 
-  const groupedTransactions = data?.data?.transactions.reduce(
+  const groupedTransactions = data?.transactions.reduce(
     (groups: { [key: string]: any[] }, transaction: any) => {
       const group =
         groupBy === "date" ? transaction.date : transaction.category.category;
@@ -253,7 +253,7 @@ const Transactions = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.data?.transactions.map((transaction: any) => (
+            {data?.transactions.map((transaction: any) => (
               <TableRow key={transaction._id}>
                 <TableCell>
                   <div className="flex items-center gap-2">

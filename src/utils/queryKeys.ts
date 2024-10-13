@@ -2,6 +2,7 @@ export const queryKeys = {
   authUser: "authUser",
   mutateTransaction: "mutateTransaction",
   mutateCategory: "mutateCategory",
+  category: "category",
   categories: "categories",
   transactions: "transactions",
   deleteTransaction: "deleteTransaction",
