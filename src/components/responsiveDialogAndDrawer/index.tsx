@@ -43,7 +43,7 @@ const ResponsiveDialogAndDrawer = ({
     </Dialog>
   ) : (
     <>
-      <Drawer open={open} onDrag={handleClose} modal preventScrollRestoration>
+      <Drawer open={open} onDrag={handleClose} modal>
         {triggerButton && (
           <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
         )}
