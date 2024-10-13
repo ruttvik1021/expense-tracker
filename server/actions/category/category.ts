@@ -89,6 +89,7 @@ export const getCategories = async (body: {
       $match: {
         userId: new mongoose.Types.ObjectId(decodedToken?.userId as string),
         deletedAt: null,
+        createdAt: { $gte: startOfMonth, $lte: endOfMonth },
       },
     },
     {
