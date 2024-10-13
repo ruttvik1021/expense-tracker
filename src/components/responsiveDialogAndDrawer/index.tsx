@@ -43,14 +43,7 @@ const ResponsiveDialogAndDrawer = ({
     </Dialog>
   ) : (
     <>
-      <Drawer
-        open={open}
-        onDrag={handleClose}
-        disablePreventScroll
-        modal
-        preventScrollRestoration
-        shouldScaleBackground
-      >
+      <Drawer open={open} onDrag={handleClose} modal preventScrollRestoration>
         {triggerButton && (
           <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
         )}
