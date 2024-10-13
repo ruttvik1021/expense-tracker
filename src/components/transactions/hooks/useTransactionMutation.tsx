@@ -14,12 +14,12 @@ import {
   updateTransactionFn,
 } from "../../../../server/actions/transaction/transaction";
 // import { CategoryFormValues } from "@/components/category/categoryForm";
-import { useCategories } from "@/components/category/hooks/useCategoryQuery";
+// import { useCategories } from "@/components/category/hooks/useCategoryQuery";
 
 export const useTransactionMutation = () => {
   const { categoryFilter, transactionFilter } = useAuthContext();
   const queryClient = useQueryClient();
-  const { data } = useCategories();
+  // const { data } = useCategories();
 
   // const getCategory = (id: string) => {
   //   const category = data?.categories.find((item) => item._id === id);
