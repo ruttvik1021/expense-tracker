@@ -71,7 +71,7 @@ const MonthYearPicker = ({
   };
 
   return (
-    <div className="flex items-center">
+    <div>
       {navigationButton && (
         <ChevronLeft className="icon" onClick={handlePrevMonthClick} />
       )}
@@ -80,10 +80,9 @@ const MonthYearPicker = ({
           <Button
             variant="outline"
             className={cn(
-              "w-[150px] border border-foreground rounded-full",
+              "w-full border border-foreground rounded-full",
               btnClassName
             )}
-            disabled
           >
             {months[date.getMonth()]} {date.getFullYear()}
           </Button>

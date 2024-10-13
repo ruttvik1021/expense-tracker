@@ -79,7 +79,7 @@ const CategoryForm = ({
   return (
     <>
       <FormikProvider value={categoryFormik}>
-        <Form onSubmit={categoryFormik.handleSubmit}>
+        <Form onSubmit={categoryFormik.handleSubmit} className="text-left">
           <Field name="icon">
             {({
               field,
@@ -101,7 +101,7 @@ const CategoryForm = ({
                   <AvatarFallback>{field.value}</AvatarFallback>
                 </Avatar>
                 {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                  <Label className="text-left text-base text-red-600 dark:text-red-600">
                     {meta.error}
                   </Label>
                 )}
@@ -133,7 +133,7 @@ const CategoryForm = ({
                   disabled={isCategoryMutating > 0}
                 />
                 {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                  <Label className="text-base text-red-600 dark:text-red-600">
                     {meta.error}
                   </Label>
                 )}
@@ -165,7 +165,7 @@ const CategoryForm = ({
                   disabled={isCategoryMutating > 0}
                 />
                 {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                  <Label className="text-base text-red-600 dark:text-red-600">
                     {meta.error}
                   </Label>
                 )}

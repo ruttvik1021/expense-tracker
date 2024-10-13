@@ -1,3 +1,4 @@
+import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { queryKeys } from "@/utils/queryKeys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -7,8 +8,6 @@ import {
   updateCategoryById,
 } from "../../../../server/actions/category/category";
 import { CategoryFormValues } from "../categoryForm";
-import { useAuthContext } from "@/components/wrapper/ContextWrapper";
-
 export const useCategoryMutation = () => {
   const { categoryFilter, transactionFilter } = useAuthContext();
   const queryClient = useQueryClient();
@@ -57,17 +56,6 @@ export const useCategoryMutation = () => {
           };
         }
       );
-      // queryClient.setQueryData(
-      //   [queryKeys.transactions, transactionFilter],
-      //   (prev: any) => {
-      //     return {
-      //       transactions: prev.transactions.filter(
-      //         (transaction: any) =>
-      //           transaction.category._id.toString() !== data?.id
-      //       ),
-      //     };
-      //   }
-      // );
       onSuccessFn(data?.message);
     },
   });
@@ -76,6 +64,24 @@ export const useCategoryMutation = () => {
     mutationFn: ({ id, values }: { id: string; values: CategoryFormValues }) =>
       updateCategoryById({ id, values }),
     onSuccess: (data) => {
+      queryClient.setQueryData(
+        [queryKeys.categories, categoryFilter],
+        (prev: any) => {
+          return {
+            categories: prev.categories.map((category: any) => {
+              if (category._id.toString() === data.category._id) {
+                return {
+                  ...category,
+                  category: data.category.category,
+                  icon: data.category.icon,
+                  budget: data.category.budget,
+                };
+              }
+              return category;
+            }),
+          };
+        }
+      );
       onSuccessFn(data.message);
     },
   });

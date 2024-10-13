@@ -6,14 +6,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-//import {
-//  Drawer,
-//  DrawerContent,
-//  DrawerDescription,
-//  DrawerHeader,
-//  DrawerTitle,
-//  DrawerTrigger,
-//} from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { useDeviceType } from "@/hooks/useMediaQuery";
 import React from "react";
 
@@ -42,7 +42,27 @@ const ResponsiveDialogAndDrawer = ({
       </DialogContent>
     </Dialog>
   ) : (
-<div className="m-3">
+    <>
+      <Drawer
+        open={open}
+        onDrag={handleClose}
+        disablePreventScroll
+        modal
+        fixed
+        preventScrollRestoration
+        shouldScaleBackground
+      >
+        {triggerButton && (
+          <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
+        )}
+        <DrawerContent className="rounded-3xl mx-3">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>{title}</DrawerTitle>
+            <DrawerDescription>{content}</DrawerDescription>
+          </DrawerHeader>
+        </DrawerContent>
+      </Drawer>
+      {/* <div className="m-3">
      <Dialog open={open}>
       {triggerButton && <DialogTrigger asChild>{triggerButton}</DialogTrigger>}
       <DialogContent className="rounded-3xl border" onClose={handleClose}>
@@ -52,16 +72,8 @@ const ResponsiveDialogAndDrawer = ({
         </DialogHeader>
       </DialogContent>
     </Dialog>
-</div>
-    // <Drawer open={open} onDrag={handleClose} disablePreventScroll modal>
-    //  {triggerButton && <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>}
-    //  <DrawerContent className="rounded-3xl mx-4">
-    //    <DrawerHeader className="text-left">
-    //      <DrawerTitle>{title}</DrawerTitle>
-    //      <DrawerDescription>{content}</DrawerDescription>
-    //    </DrawerHeader>
-    //  </DrawerContent>
-    // </Drawer>
+</div> */}
+    </>
   );
 };
 

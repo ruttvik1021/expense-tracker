@@ -116,26 +116,35 @@ const Category = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
-        <PageHeader title="Category" />
-        <div className="flex justify-between items-center gap-2">
-          <div className="space-y-2">
-            <Select
-              onValueChange={updateCategorySort}
-              value={categoryFilter.sortBy}
+      <div className="mb-3">
+        <div className="flex items-center justify-between mb-2">
+          <PageHeader title="Category" />
+          <CustomAddIcon
+            onClick={() => {
+              setOpen({ type: "ADD", open: true });
+            }}
+            type="ICON"
+          />
+        </div>
+        <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
+          <Select
+            onValueChange={updateCategorySort}
+            value={categoryFilter.sortBy}
+          >
+            <SelectTrigger
+              id="categoryId"
+              className="sm:w-full sm:max-w-[180px]"
             >
-              <SelectTrigger id="categoryId" className="min-w-[150px]  ">
-                <SelectValue placeholder="Sort category by" />
-              </SelectTrigger>
-              <SelectContent>
-                {sortFilters.map((sort: { label: string; value: string }) => (
-                  <SelectItem key={sort.value} value={sort.value}>
-                    {sort.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+              <SelectValue placeholder="Sort category by" />
+            </SelectTrigger>
+            <SelectContent>
+              {sortFilters.map((sort: { label: string; value: string }) => (
+                <SelectItem key={sort.value} value={sort.value}>
+                  {sort.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <MonthYearPicker
             handlePrevMonth={(value) => updateCategoryDate(value)}
             handleNextMonth={(value) => updateCategoryDate(value)}
@@ -143,14 +152,11 @@ const Category = () => {
             date={categoryFilter.categoryDate}
             navigationButton={false}
           />
-          <CustomAddIcon
-            onClick={() => {
-              setOpen({ type: "ADD", open: true });
-            }}
-          />
         </div>
       </div>
-      <div className={`grid gap-4 md:grid-cols-3 lg:grid-cols-5`}>
+      <div
+        className={`grid gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5`}
+      >
         <Card
           className={cn(
             "w-full max-w-md shadow-md",
@@ -159,7 +165,7 @@ const Category = () => {
         >
           <CardHeader className="pb-2">
             <div
-              className={`flex items-center text-md font-bold ${
+              className={`flex items-center text-sm font-bold ${
                 isOverBudget ? "text-red-500" : "text-green-500"
               }`}
             >

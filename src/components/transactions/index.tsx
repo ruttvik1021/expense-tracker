@@ -127,37 +127,38 @@ const Transactions = () => {
 
   return (
     <>
-      <div className="flex justify-between mb-3">
-        <div className="flex items-center gap-3">
+      <div className="mb-3">
+        <div className="flex items-center justify-between mb-2">
           <PageHeader title={`${filteredCategory || ""} Transactions`} />
-        </div>
-        <div className="flex gap-3 items-center">
-          <div className="space-y-2">
-            <Select onValueChange={setGroupBy} value={groupBy}>
-              <SelectTrigger id="groupBy" className="min-w-[150px]  ">
-                <SelectValue placeholder="Group Transactions by" />
-              </SelectTrigger>
-              <SelectContent>
-                {groupTransactionsBy.map(
-                  (groupBy: { label: string; value: string }) => (
-                    <SelectItem key={groupBy.value} value={groupBy.value}>
-                      {groupBy.label}
-                    </SelectItem>
-                  )
-                )}
-              </SelectContent>
-            </Select>
+
+          <div className="flex items-center gap-2">
+            <TransactionFilters />
+            <CustomAddIcon
+              onClick={() => {
+                setOpen({ type: "ADD", open: true });
+              }}
+            />
           </div>
-          <TransactionFilters />
-          <CustomAddIcon
-            onClick={() => {
-              setOpen({ type: "ADD", open: true });
-            }}
-          />
+        </div>
+        <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
+          <Select onValueChange={setGroupBy} value={groupBy}>
+            <SelectTrigger id="groupBy" className="sm:w-full sm:max-w-[180px]">
+              <SelectValue placeholder="Group Transactions by" />
+            </SelectTrigger>
+            <SelectContent>
+              {groupTransactionsBy.map(
+                (groupBy: { label: string; value: string }) => (
+                  <SelectItem key={groupBy.value} value={groupBy.value}>
+                    {groupBy.label}
+                  </SelectItem>
+                )
+              )}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <div
-        className={"flex items-center text-foreground text-md font-semibold"}
+        className={"flex items-center text-foreground text-sm font-semibold"}
       >
         Overall spending for this month is:{" "}
         <p className="flex items-center mx-2">
