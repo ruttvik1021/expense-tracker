@@ -56,7 +56,7 @@ const ResponsiveDialogAndDrawer = ({
         {triggerButton && (
           <DialogTrigger asChild>{triggerButton}</DialogTrigger>
         )}
-        <DialogContent className="rounded-3xl border mx-3" onClose={handleClose}>
+        <DialogContent className="rounded-3xl border" onClose={handleClose}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{content}</DialogDescription>
