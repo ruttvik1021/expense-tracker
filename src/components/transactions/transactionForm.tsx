@@ -83,13 +83,20 @@ const TransactionForm = ({
   const { addTransaction, updateTransaction } = useTransactionMutation();
 
   const handleSubmit = async (values: TransactionFormValues) => {
+    const payload = {
+      ...values,
+      date: moment(values.date).format(),
+    };
     if (editTransaction) {
-      await updateTransaction.mutateAsync({ id: editTransaction, values });
+      await updateTransaction.mutateAsync({
+        id: editTransaction,
+        values: payload,
+      });
       queryClient.removeQueries({
         queryKey: [queryKeys.transactions, editTransaction],
       });
     } else {
-      await addTransaction.mutateAsync(values);
+      await addTransaction.mutateAsync(payload);
     }
     onReset();
   };
@@ -208,12 +215,12 @@ const TransactionForm = ({
                     ? moment(field.value).utc().format("YYYY-MM-DD")
                     : ""
                 }
-                onChange={(e) =>
+                onChange={(e) => {
                   transactionFormik.setFieldValue(
                     "date",
-                    moment(e.target.value).format()
-                  )
-                }
+                    new Date(e.target.value)
+                  );
+                }}
                 disabled={disableDatePicker || isTransactionMutating > 0}
                 max={moment().format("YYYY-MM-DD")}
               />
