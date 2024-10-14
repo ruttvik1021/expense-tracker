@@ -246,15 +246,19 @@ const Transactions = () => {
         <Table className="overflow-auto">
           <TableHeader>
             <TableRow>
+              <TableHead>Date</TableHead>
               <TableHead>For:</TableHead>
               <TableHead>Amount</TableHead>
-              <TableHead>Date</TableHead>
               <TableHead className="w-2">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data?.transactions.map((transaction: any) => (
               <TableRow key={transaction._id}>
+                
+                <TableCell className="text-sm">
+                  {moment(transaction.date).utc().format("DD/MM")}
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <TooltipProvider>
@@ -281,9 +285,6 @@ const Transactions = () => {
                 <TableCell className="flex items-center">
                   <IndianRupee className="icon" />
                   {transaction.amount}
-                </TableCell>
-                <TableCell className="text-sm">
-                  {moment(transaction.date).utc().format("DD/MM")}
                 </TableCell>
                 <TableCell className="flex justify-around items-center">
                   <CustomEditIcon
