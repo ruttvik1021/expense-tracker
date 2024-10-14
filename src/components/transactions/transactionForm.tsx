@@ -211,7 +211,7 @@ const TransactionForm = ({
                 onChange={(e) =>
                   transactionFormik.setFieldValue(
                     "date",
-                    new Date(e.target.value)
+                    moment(e.target.value).format()
                   )
                 }
                 disabled={disableDatePicker || isTransactionMutating > 0}
