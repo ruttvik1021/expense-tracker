@@ -221,8 +221,9 @@ const CategoryForm = ({
               </div>
             )}
           </Field>
-
-          <Field name="periodType">
+          {editCategory ? <></> : (
+            <>
+            <Field name="periodType">
             {({
               field,
               meta,
@@ -361,7 +362,8 @@ const CategoryForm = ({
               </Field>
             </>
           )}
-
+          </>
+          )}
           <div className="flex justify-between mt-3">
             <Button
               type="reset"
