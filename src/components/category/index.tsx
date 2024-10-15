@@ -177,7 +177,7 @@ const Category = () => {
       >
         <Card
           className={cn(
-            "w-full max-w-md shadow-md",
+            "w-full max-w-md shadow-sm",
             isOverBudget ? "shadow-red-500" : "shadow-green-500"
           )}
         >
@@ -255,7 +255,7 @@ const Category = () => {
               return (
                 <Card
                   key={category._id}
-                  className="p-4 shadow-md shadow-selected"
+                  className="p-4 shadow-sm shadow-selected"
                 >
                   <CardHeader className="p-0 mb-3">
                     <div className="flex justify-between">
