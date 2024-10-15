@@ -4,10 +4,13 @@ import useSpentVsBudgetData, {
   formatNumber,
 } from "@/hooks/useSpentVsBudgetData";
 import { cn } from "@/lib/utils";
-import { IndianRupee } from "lucide-react";
+import { queryKeys } from "@/utils/queryKeys";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { getLastMonthAmount } from "../../../server/actions/profile/profile";
 import MonthYearPicker from "../common/MonthPicker";
 import { Navlink } from "../common/Navigation";
 import PageHeader from "../common/Pageheader";
@@ -117,6 +120,14 @@ const Category = () => {
   const { totalBudget, totalSpent, isOverBudget, percentageSpent } =
     useSpentVsBudgetData("Categories");
 
+  const { data: lastMonthAmount } = useQuery({
+    queryKey: [queryKeys.monthAmount],
+    queryFn: () => getLastMonthAmount(categoryFilter.categoryDate),
+  });
+
+  const difference = totalSpent - lastMonthAmount?.amount;
+  const isDecrease = difference < 0;
+
   return (
     <>
       <div className="mb-3">
@@ -184,15 +195,15 @@ const Category = () => {
                   />
                 </div>
               ) : isOverBudget ? (
-                <>
-                  You're over budget by: <IndianRupee className="icon" />
-                  {formatNumber(totalSpent - totalBudget)}
-                </>
+                <div className="flex justify-between w-full">
+                  <p>You're over budget by:</p>
+                  <p>{formatNumber(totalSpent - totalBudget)}</p>
+                </div>
               ) : (
-                <>
-                  You're under budget by: <IndianRupee className="icon" />
-                  {formatNumber(totalBudget - totalSpent)}
-                </>
+                <div className="flex justify-between w-full">
+                  <p>You're under budget by:</p>
+                  <p>{formatNumber(totalBudget - totalSpent)}</p>
+                </div>
               )}
             </div>
           </CardHeader>
@@ -213,6 +224,27 @@ const Category = () => {
               className="h-2 w-full"
               fillColor={isOverBudget ? "red-500" : "green-500"}
             />
+            <div className="flex justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Last Month: {lastMonthAmount?.amount.toFixed(2) || 0}
+                </p>
+              </div>
+              <div
+                className={`flex items-center text-sm ${
+                  isDecrease ? "text-green-500" : "text-red-500"
+                }`}
+              >
+                {isDecrease ? (
+                  <ArrowDownIcon className="mr-1 h-4 w-4" />
+                ) : (
+                  <ArrowUpIcon className="mr-1 h-4 w-4" />
+                )}
+                <span className="text-sm font-bold">
+                  {Math.abs(difference).toFixed(2)}
+                </span>
+              </div>
+            </div>
           </CardContent>
         </Card>
         {isLoading

@@ -32,7 +32,7 @@ export const ProfileInitialValues = {
   budget: 0,
 };
 
-type UpdateProfilePayload = typeof ProfileInitialValues;
+export type UpdateProfilePayload = typeof ProfileInitialValues;
 
 const UpdateProfile = () => {
   const queryClient = useQueryClient();

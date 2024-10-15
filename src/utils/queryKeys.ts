@@ -12,4 +12,5 @@ export const queryKeys = {
   categoryDate: "categoryDate",
   transactionFilter: "transactionFilter",
   profile: "profile",
+  monthAmount: "monthAmount",
 };

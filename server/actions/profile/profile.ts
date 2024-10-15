@@ -5,6 +5,8 @@ import { verifySession } from "@/lib/session";
 import UserModel from "@/models/UserModel";
 import bcrypt from "bcryptjs";
 import { UpdatePasswordPayload, UpdateProfilePayload } from "./schema";
+import TransactionModel from "@/models/TransactionModel";
+import mongoose from "mongoose";
 
 export const updateProfile = async (profile: UpdateProfilePayload) => {
   const decodedToken = await verifySession();
@@ -46,4 +48,34 @@ export const updatePassword = async (values: UpdatePasswordPayload) => {
   user.password = hashedNewPassword;
   await user.save();
   return { message: "Password updated successfully" };
+};
+
+export const getLastMonthAmount = async (date: Date) => {
+  const decodedToken = await verifySession();
+  await connectToDatabase();
+  const now = new Date(date);
+  const firstDayOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const firstDayOfLastMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() - 1,
+    1
+  );
+  const transactions = await TransactionModel.aggregate([
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(decodedToken?.userId as string),
+        date: {
+          $gte: firstDayOfLastMonth,
+          $lt: firstDayOfThisMonth,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        total: { $sum: "$amount" },
+      },
+    },
+  ]);
+  return { amount: (transactions.length && transactions[0].total) || 0 };
 };
