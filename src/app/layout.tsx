@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
+import EmailVerification from "@/components/alerts/EmailVerification";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
@@ -30,6 +31,7 @@ export default function RootLayout({
         <QueryWrapper>
           <ContextWrapper>
             <main className="bg-background relative h-screen">
+              <EmailVerification />
               <NavHeader />
               <section className="px-3 py-3 pb-10">{children}</section>
             </main>

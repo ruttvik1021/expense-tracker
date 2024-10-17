@@ -7,6 +7,9 @@ import { CategorySortBy } from "../category";
 import { Modes, Theme } from "../common/Toggles/ThemeToggle";
 import { IS_ICON_PREFERRED } from "../common/Toggles/IconToggle";
 import moment from "moment";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "@/utils/queryKeys";
+import { getProfile } from "../../../server/actions/profile/profile";
 
 export interface ICategoryFilter {
   categoryDate: Date;
@@ -34,6 +37,8 @@ type ContextWrapperType = {
   setTransactionFilter: (value: Partial<ITransactionFilter>) => void;
   isIconPreferred: boolean;
   setIsIconPreferred: (value: boolean) => void;
+  isEmailVerified: boolean;
+  setIsEmailVerified: (value: boolean) => void;
 };
 
 export const initialTransactionFilter = {
@@ -48,6 +53,15 @@ const MyContext = createContext<ContextWrapperType | null>(null);
 export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const token = Cookies.get("token");
+  const { data: user } = useQuery({
+    queryKey: [queryKeys.profile],
+    queryFn: () => getProfile(),
+    staleTime: Infinity,
+    enabled: !!token,
+  });
+  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(
+    user?.data?.isVerified || false
+  );
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
   const [isIconPreferred, setIsIconPreferred] = useState<boolean>(false);
   const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
@@ -101,6 +115,8 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     setTransactionFilter,
     isIconPreferred,
     setIsIconPreferred,
+    isEmailVerified,
+    setIsEmailVerified,
   };
 
   return (
