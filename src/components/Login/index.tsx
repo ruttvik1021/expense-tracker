@@ -64,7 +64,7 @@ const Login = () => {
     <div className="h-[90vh] w-full flex justify-center items-center">
       <form onSubmit={formik.handleSubmit}>
         <FormikProvider value={formik}>
-          <Card className="w-full max-w-sm shadow-md shadow-selected ">
+          <Card className="w-full max-w-sm shadow-sm shadow-selected ">
             <CardHeader>
               <CardTitle className="text-2xl">Login</CardTitle>
               <CardDescription>

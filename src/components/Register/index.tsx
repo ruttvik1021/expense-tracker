@@ -67,7 +67,7 @@ const Register = () => {
   return (
     <div className="h-[90vh] w-full flex justify-center items-center">
       <FormikProvider value={formik}>
-        <Card className="w-full max-w-sm shadow-md shadow-selected">
+        <Card className="w-full max-w-sm shadow-sm shadow-selected">
           <CardHeader>
             <CardTitle className="text-2xl">Register</CardTitle>
             <CardDescription>
