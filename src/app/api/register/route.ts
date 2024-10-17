@@ -9,15 +9,15 @@ import nodemailer from "nodemailer";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-export function generateRandomToken(): string {
+const generateRandomToken = (): string => {
   return crypto.randomBytes(32).toString("hex"); // Generate a random 32-byte string
-}
+};
 
 const TOKEN_EXPIRATION_DURATION = 24 * 60 * 60 * 1000; // 1 day in milliseconds
 
-export function isTokenExpired(expirationDate: Date): boolean {
-  return Date.now() > new Date(expirationDate).getTime();
-}
+// const isTokenExpired = (expirationDate: Date): boolean => {
+//   return Date.now() > new Date(expirationDate).getTime();
+// };
 
 const getVerificationLink = (uniqueCode: string) => {
   return `${process.env.PROD_URL}/verify-email?token=${uniqueCode}`;
