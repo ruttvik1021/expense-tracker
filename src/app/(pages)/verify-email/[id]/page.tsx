@@ -8,14 +8,14 @@ import { verifyEmail } from "../../../../../server/actions/email/email";
 
 const VerifyEmail = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
-  const { isAuthenticated, logoutUser, setIsEmailVerified } = useAuthContext();
+  const { isAuthenticated, logoutUser, verifyUserEmail } = useAuthContext();
   const verifyUser = async () => {
     const verification = await verifyEmail(params.id);
     if (verification.error) {
       toast.error(verification.error);
     }
     if (verification.message) {
-      setIsEmailVerified(true);
+      verifyUserEmail();
       toast.success(verification.message);
     }
     isAuthenticated ? router.push("/") : logoutUser();

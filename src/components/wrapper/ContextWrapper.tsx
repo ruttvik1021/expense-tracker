@@ -39,7 +39,7 @@ type ContextWrapperType = {
   isIconPreferred: boolean;
   setIsIconPreferred: (value: boolean) => void;
   isEmailVerified: boolean;
-  setIsEmailVerified: (value: boolean) => void;
+  verifyUserEmail: () => void;
 };
 
 export const initialTransactionFilter = {
@@ -54,17 +54,20 @@ const MyContext = createContext<ContextWrapperType | null>(null);
 export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const token = Cookies.get("token");
-  const { data: user } = useQuery({
+  const { data: user, refetch: refetchUser } = useQuery({
     queryKey: [queryKeys.profile],
     queryFn: () => getProfile(),
     staleTime: Infinity,
     enabled: !!token,
   });
 
-  console.log("user", user);
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(
     user?.data?.isVerified || false
   );
+  const verifyUserEmail = () => {
+    setIsEmailVerified(true);
+    refetchUser();
+  };
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
   const [isIconPreferred, setIsIconPreferred] = useState<boolean>(false);
   const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
@@ -120,7 +123,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     isIconPreferred,
     setIsIconPreferred,
     isEmailVerified,
-    setIsEmailVerified,
+    verifyUserEmail,
   };
 
   return (

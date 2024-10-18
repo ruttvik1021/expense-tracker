@@ -48,7 +48,8 @@ export const verifyEmail = async (token: string) => {
     return {
       error: "Invalid verification token.",
     };
-  user.verified = true;
+
+  user.isVerified = true;
   user.verificationToken = null;
   user.tokenExpiration = null;
   await user.save();
