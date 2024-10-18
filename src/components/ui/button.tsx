@@ -58,9 +58,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "text-black": loading,
           })}
           ref={ref}
-          {...props}
           onClick={loading ? () => {} : props.onClick}
           disabled={loading}
+          {...props}
         >
           {loading && <div className="absolute inset-0 loading-border " />}
           {props.children}

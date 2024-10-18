@@ -8,6 +8,11 @@ export async function middleware(req: NextRequest) {
   const token = cookieStore.get("token");
   const url = req.nextUrl.clone();
 
+  if (url.pathname === "/verify-email") {
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
   if (!token) {
     // Clone the request URL object
     url.pathname = "/login"; // Specify the absolute path
@@ -27,5 +32,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/category", "/transactions"],
+  matcher: ["/", "/category", "/transaction", "/verify-email"],
 };

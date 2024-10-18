@@ -13,10 +13,12 @@ const CustomAddIcon = ({
   onClick,
   tooltip,
   type = "ICON",
+  disabled,
 }: {
   onClick: () => void;
   tooltip?: string;
   type?: "ICON" | "TEXT";
+  disabled?: boolean;
 }) => {
   const { isIconPreferred } = useAuthContext();
   return type === "TEXT" ? (
@@ -24,6 +26,7 @@ const CustomAddIcon = ({
       variant="outline"
       className="border border-green-600"
       onClick={onClick}
+      disabled={disabled}
     >
       Add
     </Button>
@@ -31,13 +34,24 @@ const CustomAddIcon = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          {isIconPreferred ? (
-            <PlusCircleIcon onClick={onClick} className="icon" />
+          {disabled ? (
+            // Render the icon without the TooltipTrigger if disabled
+            isIconPreferred ? (
+              <PlusCircleIcon className="icon opacity-50 cursor-not-allowed" />
+            ) : (
+              <Circle className="fill-green-600 rounded-full icon border opacity-50 cursor-not-allowed" />
+            )
           ) : (
-            <Circle
-              onClick={onClick}
-              className="fill-green-600 rounded-full icon border"
-            />
+            <TooltipTrigger asChild>
+              {isIconPreferred ? (
+                <PlusCircleIcon onClick={onClick} className="icon" />
+              ) : (
+                <Circle
+                  onClick={onClick}
+                  className="fill-green-600 rounded-full icon border"
+                />
+              )}
+            </TooltipTrigger>
           )}
         </TooltipTrigger>
         <TooltipContent className="bg-green-200 text-black">

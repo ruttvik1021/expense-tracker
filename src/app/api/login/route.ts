@@ -1,5 +1,6 @@
 // app/api/login/route.ts
 
+import { sendVerificationEmail } from "@/lib/mailService";
 import { connectToDatabase } from "@/lib/mongodb";
 import UserModel from "@/models/UserModel";
 import bcrypt from "bcryptjs";
@@ -46,6 +47,17 @@ export async function POST(req: Request) {
         { message: "Invalid credentials" },
         { status: 400 }
       );
+    }
+
+    if (!user.isVerified) {
+      const { tokenExpiration, verificationToken } =
+        await sendVerificationEmail({
+          to: email,
+        });
+
+      user.verificationToken = verificationToken;
+      user.tokenExpiration = tokenExpiration;
+      await user.save();
     }
 
     // Perform validation of the user credentials here

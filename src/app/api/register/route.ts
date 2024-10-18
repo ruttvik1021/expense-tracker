@@ -1,72 +1,12 @@
+import { sendVerificationEmail } from "@/lib/mailService";
 import { connectToDatabase } from "@/lib/mongodb";
 import UserModel from "@/models/UserModel";
 import bcrypt from "bcryptjs";
+import Joi from "joi";
 import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
-import Joi from "joi";
-import crypto from "crypto";
-import nodemailer from "nodemailer";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
-
-const generateRandomToken = (): string => {
-  return crypto.randomBytes(32).toString("hex"); // Generate a random 32-byte string
-};
-
-const TOKEN_EXPIRATION_DURATION = 24 * 60 * 60 * 1000; // 1 day in milliseconds
-
-// const isTokenExpired = (expirationDate: Date): boolean => {
-//   return Date.now() > new Date(expirationDate).getTime();
-// };
-
-const getVerificationLink = (uniqueCode: string) => {
-  return `${process.env.PROD_URL}/verify-email?token=${uniqueCode}`;
-};
-
-const signUpTemplate = (link: string) => {
-  const url = getVerificationLink(link);
-  return `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to Expense Tracker</title>
-      </head>
-      <body>
-        <h1>Welcome to Expense Tracker</h1>
-        <p>We are glad to have you on our platform.</p>
-        <p>Click the below link to verify your email:</p>
-        <a href="${url}" target='_blank'>${url}</a>
-      </body>
-      </html>
-    `;
-};
-
-const sendVerificationEmail = async ({
-  to,
-  link,
-}: {
-  to: string;
-  link: string;
-}) => {
-  const mailOptions = {
-    from: "Talk-n-book@gmail.com",
-    to,
-    subject: "Email verification",
-    html: signUpTemplate(link),
-  };
-
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.NODEMAILER_USER,
-      pass: process.env.NODEMAILER_PASS,
-    },
-  });
-
-  await transporter.sendMail(mailOptions);
-};
 
 const schema = Joi.object({
   email: Joi.string().email().required(),
@@ -101,10 +41,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const verificationToken = generateRandomToken(); // Or use JWT method
-    const tokenExpiration = new Date(Date.now() + TOKEN_EXPIRATION_DURATION); // 1 day
-
     const hashedPassword = await bcrypt.hash(password, 12);
+
+    const { tokenExpiration, verificationToken } = await sendVerificationEmail({
+      to: email,
+    });
 
     const newUser = new UserModel({
       email,
@@ -115,7 +56,6 @@ export async function POST(req: Request) {
     });
 
     await newUser.save();
-    sendVerificationEmail({ to: email, link: verificationToken });
 
     // const userNameForEmail = this.configService.get('NODEMAILER_USER');
     // const passwordForEmail = this.configService.get('NODEMAILER_PASS');

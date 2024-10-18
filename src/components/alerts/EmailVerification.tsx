@@ -1,6 +1,9 @@
 "use client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useMutation } from "@tanstack/react-query";
 import { AlertTriangleIcon } from "lucide-react";
+import { toast } from "sonner";
+import { resendVerificationMail } from "../../../server/actions/email/email";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { useAuthContext } from "../wrapper/ContextWrapper";
@@ -8,14 +11,26 @@ import { useAuthContext } from "../wrapper/ContextWrapper";
 const EmailVerification = () => {
   const { isAuthenticated, isEmailVerified } = useAuthContext();
 
+  const { mutate: resendEmail, isPending } = useMutation({
+    mutationFn: () => resendVerificationMail(),
+    onSettled(data) {
+      toast.success(data?.message);
+    },
+  });
+
   if (isAuthenticated && !isEmailVerified) {
     return (
-      <Alert className="bg-destructive rounded-none rounded-b-2xl">
+      <Alert className="bg-destructive/60 rounded-none rounded-b-2xl">
         <AlertDescription className="font-bold text-black">
           <Label className="flex items-center gap-2 text-sm">
             <AlertTriangleIcon className="w-5 h-5" /> Please verify the email
             sent to you.
-            <Button className="h-5 p-2" variant="secondary">
+            <Button
+              className="h-5 p-2"
+              variant="secondary"
+              onClick={() => resendEmail()}
+              loading={isPending}
+            >
               Resend
             </Button>
           </Label>
@@ -24,6 +39,18 @@ const EmailVerification = () => {
     );
   }
   return null;
+};
+
+export const FeatureRestrictedWarning = ({ message }: { message: string }) => {
+  return (
+    <Alert className="bg-destructive/20 rounded-sm my-2">
+      <AlertDescription className="font-bold text-black">
+        <span className="flex items-center gap-2 text-sm text-foreground">
+          {message}
+        </span>
+      </AlertDescription>
+    </Alert>
+  );
 };
 
 export default EmailVerification;

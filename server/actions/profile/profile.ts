@@ -29,6 +29,7 @@ export const getProfile = async () => {
     name: 1,
     budget: 1,
     createdAt: 1,
+    isVerified: 1,
     _id: 0,
   });
   if (!user) return { error: "User not found" };

@@ -10,6 +10,7 @@ import moment from "moment";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/utils/queryKeys";
 import { getProfile } from "../../../server/actions/profile/profile";
+import { deleteSession } from "@/lib/session";
 
 export interface ICategoryFilter {
   categoryDate: Date;
@@ -59,6 +60,8 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     staleTime: Infinity,
     enabled: !!token,
   });
+
+  console.log("user", user);
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(
     user?.data?.isVerified || false
   );
@@ -82,6 +85,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
 
   const logoutUser = () => {
     Cookies.remove("token");
+    deleteSession();
     setIsAuthenticated(false);
     router.push("/login");
   };

@@ -37,6 +37,7 @@ import CategoryForm, { categoryFormInitialValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
+import { FeatureRestrictedWarning } from "../alerts/EmailVerification";
 
 export enum CategorySortBy {
   CATEGORY = "category",
@@ -70,6 +71,7 @@ const Category = () => {
     setCategoryFilter,
     transactionFilter,
     setTransactionFilter,
+    isEmailVerified,
   } = useAuthContext();
   const router = useRouter();
   const { data, isLoading } = useCategories();
@@ -135,15 +137,19 @@ const Category = () => {
           <PageHeader title="Category" />
           {moment(categoryFilter.categoryDate).isBefore(
             moment().add(1, "month").startOf("month")
-          ) && (
-            <CustomAddIcon
-              onClick={() => {
-                setOpen({ type: "ADD", open: true });
-              }}
-              type="ICON"
-            />
-          )}
+          ) &&
+            (isEmailVerified || (data && data?.categories?.length < 5)) && (
+              <CustomAddIcon
+                onClick={() => {
+                  setOpen({ type: "ADD", open: true });
+                }}
+                type="ICON"
+              />
+            )}
         </div>
+        {!isEmailVerified && data && data?.categories?.length > 4 && (
+          <FeatureRestrictedWarning message="Verify email to add more categories" />
+        )}
         <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
           <Select
             onValueChange={updateCategorySort}
