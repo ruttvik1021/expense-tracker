@@ -73,7 +73,7 @@ const UpdatePassword = () => {
 
   return (
     <FormikProvider value={updatePasswordFormik}>
-      <Card className="w-full max-w-sm shadow-sm shadow-selected">
+      <Card className="w-full max-w-sm shadow-selected">
         <Form onSubmit={updatePasswordFormik.handleSubmit}>
           <CardHeader>
             <CardTitle>Password</CardTitle>

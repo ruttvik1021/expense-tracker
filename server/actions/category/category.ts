@@ -147,11 +147,12 @@ export const createCategory = async (body: CategorySchema) => {
 export const getCategories = async (body: {
   categoryDate: Date;
   sortBy: CategorySortBy;
+  limit?: number;
 }) => {
   const decodedToken = await verifySession();
   await connectToDatabase();
 
-  const { categoryDate, sortBy } = body;
+  const { categoryDate, sortBy, limit } = body;
   const startOfMonth = categoryDate ? new Date(categoryDate) : new Date();
   startOfMonth.setDate(1); // Set to the 1st day of the month
   startOfMonth.setHours(0, 0, 0, 0); // Start of the day
@@ -262,6 +263,10 @@ export const getCategories = async (body: {
     });
   }
 
+  if (limit) {
+    pipeline.push({ $limit: limit });
+  }
+
   const categories = await CategoryModel.aggregate(pipeline);
 
   const serializedCategories = categories.map((category) => ({
@@ -269,7 +274,7 @@ export const getCategories = async (body: {
     _id: category._id.toString(),
   }));
 
-  return { categories: serializedCategories as CategoryDocument[] };
+  return { categories: serializedCategories };
 };
 
 export const getCategoryById = async (id: string) => {
@@ -331,4 +336,23 @@ export const updateCategoryById = async ({
     message: "Category updated successfully",
     category: plainObject,
   };
+};
+
+export const getTop5CategoriesOfMonth = async (categoryDate: Date) => {
+  const { categories } = await getCategories({
+    categoryDate,
+    sortBy: CategorySortBy.AMOUNT_SPENT,
+    limit: 5,
+  });
+  return (
+    categories
+      ?.map((item) => {
+        return {
+          category: item.category,
+          amount: item.totalAmountSpent,
+          budget: item.budget,
+        };
+      })
+      .filter((cat) => cat.amount > 0) || []
+  );
 };

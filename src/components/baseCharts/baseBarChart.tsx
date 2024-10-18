@@ -1,0 +1,131 @@
+"use client";
+
+import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { cn } from "@/lib/utils";
+import { useMemo } from "react";
+import { Separator } from "../ui/separator";
+import { Label } from "../ui/label";
+
+type ChartDataItem = Record<string, unknown>;
+
+interface BaseBarGraphProps {
+  title: string;
+  description: string;
+  yAxisKey: string;
+  xAxisKey: string;
+  chartData: ChartDataItem[];
+  isLoading: boolean;
+  filterContent?: React.ReactNode;
+}
+
+const useColorCycle = (data: ChartDataItem[]) => {
+  return useMemo(() => {
+    const colors = [
+      "hsl(var(--chart-1))",
+      "hsl(var(--chart-2))",
+      "hsl(var(--chart-3))",
+      "hsl(var(--chart-4))",
+      "hsl(var(--chart-5))",
+      "hsl(var(--chart-6))",
+      "hsl(var(--chart-7))",
+      "hsl(var(--chart-8))",
+      "hsl(var(--chart-9))",
+      "hsl(var(--chart-10))",
+    ];
+    return data.map((item, index) => ({
+      ...item,
+      fill: colors[index % colors.length],
+    }));
+  }, [data]);
+};
+
+const LoadingSkeleton = () => (
+  <div className="flex flex-col justify-between space-y-4 py-4">
+    {[...Array(5)].map((_, idx) => (
+      <div
+        key={idx}
+        className="h-5 sm:h-20 bg-primary/10 animate-pulse rounded mt-2 sm:mt-10"
+        style={{ width: `${90 - idx * 10}%` }} // Decreasing width for each bar
+      ></div>
+    ))}
+  </div>
+);
+
+export default function BaseBarGraph({
+  title,
+  description,
+  yAxisKey,
+  xAxisKey,
+  chartData,
+  isLoading,
+  filterContent,
+}: BaseBarGraphProps) {
+  const chartConfig = {} satisfies ChartConfig;
+  const coloredData = useColorCycle(chartData);
+
+  return (
+    <div className="space-y-4">
+      <Card className={cn("w-full")}>
+        <div className="flex items-center justify-between p-6">
+          <div>
+            <h2 className="text-2xl font-bold">{title}</h2>
+            <p className="text-sm text-muted-foreground">{description}</p>
+          </div>
+          {filterContent && <div>{filterContent}</div>}
+        </div>
+        <Separator className="bg-selected" />
+        <CardContent className="pt-6">
+          <ChartContainer config={chartConfig}>
+            {isLoading ? (
+              <LoadingSkeleton />
+            ) : coloredData.length ? (
+              <BarChart
+                data={coloredData}
+                layout="vertical"
+                margin={{ top: 0, right: 16, bottom: 0, left: 0 }}
+                aria-label={`Bar chart showing ${description}`}
+              >
+                <YAxis
+                  dataKey={yAxisKey}
+                  type="category"
+                  axisLine={false}
+                  tickLine={false}
+                  tickMargin={10}
+                  tickFormatter={(value) => value}
+                  hide
+                />
+                <XAxis dataKey={xAxisKey} type="number" hide />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="line" />}
+                />
+                <Bar
+                  dataKey={xAxisKey}
+                  layout="vertical"
+                  fill="var(--color-desktop)"
+                  radius={4}
+                >
+                  <LabelList
+                    dataKey={yAxisKey}
+                    position="insideLeft"
+                    offset={8}
+                    className="fill-foreground text-lg font-medium"
+                  />
+                </Bar>
+              </BarChart>
+            ) : (
+              <Label>No Data Found</Label>
+            )}
+          </ChartContainer>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

@@ -70,7 +70,7 @@ const UpdateProfile = () => {
 
   return (
     <FormikProvider value={updateProfileFormik}>
-      <Card className="w-full max-w-sm shadow-sm shadow-selected">
+      <Card className="w-full max-w-sm shadow-selected">
         <Form onSubmit={updateProfileFormik.handleSubmit}>
           <CardHeader>
             <CardTitle>Profile</CardTitle>

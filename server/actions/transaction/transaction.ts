@@ -1,9 +1,9 @@
 "use server";
 import TransactionModel from "@/models/TransactionModel";
-import { ITransaction, ITransactionFilter } from "./schema";
+import { ITransaction, ITransactionFilter, TransactionSortBy } from "./schema";
 import { verifySession } from "@/lib/session";
 import { connectToDatabase } from "@/lib/mongodb";
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 
 export const addTransactionFn = async (values: ITransaction) => {
   const decodedToken = await verifySession();
@@ -28,7 +28,7 @@ export const addTransactionFn = async (values: ITransaction) => {
 export const getTransactions = async (body: Partial<ITransactionFilter>) => {
   const decodedToken = await verifySession();
   await connectToDatabase();
-  const { categoryId, month } = body;
+  const { categoryId, month, sortBy, limit } = body;
   const startOfMonth = month ? new Date(month) : new Date();
   startOfMonth.setDate(1); // Set to the 1st day of the month
   startOfMonth.setHours(0, 0, 0, 0); // Start of the day
@@ -38,7 +38,7 @@ export const getTransactions = async (body: Partial<ITransactionFilter>) => {
   endOfMonth.setDate(0); // Go back to the last day of the current month
   endOfMonth.setHours(23, 59, 59, 999); // End of the day
 
-  const transactions = await TransactionModel.aggregate([
+  const pipeline: PipelineStage[] = [
     {
       $match: {
         userId: new mongoose.Types.ObjectId(decodedToken?.userId as string),
@@ -100,7 +100,17 @@ export const getTransactions = async (body: Partial<ITransactionFilter>) => {
         category: { category: 1, icon: 1, _id: 1 },
       },
     },
-  ]);
+  ];
+
+  if (sortBy) {
+    pipeline.push({ $sort: { [sortBy]: -1 } });
+  }
+
+  if (limit) {
+    pipeline.push({ $limit: limit });
+  }
+
+  const transactions = await TransactionModel.aggregate(pipeline);
 
   return { transactions };
 };
@@ -150,4 +160,23 @@ export const updateTransactionFn = async ({
     message: "Transaction updated successfully",
     transaction: plainObject,
   };
+};
+
+export const getTop5TransactionsOfMonth = async (month: string) => {
+  const { transactions } = await getTransactions({
+    month,
+    sortBy: TransactionSortBy.AMOUNT,
+    limit: 5,
+  });
+  return (
+    transactions
+      ?.map((item) => {
+        return {
+          category: item.category.category,
+          amount: item.amount,
+          icon: item.category.icon,
+        };
+      })
+      .filter((tran) => tran.amount > 0) || []
+  );
 };

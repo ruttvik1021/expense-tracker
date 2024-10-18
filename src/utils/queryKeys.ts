@@ -13,4 +13,6 @@ export const queryKeys = {
   transactionFilter: "transactionFilter",
   profile: "profile",
   monthAmount: "monthAmount",
+  top5CategoriesOfMonth: "top5CategoriesOfMonth",
+  top5TransactionsOfMonth: "top5TransactionsOfMonth",
 };
