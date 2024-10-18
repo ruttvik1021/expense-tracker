@@ -6,9 +6,9 @@ import { Label } from "../ui/label";
 import { useAuthContext } from "../wrapper/ContextWrapper";
 
 const EmailVerification = () => {
-  const { isEmailVerified } = useAuthContext();
+  const { isAuthenticated, isEmailVerified } = useAuthContext();
 
-  if (!isEmailVerified) {
+  if (isAuthenticated && !isEmailVerified) {
     return (
       <Alert className="bg-destructive rounded-none rounded-b-2xl">
         <AlertDescription className="font-bold text-black">
