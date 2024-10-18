@@ -62,7 +62,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   });
 
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(
-    user?.data?.isVerified || false
+    user?.data?.isVerified
   );
   const verifyUserEmail = () => {
     setIsEmailVerified(true);
