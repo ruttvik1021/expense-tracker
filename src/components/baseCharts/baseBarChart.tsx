@@ -1,6 +1,3 @@
-"use client";
-
-import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   ChartConfig,
@@ -9,9 +6,9 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
-import { useMemo } from "react";
-import { Separator } from "../ui/separator";
+import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
 import { Label } from "../ui/label";
+import { Separator } from "../ui/separator";
 
 type ChartDataItem = Record<string, unknown>;
 
@@ -26,24 +23,22 @@ interface BaseBarGraphProps {
 }
 
 const useColorCycle = (data: ChartDataItem[]) => {
-  return useMemo(() => {
-    const colors = [
-      "hsl(var(--chart-1))",
-      "hsl(var(--chart-2))",
-      "hsl(var(--chart-3))",
-      "hsl(var(--chart-4))",
-      "hsl(var(--chart-5))",
-      "hsl(var(--chart-6))",
-      "hsl(var(--chart-7))",
-      "hsl(var(--chart-8))",
-      "hsl(var(--chart-9))",
-      "hsl(var(--chart-10))",
-    ];
-    return data.map((item, index) => ({
-      ...item,
-      fill: colors[index % colors.length],
-    }));
-  }, [data]);
+  const colors = [
+    "hsl(var(--chart-1))",
+    "hsl(var(--chart-2))",
+    "hsl(var(--chart-3))",
+    "hsl(var(--chart-4))",
+    "hsl(var(--chart-5))",
+    "hsl(var(--chart-6))",
+    "hsl(var(--chart-7))",
+    "hsl(var(--chart-8))",
+    "hsl(var(--chart-9))",
+    "hsl(var(--chart-10))",
+  ];
+  return data.map((item, index) => ({
+    ...item,
+    fill: colors[index % colors.length],
+  }));
 };
 
 const LoadingSkeleton = () => (
@@ -90,7 +85,7 @@ export default function BaseBarGraph({
                 data={coloredData}
                 layout="vertical"
                 margin={{ top: 0, right: 16, bottom: 0, left: 0 }}
-                aria-label={`Bar chart showing ${description}`}
+                aria-label={`Bar chart showing ${title}`}
               >
                 <YAxis
                   dataKey={yAxisKey}
@@ -104,7 +99,12 @@ export default function BaseBarGraph({
                 <XAxis dataKey={xAxisKey} type="number" hide />
                 <ChartTooltip
                   cursor={false}
-                  content={<ChartTooltipContent indicator="line" />}
+                  content={
+                    <ChartTooltipContent
+                      indicator="line"
+                      className="text-lg font-bold w-[150px]"
+                    />
+                  }
                 />
                 <Bar
                   dataKey={xAxisKey}
