@@ -109,6 +109,10 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     }
   }, [token]);
 
+useEffect(()=>{if(user?.data){
+setIsEmailVerified(user?.data?.isVerified)
+}},[user])
+
   const contextValue: ContextWrapperType = {
     isAuthenticated,
     setIsAuthenticated,
