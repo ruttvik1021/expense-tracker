@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/utils/queryKeys";
 import { getProfile } from "../../../server/actions/profile/profile";
 import { deleteSession } from "@/lib/session";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface ICategoryFilter {
   categoryDate: Date;
@@ -53,6 +54,7 @@ const MyContext = createContext<ContextWrapperType | null>(null);
 
 export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const token = Cookies.get("token");
   const { data: user, refetch: refetchUser } = useQuery({
     queryKey: [queryKeys.profile],
@@ -92,6 +94,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     deleteSession();
     setIsAuthenticated(false);
     router.push("/login");
+    queryClient.clear()
   };
 
   useEffect(() => {
