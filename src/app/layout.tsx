@@ -1,3 +1,4 @@
+import EmailVerification from "@/components/alerts/EmailVerification";
 import { NavHeader } from "@/components/common/Headers";
 import { ContextWrapper } from "@/components/wrapper/ContextWrapper";
 import QueryWrapper from "@/components/wrapper/QueryWrapper";
@@ -5,7 +6,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
-import EmailVerification from "@/components/alerts/EmailVerification";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
