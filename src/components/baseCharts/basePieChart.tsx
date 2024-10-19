@@ -103,7 +103,7 @@ export default function BasePieGraph({
                   data={coloredData}
                   dataKey={valueKey}
                   nameKey={labelKey}
-                  innerRadius={100}
+                  innerRadius={60}
                   strokeWidth={15}
                 >
                   <ChartLabel
