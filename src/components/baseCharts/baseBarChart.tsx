@@ -20,6 +20,7 @@ interface BaseBarGraphProps {
   chartData: ChartDataItem[];
   isLoading: boolean;
   filterContent?: React.ReactNode;
+  tooltipKey?: string;
 }
 
 const useColorCycle = (data: ChartDataItem[]) => {
@@ -49,6 +50,7 @@ export default function BaseBarGraph({
   chartData,
   isLoading,
   filterContent,
+  tooltipKey,
 }: BaseBarGraphProps) {
   const chartConfig = {} satisfies ChartConfig;
   const coloredData = useColorCycle(chartData);
@@ -87,10 +89,40 @@ export default function BaseBarGraph({
                 <XAxis dataKey={xAxisKey} type="number" hide />
                 <ChartTooltip
                   cursor={false}
+                  formatter={(value, _, item) => {
+                    return (
+                      <div
+                        className="bg-inherit text-foreground"
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        {tooltipKey && (
+                          <p
+                            className="mb-1"
+                            style={{
+                              borderBottom: "4px solid",
+                              borderColor: item.payload.fill,
+                            }}
+                          >
+                            {item.payload[tooltipKey]}
+                          </p>
+                        )}
+                        <div className="flex justify-between items-center">
+                          <div className="flex">
+                            <span className="font-semibold text-foreground">
+                              {item.payload[yAxisKey]}
+                            </span>
+                          </div>
+                          <span className="text-foreground">{value}</span>
+                        </div>
+                      </div>
+                    );
+                  }}
                   content={
                     <ChartTooltipContent
                       indicator="line"
-                      className="text-lg font-bold w-[150px]"
+                      className="text-md font-bold w-[150px]"
                     />
                   }
                 />

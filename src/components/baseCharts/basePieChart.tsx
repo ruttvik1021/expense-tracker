@@ -85,6 +85,31 @@ export default function BasePieGraph({
               <PieChart>
                 <ChartTooltip
                   cursor={false}
+                  formatter={(value, _, item) => {
+                    return (
+                      <div
+                        className="bg-inherit text-foreground"
+                        style={{
+                          width: "100%",
+                        }}
+                      >
+                        <div
+                          className="flex justify-between items-center"
+                          style={{
+                            borderTop: "4px solid",
+                            borderColor: item.payload.fill,
+                          }}
+                        >
+                          <div className="flex">
+                            <span className="font-semibold text-foreground">
+                              {item.payload[labelKey]}
+                            </span>
+                          </div>
+                          <span className="text-foreground">{value}</span>
+                        </div>
+                      </div>
+                    );
+                  }}
                   content={<ChartTooltipContent hideLabel />}
                 />
                 <Pie

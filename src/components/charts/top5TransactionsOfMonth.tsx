@@ -24,8 +24,9 @@ const Top5TransactionsOfMonth = () => {
         <BaseBarGraph
           title={"Top 5 Transactions"}
           description={""}
-          yAxisKey={"spentOn"}
+          yAxisKey={"category"}
           xAxisKey={"amount"}
+          tooltipKey={"spentOn"}
           chartData={data || []}
           isLoading={isLoading}
           filterContent={
