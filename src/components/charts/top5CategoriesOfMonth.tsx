@@ -3,10 +3,12 @@ import { queryKeys } from "@/utils/queryKeys";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { getTop5CategoriesOfMonth } from "../../../server/actions/category/category";
-import BaseBarGraph from "../baseCharts/baseBarChart";
+import { FeatureRestrictedWarning } from "../alerts/EmailVerification";
 import MonthYearPicker from "../common/MonthPicker";
 import { useAuthContext } from "../wrapper/ContextWrapper";
-import { FeatureRestrictedWarning } from "../alerts/EmailVerification";
+
+import { ChartConfig } from "@/components/ui/chart";
+import BasePieGraph from "../baseCharts/basePieChart";
 
 const Top5CategoriesOfMonth = () => {
   const { isEmailVerified } = useAuthContext();
@@ -17,16 +19,22 @@ const Top5CategoriesOfMonth = () => {
     enabled: isEmailVerified,
   });
 
+  const chartConfig = {} satisfies ChartConfig;
+
+  const totalVisitors = React.useMemo(() => {
+    return data?.reduce((acc, curr) => acc + curr.amount, 0);
+  }, []);
+
   return (
     <>
       {!isEmailVerified ? (
         <FeatureRestrictedWarning message="Verify email to see the charts" />
       ) : (
-        <BaseBarGraph
+        <BasePieGraph
           title={"Top 5 Categories"}
           description={""}
-          yAxisKey={"category"}
-          xAxisKey={"amount"}
+          labelKey={"category"}
+          valueKey={"amount"}
           chartData={data || []}
           isLoading={isLoading}
           filterContent={

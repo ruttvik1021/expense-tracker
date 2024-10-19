@@ -12,7 +12,11 @@ export const isVerificationCodeExpired = (expirationDate: Date): boolean => {
 };
 
 const getVerificationLink = (uniqueCode: string) => {
-  return `${process.env.PROD_URL}/verify-email/${uniqueCode}`;
+  const url =
+    process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : process.env.PROD_URL;
+  return `${url}/verify-email/${uniqueCode}`;
 };
 
 const signUpTemplate = (link: string) => {

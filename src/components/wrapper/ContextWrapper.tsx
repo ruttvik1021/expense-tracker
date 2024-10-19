@@ -1,17 +1,16 @@
 "use client";
 
+import { deleteSession } from "@/lib/session";
+import { queryKeys } from "@/utils/queryKeys";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import moment from "moment";
 import { useRouter } from "next/navigation";
 import React, { createContext, useEffect, useState } from "react";
-import { CategorySortBy } from "../category";
-import { Modes, Theme } from "../common/Toggles/ThemeToggle";
-import { IS_ICON_PREFERRED } from "../common/Toggles/IconToggle";
-import moment from "moment";
-import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "@/utils/queryKeys";
 import { getProfile } from "../../../server/actions/profile/profile";
-import { deleteSession } from "@/lib/session";
-import { useQueryClient } from "@tanstack/react-query";
+import { CategorySortBy } from "../category";
+import { IS_ICON_PREFERRED } from "../common/Toggles/IconToggle";
+import { Modes, Theme } from "../common/Toggles/ThemeToggle";
 
 export interface ICategoryFilter {
   categoryDate: Date;
@@ -56,22 +55,21 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const token = Cookies.get("token");
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
   const { data: user, refetch: refetchUser } = useQuery({
     queryKey: [queryKeys.profile],
     queryFn: () => getProfile(),
-    staleTime: Infinity,
-    enabled: !!token,
-    refetchOnWindowFocus: true
+    enabled: isAuthenticated,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
   });
 
-  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(
-    user?.data?.isVerified
-  );
+  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
   const verifyUserEmail = () => {
+    localStorage.setItem("isEmailVerified", "true");
     setIsEmailVerified(true);
     refetchUser();
   };
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
   const [isIconPreferred, setIsIconPreferred] = useState<boolean>(false);
   const [activeTheme, setActiveTheme] = useState<Modes | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<ICategoryFilter>({
@@ -94,7 +92,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     deleteSession();
     setIsAuthenticated(false);
     router.push("/login");
-    queryClient.clear()
+    queryClient.clear();
   };
 
   useEffect(() => {
@@ -113,9 +111,11 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     }
   }, [token]);
 
-useEffect(()=>{if(user?.data){
-setIsEmailVerified(user?.data?.isVerified)
-}},[user])
+  useEffect(() => {
+    if (user?.data) {
+      setIsEmailVerified(user?.data?.isVerified);
+    }
+  }, [user]);
 
   const contextValue: ContextWrapperType = {
     isAuthenticated,

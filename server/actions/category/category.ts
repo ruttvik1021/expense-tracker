@@ -1,7 +1,7 @@
 "use server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { verifySession } from "@/lib/session";
-import CategoryModel, { CategoryDocument } from "@/models/CategoryModel";
+import CategoryModel from "@/models/CategoryModel";
 import TransactionModel from "@/models/TransactionModel";
 import moment from "moment";
 import mongoose, { PipelineStage } from "mongoose";
@@ -342,7 +342,6 @@ export const getTop5CategoriesOfMonth = async (categoryDate: Date) => {
   const { categories } = await getCategories({
     categoryDate,
     sortBy: CategorySortBy.AMOUNT_SPENT,
-    limit: 5,
   });
   return (
     categories
