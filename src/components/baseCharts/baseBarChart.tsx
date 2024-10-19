@@ -5,7 +5,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { cn } from "@/lib/utils";
+import { cn, generateHslColor } from "@/lib/utils";
 import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
@@ -23,21 +23,9 @@ interface BaseBarGraphProps {
 }
 
 const useColorCycle = (data: ChartDataItem[]) => {
-  const colors = [
-    "hsl(var(--chart-1))",
-    "hsl(var(--chart-2))",
-    "hsl(var(--chart-3))",
-    "hsl(var(--chart-4))",
-    "hsl(var(--chart-5))",
-    "hsl(var(--chart-6))",
-    "hsl(var(--chart-7))",
-    "hsl(var(--chart-8))",
-    "hsl(var(--chart-9))",
-    "hsl(var(--chart-10))",
-  ];
   return data.map((item, index) => ({
     ...item,
-    fill: colors[index % colors.length],
+    fill: generateHslColor(index, data.length),
   }));
 };
 
