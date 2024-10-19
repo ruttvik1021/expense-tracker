@@ -59,6 +59,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     queryFn: () => getProfile(),
     staleTime: Infinity,
     enabled: !!token,
+    refetchOnWindowFocus: true
   });
 
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(
