@@ -188,7 +188,7 @@ const Transactions = () => {
                 )}
               </h2>
               <Card className="w-full shadow-none border-none">
-                <CardContent className="p-0 my-3">
+                <CardContent className="p-0 pt-3 pb-3">
                   {groupedTransactions[group].map(
                     (transaction: any, index: number) => (
                       <>
