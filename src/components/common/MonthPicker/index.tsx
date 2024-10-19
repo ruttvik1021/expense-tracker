@@ -128,9 +128,9 @@ const MonthYearPicker = ({
                     : "bg-primary-foreground "
                 }`}
                 onClick={() => handleMonthChangeClick(month)}
-                // disabled={
-                //  parseInt(year) === currentYear && index > currentMonth
-                // }
+                disabled={
+                  parseInt(year) === currentYear && index > currentMonth
+                }
               >
                 {month}
               </button>
