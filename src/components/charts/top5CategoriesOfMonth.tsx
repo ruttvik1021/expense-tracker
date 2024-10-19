@@ -7,7 +7,6 @@ import { FeatureRestrictedWarning } from "../alerts/EmailVerification";
 import MonthYearPicker from "../common/MonthPicker";
 import { useAuthContext } from "../wrapper/ContextWrapper";
 
-import { ChartConfig } from "@/components/ui/chart";
 import BasePieGraph from "../baseCharts/basePieChart";
 
 const Top5CategoriesOfMonth = () => {
@@ -18,12 +17,6 @@ const Top5CategoriesOfMonth = () => {
     queryFn: () => getTop5CategoriesOfMonth(month),
     enabled: isEmailVerified,
   });
-
-  const chartConfig = {} satisfies ChartConfig;
-
-  const totalVisitors = React.useMemo(() => {
-    return data?.reduce((acc, curr) => acc + curr.amount, 0);
-  }, []);
 
   return (
     <>
