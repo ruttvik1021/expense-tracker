@@ -2,19 +2,19 @@
 import { queryKeys } from "@/utils/queryKeys";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { getTop5CategoriesOfMonth } from "../../../server/actions/category/category";
 import { FeatureRestrictedWarning } from "../alerts/EmailVerification";
 import MonthYearPicker from "../common/MonthPicker";
 import { useAuthContext } from "../wrapper/ContextWrapper";
 
 import BasePieGraph from "../baseCharts/basePieChart";
+import { getCategoriesForChart } from "../../../server/actions/charts/charts";
 
 const Top5CategoriesOfMonth = () => {
   const { isEmailVerified } = useAuthContext();
   const [month, setMonth] = React.useState(new Date());
   const { data, isLoading } = useQuery({
-    queryKey: [queryKeys.top5CategoriesOfMonth, month],
-    queryFn: () => getTop5CategoriesOfMonth(month),
+    queryKey: [queryKeys.categories, month],
+    queryFn: () => getCategoriesForChart(month),
     enabled: isEmailVerified,
   });
 
@@ -24,11 +24,11 @@ const Top5CategoriesOfMonth = () => {
         <FeatureRestrictedWarning message="Verify email to see the charts" />
       ) : (
         <BasePieGraph
-          title={"Top 5 Categories"}
+          title={"Top Categories"}
           description={""}
           labelKey={"category"}
-          valueKey={"amount"}
-          chartData={data || []}
+          valueKey={"totalAmountSpent"}
+          chartData={data?.categories || []}
           isLoading={isLoading}
           filterContent={
             <>

@@ -1,4 +1,4 @@
-import Top5CategoriesOfMonth from "@/components/charts/top5CategoriesOfMonth";
+import Top5CategoriesOfMonth from "@/components/charts/topCategoriesOfMonth";
 import Top5TransactionsOfMonth from "@/components/charts/top5TransactionsOfMonth";
 import PageHeader from "@/components/common/Pageheader";
 

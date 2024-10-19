@@ -337,21 +337,3 @@ export const updateCategoryById = async ({
     category: plainObject,
   };
 };
-
-export const getTop5CategoriesOfMonth = async (categoryDate: Date) => {
-  const { categories } = await getCategories({
-    categoryDate,
-    sortBy: CategorySortBy.AMOUNT_SPENT,
-  });
-  return (
-    categories
-      ?.map((item) => {
-        return {
-          category: item.category,
-          amount: item.totalAmountSpent,
-          budget: item.budget,
-        };
-      })
-      .filter((cat) => cat.amount > 0) || []
-  );
-};

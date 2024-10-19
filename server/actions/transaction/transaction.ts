@@ -161,22 +161,3 @@ export const updateTransactionFn = async ({
     transaction: plainObject,
   };
 };
-
-export const getTop5TransactionsOfMonth = async (month: string) => {
-  const { transactions } = await getTransactions({
-    month,
-    sortBy: TransactionSortBy.AMOUNT,
-    limit: 5,
-  });
-  return (
-    transactions
-      ?.map((item) => {
-        return {
-          category: item.category.category,
-          amount: item.amount,
-          icon: item.category.icon,
-        };
-      })
-      .filter((tran) => tran.amount > 0) || []
-  );
-};
