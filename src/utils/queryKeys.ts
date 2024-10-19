@@ -15,4 +15,7 @@ export const queryKeys = {
   monthAmount: "monthAmount",
   top5CategoriesOfMonth: "top5CategoriesOfMonth",
   top5TransactionsOfMonth: "top5TransactionsOfMonth",
+  transactionsThisMonth: "transactionsThisMonth",
+  transactionThisWeek: "transactionThisWeek",
+  transactionsToday: "transactionsToday",
 };

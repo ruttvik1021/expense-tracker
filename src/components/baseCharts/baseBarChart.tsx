@@ -21,6 +21,7 @@ interface BaseBarGraphProps {
   isLoading: boolean;
   filterContent?: React.ReactNode;
   tooltipKey?: string;
+  iconNameKey?: string;
 }
 
 const useColorCycle = (data: ChartDataItem[]) => {
@@ -51,6 +52,7 @@ export default function BaseBarGraph({
   isLoading,
   filterContent,
   tooltipKey,
+  iconNameKey,
 }: BaseBarGraphProps) {
   const chartConfig = {} satisfies ChartConfig;
   const coloredData = useColorCycle(chartData);
@@ -111,7 +113,9 @@ export default function BaseBarGraph({
                         <div className="flex justify-between items-center">
                           <div className="flex">
                             <span className="font-semibold text-foreground">
-                              {item.payload[yAxisKey]}
+                              {iconNameKey
+                                ? item.payload[iconNameKey]
+                                : item.payload[yAxisKey]}
                             </span>
                           </div>
                           <span className="text-foreground">{value}</span>
@@ -136,7 +140,7 @@ export default function BaseBarGraph({
                     dataKey={yAxisKey}
                     position="insideLeft"
                     offset={8}
-                    className="fill-foreground text-lg font-medium"
+                    className="fill-foreground text-md sm:text-2xl font-medium"
                   />
                 </Bar>
               </BarChart>

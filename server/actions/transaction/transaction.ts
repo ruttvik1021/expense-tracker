@@ -1,6 +1,6 @@
 "use server";
 import TransactionModel from "@/models/TransactionModel";
-import { ITransaction, ITransactionFilter, TransactionSortBy } from "./schema";
+import { ITransaction, ITransactionFilter } from "./schema";
 import { verifySession } from "@/lib/session";
 import { connectToDatabase } from "@/lib/mongodb";
 import mongoose, { PipelineStage } from "mongoose";

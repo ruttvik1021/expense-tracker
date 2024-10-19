@@ -40,6 +40,16 @@ export const useTransactionMutation = () => {
       queryKey: [queryKeys.transactions, transactionFilter],
       // refetchType: "none",
     });
+
+    queryClient.invalidateQueries({
+      queryKey: [queryKeys.transactionsThisMonth],
+    });
+
+    queryClient.invalidateQueries({
+      queryKey: [queryKeys.transactionThisWeek],
+    });
+
+    queryClient.invalidateQueries({ queryKey: [queryKeys.transactionsToday] });
   };
   const addTransaction = useMutation({
     mutationFn: addTransactionFn,
