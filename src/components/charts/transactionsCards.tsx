@@ -36,7 +36,7 @@ const TransactionsCards = () => {
           <CardHeader className="p-2">
             <Label className="flex gap-3 items-center text-xl font-bold">
               <WalletMinimalIcon />
-              Transactions{" "}
+              Spendings{" "}
               {index === 0 ? "This Month" : index === 1 ? "This Week" : "Today"}
             </Label>
           </CardHeader>
