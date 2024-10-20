@@ -46,170 +46,367 @@ export const getTop5TransactionsOfMonth = async ({
   );
 };
 
-export const getWeeklyTransactionSum = async () => {
+export const getCurrentAndLastWeekTransactionSum = async () => {
   const decodedToken = await verifySession();
   await connectToDatabase();
 
+  // Calculate start and end of current week (Monday to Sunday)
   const startOfWeek = new Date();
   const dayOfWeek = startOfWeek.getDay();
-  const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Adjust when the day is Sunday
+  const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Adjust for Sunday
   startOfWeek.setDate(diff);
-  startOfWeek.setHours(0, 0, 0, 0);
+  startOfWeek.setHours(0, 0, 0, 0); // Set start of the current week
 
   const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(endOfWeek.getDate() + 6); // Set to end of the week (Saturday)
+  endOfWeek.setDate(endOfWeek.getDate() + 6); // End of current week
   endOfWeek.setHours(23, 59, 59, 999);
+
+  // Calculate start and end of the previous week (Monday to Sunday)
+  const startOfLastWeek = new Date(startOfWeek);
+  startOfLastWeek.setDate(startOfWeek.getDate() - 7); // Start of last week
+  startOfLastWeek.setHours(0, 0, 0, 0);
+
+  const endOfLastWeek = new Date(startOfLastWeek);
+  endOfLastWeek.setDate(startOfLastWeek.getDate() + 6); // End of last week
+  endOfLastWeek.setHours(23, 59, 59, 999);
 
   const pipeline: PipelineStage[] = [
     {
       $match: {
         userId: new mongoose.Types.ObjectId(decodedToken?.userId as string),
         deletedAt: null,
-        $expr: {
-          $and: [
-            {
-              $gte: [
-                {
-                  $dateFromString: {
-                    dateString: "$date",
-                  },
-                },
-                startOfWeek,
-              ],
-            },
-            {
-              $lte: [
-                {
-                  $dateFromString: {
-                    dateString: "$date",
-                  },
-                },
-                endOfWeek,
-              ],
-            },
-          ],
-        },
       },
     },
     {
-      $group: {
-        _id: null,
-        totalAmount: { $sum: "$amount" }, // Sum up the amounts
+      $facet: {
+        currentWeekTransactions: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      startOfWeek,
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      endOfWeek,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$amount" }, // Sum for current week
+            },
+          },
+        ],
+        lastWeekTransactions: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      startOfLastWeek,
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      endOfLastWeek,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$amount" }, // Sum for last week
+            },
+          },
+        ],
       },
     },
   ];
 
   const result = await TransactionModel.aggregate(pipeline);
 
-  return result.length ? result[0].totalAmount : 0;
+  const currentWeekSum = result[0].currentWeekTransactions.length
+    ? result[0].currentWeekTransactions[0].totalAmount
+    : 0;
+  const lastWeekSum = result[0].lastWeekTransactions.length
+    ? result[0].lastWeekTransactions[0].totalAmount
+    : 0;
+
+  return {
+    current: currentWeekSum,
+    prev: lastWeekSum,
+  };
 };
 
-export const getDailyTransactionSum = async () => {
+export const getDailyAndYesterdayTransactionSum = async () => {
   const decodedToken = await verifySession();
   await connectToDatabase();
 
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Set to the start of the day
+  today.setHours(0, 0, 0, 0); // Start of today
+  const endOfDayToday = new Date(today);
+  endOfDayToday.setHours(23, 59, 59, 999); // End of today
 
-  const endOfDay = new Date(today);
-  endOfDay.setHours(23, 59, 59, 999); // Set to the end of the day
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1); // Move date to yesterday
+  const startOfYesterday = new Date(yesterday);
+  startOfYesterday.setHours(0, 0, 0, 0); // Start of yesterday
+  const endOfYesterday = new Date(yesterday);
+  endOfYesterday.setHours(23, 59, 59, 999); // End of yesterday
 
   const pipeline: PipelineStage[] = [
     {
       $match: {
         userId: new mongoose.Types.ObjectId(decodedToken?.userId as string),
         deletedAt: null,
-        $expr: {
-          $and: [
-            {
-              $gte: [
-                {
-                  $dateFromString: {
-                    dateString: "$date",
-                  },
-                },
-                today,
-              ],
-            },
-            {
-              $lte: [
-                {
-                  $dateFromString: {
-                    dateString: "$date",
-                  },
-                },
-                endOfDay,
-              ],
-            },
-          ],
-        },
       },
     },
     {
-      $group: {
-        _id: null,
-        totalAmount: { $sum: "$amount" }, // Sum up the amounts
+      $facet: {
+        todayTransactions: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      today,
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      endOfDayToday,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$amount" },
+            },
+          },
+        ],
+        yesterdayTransactions: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      startOfYesterday,
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      endOfYesterday,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$amount" },
+            },
+          },
+        ],
       },
     },
   ];
 
   const result = await TransactionModel.aggregate(pipeline);
 
-  return result.length ? result[0].totalAmount : 0;
+  const todaySum = result[0].todayTransactions.length
+    ? result[0].todayTransactions[0].totalAmount
+    : 0;
+  const yesterdaySum = result[0].yesterdayTransactions.length
+    ? result[0].yesterdayTransactions[0].totalAmount
+    : 0;
+
+  return {
+    prev: yesterdaySum,
+    current: todaySum,
+  };
 };
 
-export const getMonthlyTransactionSum = async () => {
+export const getCurrentAndLastMonthTransactionSum = async () => {
   const decodedToken = await verifySession();
   await connectToDatabase();
 
+  // Calculate start and end of the current month
   const startOfMonth = new Date();
-  startOfMonth.setDate(1); // Set to the 1st day of the month
+  startOfMonth.setDate(1); // Set to the first day of the current month
   startOfMonth.setHours(0, 0, 0, 0); // Start of the day
 
   const endOfMonth = new Date(startOfMonth);
-  endOfMonth.setMonth(endOfMonth.getMonth() + 1); // Move to the next month
+  endOfMonth.setMonth(endOfMonth.getMonth() + 1); // Move to next month
   endOfMonth.setDate(0); // Go back to the last day of the current month
   endOfMonth.setHours(23, 59, 59, 999); // End of the day
+
+  // Calculate start and end of the previous month
+  const startOfLastMonth = new Date(startOfMonth);
+  startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1); // Move to last month
+  startOfLastMonth.setDate(1); // Set to the first day of the previous month
+  startOfLastMonth.setHours(0, 0, 0, 0); // Start of the day
+
+  const endOfLastMonth = new Date(startOfLastMonth);
+  endOfLastMonth.setMonth(startOfLastMonth.getMonth() + 1); // Move to next month
+  endOfLastMonth.setDate(0); // Last day of the previous month
+  endOfLastMonth.setHours(23, 59, 59, 999); // End of the day
 
   const pipeline: PipelineStage[] = [
     {
       $match: {
         userId: new mongoose.Types.ObjectId(decodedToken?.userId as string),
         deletedAt: null,
-        $expr: {
-          $and: [
-            {
-              $gte: [
-                {
-                  $dateFromString: {
-                    dateString: "$date", // Convert the string date to Date
-                  },
-                },
-                startOfMonth, // Compare to the target date
-              ],
-            },
-            {
-              $lte: [
-                {
-                  $dateFromString: {
-                    dateString: "$date", // Convert the string date to Date
-                  },
-                },
-                endOfMonth, // Compare to the target date
-              ],
-            },
-          ],
-        },
       },
     },
     {
-      $group: {
-        _id: null,
-        totalAmount: { $sum: "$amount" }, // Sum up the amounts
+      $facet: {
+        currentMonthTransactions: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      startOfMonth,
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      endOfMonth,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$amount" }, // Sum for current month
+            },
+          },
+        ],
+        lastMonthTransactions: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      startOfLastMonth,
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      endOfLastMonth,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$amount" }, // Sum for last month
+            },
+          },
+        ],
       },
     },
   ];
 
   const result = await TransactionModel.aggregate(pipeline);
-  return result.length ? result[0].totalAmount : 0;
+
+  const currentMonthSum = result[0].currentMonthTransactions.length
+    ? result[0].currentMonthTransactions[0].totalAmount
+    : 0;
+  const lastMonthSum = result[0].lastMonthTransactions.length
+    ? result[0].lastMonthTransactions[0].totalAmount
+    : 0;
+
+  return {
+    current: currentMonthSum,
+    prev: lastMonthSum,
+  };
 };
