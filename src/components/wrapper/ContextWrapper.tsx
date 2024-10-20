@@ -88,10 +88,10 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logoutUser = () => {
+    router.push("/login");
     Cookies.remove("token");
     deleteSession();
     setIsAuthenticated(false);
-    router.push("/login");
     queryClient.clear();
   };
 
