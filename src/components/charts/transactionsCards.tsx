@@ -84,7 +84,7 @@ export default function TransactionsCards() {
                       {difference.toFixed(0)}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm">
                     {isDecrease ? "Down" : "Up"} by {difference.toFixed(0)}{" "}
                     compared to {query.data?.prev.toFixed(0)}{" "}
                     {comparisonTexts[index]}
