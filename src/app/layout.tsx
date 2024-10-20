@@ -4,7 +4,6 @@ import { ContextWrapper } from "@/components/wrapper/ContextWrapper";
 import QueryWrapper from "@/components/wrapper/QueryWrapper";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -26,8 +25,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = headers();
-  const currentPath = headersList.get("x-pathname") || "/";
   return (
     <html lang="en">
       <body>
@@ -36,9 +33,7 @@ export default function RootLayout({
             <main className="bg-background relative h-screen">
               <EmailVerification />
               <NavHeader />
-              <section className={currentPath === "/" ? "" : "px-3 py-3 pb-10"}>
-                {children}
-              </section>
+              <section className={"p-3"}>{children}</section>
             </main>
             <Toaster richColors position="top-center" />
             <SpeedInsights />
