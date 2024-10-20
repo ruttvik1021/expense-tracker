@@ -4,9 +4,9 @@ import { ContextWrapper } from "@/components/wrapper/ContextWrapper";
 import QueryWrapper from "@/components/wrapper/QueryWrapper";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Toaster } from "sonner";
 import "./globals.css";
-import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",

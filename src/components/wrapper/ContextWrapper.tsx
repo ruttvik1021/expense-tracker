@@ -2,7 +2,7 @@
 
 import { deleteSession } from "@/lib/session";
 import { queryKeys } from "@/utils/queryKeys";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import moment from "moment";
 import { useRouter } from "next/navigation";
@@ -53,7 +53,6 @@ const MyContext = createContext<ContextWrapperType | null>(null);
 
 export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const token = Cookies.get("token");
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
   const { data: user, refetch: refetchUser } = useQuery({
