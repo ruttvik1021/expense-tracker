@@ -115,7 +115,7 @@ export default function BaseBarGraph({
                             <span className="font-semibold text-foreground">
                               {iconNameKey
                                 ? item.payload[iconNameKey]
-                                : item.payload[yAxisKey]}
+                                : item.payload[yAxisKey]}:
                             </span>
                           </div>
                           <span className="text-foreground">{value}</span>
