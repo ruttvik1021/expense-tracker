@@ -53,7 +53,7 @@ export default function TransactionsCards() {
             className="flex-1 min-w-[250px] bg-blue-50 shadow-md"
           >
             <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-2 text-primary">
                 <WalletMinimalIcon />
                 <h2 className="text-lg font-semibold">
                   {titles[index]} Expense
@@ -67,7 +67,7 @@ export default function TransactionsCards() {
               ) : (
                 <div className="space-y-2">
                   <div className="flex items-baseline space-x-2">
-                    <span className="text-3xl font-bold">
+                    <span className="text-3xl font-bold text-primary">
                       {query.data?.current.toFixed(0)}
                     </span>
                     <span
