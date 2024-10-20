@@ -1,15 +1,9 @@
 import { Brand, Navlink } from "@/components/common/Navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  ArrowRight,
-  BarChart3,
-  Download,
-  PieChart,
-  TrendingUp,
-} from "lucide-react";
-import Link from "next/link";
+import { ArrowRight, BarChart3, PieChart, TrendingUp } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const LandingPage = () => {
   return (
