@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ILogin } from "@/utils/types/authTypes";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Field,
   FieldInputProps,
@@ -27,6 +27,7 @@ import * as Yup from "yup";
 import { useAuthContext } from "../wrapper/ContextWrapper";
 import { useRouter } from "next/navigation";
 import { queryKeys } from "@/utils/queryKeys";
+import React from "react";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -34,6 +35,7 @@ const validationSchema = Yup.object({
 });
 
 const Login = () => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const { authenticateUser } = useAuthContext();
   const { mutate: loginMutate, isPending: isLogging } = useMutation({
@@ -41,7 +43,7 @@ const Login = () => {
     mutationFn: (data: ILogin) => loginApi(data),
     onSuccess(data) {
       authenticateUser(data.data?.token);
-      router.push("/");
+      router.push("/dashboard");
       toast.success(data.data?.message);
     },
     onError(error) {
@@ -59,6 +61,10 @@ const Login = () => {
       loginMutate(values);
     },
   });
+
+  React.useLayoutEffect(() => {
+    queryClient.clear();
+  }, []);
 
   return (
     <div className="h-[90vh] w-full flex justify-center items-center">

@@ -18,7 +18,13 @@ export interface ILink {
   onClick?: () => void;
 }
 
-export const Navlink = ({ link }: { link: ILink }) => {
+export const Navlink = ({
+  link,
+  className,
+}: {
+  link: ILink;
+  className?: string;
+}) => {
   return (
     <Link
       role="button"
@@ -26,7 +32,8 @@ export const Navlink = ({ link }: { link: ILink }) => {
       href={link.href}
       className={cn(
         "text-primary transition-colors",
-        link.isActive ? "font-bold text-selected" : ""
+        link.isActive ? "font-bold text-selected" : "",
+        className
       )}
       onClick={link.onClick}
     >

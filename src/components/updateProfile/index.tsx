@@ -110,7 +110,7 @@ const UpdateProfile = () => {
                 meta: FieldMetaProps<string>;
               }) => (
                 <div className="space-y-2">
-                  <Label htmlFor="monthlyBudget">Monthly Budget</Label>
+                  <Label htmlFor="monthlyBudget">Avg. Monthly Budget</Label>
                   <Input
                     {...field}
                     id="monthlyBudget"

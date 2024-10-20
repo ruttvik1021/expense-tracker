@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Expense Tracker",
@@ -25,6 +26,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = headers();
+  const currentPath = headersList.get("x-pathname") || "/";
   return (
     <html lang="en">
       <body>
@@ -33,7 +36,9 @@ export default function RootLayout({
             <main className="bg-background relative h-screen">
               <EmailVerification />
               <NavHeader />
-              <section className="px-3 py-3 pb-10">{children}</section>
+              <section className={currentPath === "/" ? "" : "px-3 py-3 pb-10"}>
+                {children}
+              </section>
             </main>
             <Toaster richColors position="top-center" />
             <SpeedInsights />

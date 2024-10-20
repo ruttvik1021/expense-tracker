@@ -18,7 +18,7 @@ const VerifyEmail = ({ params }: { params: { id: string } }) => {
       verifyUserEmail();
       toast.success(verification.message);
     }
-    isAuthenticated ? router.push("/") : logoutUser();
+    isAuthenticated ? router.push("/dashboard") : logoutUser();
   };
 
   React.useEffect(() => {

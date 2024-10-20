@@ -44,7 +44,7 @@ const Register = () => {
     mutationFn: (data: IRegister) => signUpApi(data),
     onSuccess(data) {
       authenticateUser(data.data?.token);
-      router.push("/");
+      router.push("/dashboard");
       toast.success(data.data?.message);
     },
     onError(error) {

@@ -92,7 +92,6 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     Cookies.remove("token");
     deleteSession();
     setIsAuthenticated(false);
-    queryClient.clear();
   };
 
   useEffect(() => {

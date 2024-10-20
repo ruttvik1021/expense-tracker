@@ -17,7 +17,7 @@ import IconToggle from "../Toggles/IconToggle";
 import ThemeToggleButton from "../Toggles/ThemeToggle";
 
 const navLinks = [
-  { label: "Home", href: "/" },
+  { label: "Home", href: "/dashboard" },
   { label: "Category", href: "/category" },
   { label: "Transactions", href: "/transactions" },
 ];
@@ -41,7 +41,7 @@ export const NavHeader = () => {
                   <User />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => router.push("profile")}>
+                  <DropdownMenuItem onClick={() => router.push("/profile")}>
                     My Account
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
