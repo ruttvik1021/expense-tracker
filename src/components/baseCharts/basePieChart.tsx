@@ -102,7 +102,7 @@ export default function BasePieGraph({
                         >
                           <div className="flex">
                             <span className="font-semibold text-foreground">
-                              {item.payload[labelKey]}
+                              {item.payload[labelKey]}:
                             </span>
                           </div>
                           <span className="text-foreground">{value}</span>
