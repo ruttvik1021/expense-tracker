@@ -6,7 +6,7 @@
   "display": "standalone",
   "orientation": "any",
   "scope": "/",
-  "start_url": "/",
+  "start_url": "/dashboard",
   "icons": [
     {
       "src": "/icon-192x192.png",
