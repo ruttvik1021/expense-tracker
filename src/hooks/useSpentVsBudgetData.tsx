@@ -9,7 +9,7 @@ export function formatNumber(num: number) {
     const rounded = Math.floor((num / 1000) * 10) / 10; // Floor to one decimal place
     return rounded % 1 === 0 ? `${rounded.toFixed(0)}K` : `${rounded}K`;
   }
-  return num.toString(); // Return the number as a string for less than 1000
+  return num?.toString(); // Return the number as a string for less than 1000
 }
 
 const useSpentVsBudgetData = (page: "Categories" | "Transactions") => {

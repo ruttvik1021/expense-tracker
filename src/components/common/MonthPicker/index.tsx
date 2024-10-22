@@ -42,7 +42,7 @@ const MonthYearPicker = ({
   });
 
   const [open, setOpen] = useState<boolean>(false);
-  const [year, setYear] = useState<string>(new Date(date).getFullYear()?.toString());
+  const [year, setYear] = useState<string>(date.getFullYear()?.toString());
   const months = moment.months();
 
   const userCreated = new Date(userData?.data?.createdAt);
