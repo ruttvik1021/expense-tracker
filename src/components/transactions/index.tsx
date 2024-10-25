@@ -177,19 +177,19 @@ const Transactions = () => {
                 {groupBy === "date" ? (
                   moment(group).utc().format("DD/MM/YYYY")
                 ) : (
-                  <h2 className="flex items-center gap-2 text-md font-bold">
-                    <Avatar className="w-10 h-10">
-                      <AvatarFallback>
-                        {groupedTransactions[group][0].category?.icon}
-                      </AvatarFallback>
-                    </Avatar>
-                    {group}:{" "}
-                    {groupedTransactions[group]?.reduce(
-                      (acc: number, transaction: any) =>
-                        acc + transaction.amount,
-                      0
-                    ) || 0}
-                  </h2>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-3xl">
+                      {groupedTransactions[group][0].category?.icon}
+                    </Label>
+                    <Label className="text-selected text-lg font-semibold">
+                      {group}:{" "}
+                      {groupedTransactions[group]?.reduce(
+                        (acc: number, transaction: any) =>
+                          acc + transaction.amount,
+                        0
+                      ) || 0}
+                    </Label>
+                  </div>
                 )}
               </h2>
               <Card className="w-full shadow-none border-none">
