@@ -75,12 +75,11 @@ const TransactionForm = ({
   const pathname = usePathname();
   const disableDatePicker = pathname === "/transactions" ? false : true;
   const { data } = useCategories();
-  const isTransactionMutating = useIsMutating({
-    mutationKey: [queryKeys.mutateTransaction],
-  });
 
   const queryClient = useQueryClient();
   const { addTransaction, updateTransaction } = useTransactionMutation();
+  const isTransactionMutating =
+    addTransaction.isPending || updateTransaction.isPending;
 
   const handleSubmit = async (values: TransactionFormValues) => {
     const payload = {
@@ -130,7 +129,7 @@ const TransactionForm = ({
                 type="number"
                 autoComplete="off"
                 placeholder="Amount"
-                disabled={isTransactionMutating > 0}
+                disabled={isTransactionMutating}
               />
               {meta.touched && meta.error && (
                 <Label className="text-base text-red-600 dark:text-red-600 pl-2">
@@ -161,7 +160,7 @@ const TransactionForm = ({
                   transactionFormik.setFieldValue("category", e)
                 }
                 value={field.value}
-                disabled={isTransactionMutating > 0}
+                disabled={isTransactionMutating}
               >
                 <SelectTrigger className="mt-2">
                   <SelectValue placeholder="Select a Category" />
@@ -172,7 +171,7 @@ const TransactionForm = ({
                       <SelectItem
                         value={category._id as string}
                         key={category._id as string}
-                        disabled={isTransactionMutating > 0}
+                        disabled={isTransactionMutating}
                       >
                         <div className="flex items-center gap-2">
                           <Label>{category.icon}</Label>
@@ -221,7 +220,7 @@ const TransactionForm = ({
                     new Date(e.target.value)
                   );
                 }}
-                disabled={disableDatePicker || isTransactionMutating > 0}
+                disabled={disableDatePicker || isTransactionMutating}
                 max={moment().format("YYYY-MM-DD")}
               />
               {meta.touched && meta.error && (
@@ -254,7 +253,7 @@ const TransactionForm = ({
                 type="text"
                 id="spentOn"
                 placeholder="What did you spend on?"
-                disabled={isTransactionMutating > 0}
+                disabled={isTransactionMutating}
               />
               {meta.touched && meta.error && (
                 <Label className="text-base text-red-600 dark:text-red-600 pl-2">
@@ -270,14 +269,14 @@ const TransactionForm = ({
             type="reset"
             variant="destructive"
             onClick={() => transactionFormik.resetForm()}
-            disabled={isTransactionMutating > 0}
+            disabled={isTransactionMutating}
           >
             Reset
           </Button>
           <Button
             type="submit"
             variant="default"
-            loading={isTransactionMutating > 0}
+            loading={isTransactionMutating}
           >
             {editTransaction ? "Update" : "Add"}
           </Button>

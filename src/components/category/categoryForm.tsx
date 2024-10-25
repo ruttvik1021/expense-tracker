@@ -103,10 +103,8 @@ const CategoryForm = ({
 }: CategoryFormProps) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState<boolean>(false);
-  const isCategoryMutating = useIsMutating({
-    mutationKey: [queryKeys.mutateCategory],
-  });
   const { addCategory, updateCategory } = useCategoryMutation();
+  const isCategoryMutating = addCategory.isPending || updateCategory.isPending;
   const handleSubmit = async (values: CategoryFormValues) => {
     if (editCategory) {
       await updateCategory.mutateAsync({ id: editCategory, values });
@@ -145,7 +143,7 @@ const CategoryForm = ({
                       : "border-selected"
                   }`}
                   {...field}
-                  onClick={() => setOpen(true)}
+                  onClick={() => !isCategoryMutating && setOpen(true)}
                 >
                   <AvatarFallback>{field.value}</AvatarFallback>
                 </Avatar>
@@ -179,7 +177,7 @@ const CategoryForm = ({
                   type="text"
                   id="category"
                   placeholder="Category Name"
-                  disabled={isCategoryMutating > 0}
+                  disabled={isCategoryMutating}
                 />
                 {meta.touched && meta.error && (
                   <Label className="text-base text-red-600 dark:text-red-600">
@@ -211,7 +209,7 @@ const CategoryForm = ({
                   type="number"
                   autoComplete="off"
                   placeholder="Budget (Monthly)"
-                  disabled={isCategoryMutating > 0}
+                  disabled={isCategoryMutating}
                 />
                 {meta.touched && meta.error && (
                   <Label className="text-base text-red-600 dark:text-red-600">
@@ -221,135 +219,48 @@ const CategoryForm = ({
               </div>
             )}
           </Field>
-          {editCategory ? <></> : (
+          {editCategory ? (
+            <></>
+          ) : (
             <>
-            <Field name="periodType">
-            {({
-              field,
-              meta,
-            }: {
-              field: FieldInputProps<PeriodType>;
-              meta: FieldMetaProps<PeriodType>;
-            }) => (
-              <div className="space-y-1 my-2">
-                <Label
-                  htmlFor="periodType"
-                  className="flex items-center space-x-2 text-gray-700"
-                >
-                  <span>Period Type</span>
-                </Label>
-                <Select
-                  value={field.value}
-                  onValueChange={(value) => {
-                    categoryFormik.setFieldValue(field.name, value);
-                    if (value === PeriodType.ONCE) {
-                      categoryFormik.setFieldValue("startMonth", null);
-                      categoryFormik.setFieldValue("creationDuration", null);
-                    }
-                  }}
-                >
-                  <SelectTrigger className="w-full mb-3">
-                    <SelectValue placeholder="Year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.values(PeriodType).map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type.charAt(0).toUpperCase() + type.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {meta.touched && meta.error && (
-                  <Label className="text-base text-red-600 dark:text-red-600">
-                    {meta.error}
-                  </Label>
-                )}
-              </div>
-            )}
-          </Field>
-
-          {categoryFormik.values.periodType !== PeriodType.ONCE && (
-            <>
-              <Field name="startMonth">
+              <Field name="periodType">
                 {({
                   field,
                   meta,
                 }: {
-                  field: FieldInputProps<number>;
-                  meta: FieldMetaProps<number>;
+                  field: FieldInputProps<PeriodType>;
+                  meta: FieldMetaProps<PeriodType>;
                 }) => (
                   <div className="space-y-1 my-2">
                     <Label
-                      htmlFor="startMonth"
+                      htmlFor="periodType"
                       className="flex items-center space-x-2 text-gray-700"
                     >
-                      <span>Start Month</span>
-                    </Label>
-                    <Select
-                      value={String(field.value)}
-                      onValueChange={(value) =>
-                        categoryFormik.setFieldValue(field.name, value)
-                      }
-                    >
-                      <SelectTrigger className="w-full mb-3">
-                        <SelectValue placeholder="Year" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {moment
-                          .months()
-                          .slice(moment().month())
-                          .map((month, index) => (
-                            <SelectItem
-                              key={index}
-                              value={String(moment().month() + index + 1)}
-                            >
-                              {month}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                    {meta.touched && meta.error && (
-                      <Label className="text-base text-red-600 dark:text-red-600">
-                        {meta.error}
-                      </Label>
-                    )}
-                  </div>
-                )}
-              </Field>
-
-              <Field name="creationDuration">
-                {({
-                  field,
-                  meta,
-                }: {
-                  field: FieldInputProps<CategoryCreationDuration>;
-                  meta: FieldMetaProps<CategoryCreationDuration>;
-                }) => (
-                  <div className="space-y-1 my-2">
-                    <Label
-                      htmlFor="creationDuration"
-                      className="flex items-center space-x-2 text-gray-700"
-                    >
-                      <span>Creation Duration</span>
+                      <span>Period Type</span>
                     </Label>
                     <Select
                       value={field.value}
-                      onValueChange={(value) =>
-                        categoryFormik.setFieldValue(field.name, value)
-                      }
+                      onValueChange={(value) => {
+                        categoryFormik.setFieldValue(field.name, value);
+                        if (value === PeriodType.ONCE) {
+                          categoryFormik.setFieldValue("startMonth", null);
+                          categoryFormik.setFieldValue(
+                            "creationDuration",
+                            null
+                          );
+                        }
+                      }}
+                      disabled={isCategoryMutating}
                     >
                       <SelectTrigger className="w-full mb-3">
                         <SelectValue placeholder="Year" />
                       </SelectTrigger>
                       <SelectContent>
-                        {Object.values(CategoryCreationDuration).map(
-                          (duration) => (
-                            <SelectItem key={duration} value={duration}>
-                              {duration.charAt(0).toUpperCase() +
-                                duration.slice(1)}
-                            </SelectItem>
-                          )
-                        )}
+                        {Object.values(PeriodType).map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     {meta.touched && meta.error && (
@@ -360,23 +271,118 @@ const CategoryForm = ({
                   </div>
                 )}
               </Field>
+
+              {categoryFormik.values.periodType !== PeriodType.ONCE && (
+                <>
+                  <Field name="startMonth">
+                    {({
+                      field,
+                      meta,
+                    }: {
+                      field: FieldInputProps<number>;
+                      meta: FieldMetaProps<number>;
+                    }) => (
+                      <div className="space-y-1 my-2">
+                        <Label
+                          htmlFor="startMonth"
+                          className="flex items-center space-x-2 text-gray-700"
+                        >
+                          <span>Start Month</span>
+                        </Label>
+                        <Select
+                          value={String(field.value)}
+                          onValueChange={(value) =>
+                            categoryFormik.setFieldValue(field.name, value)
+                          }
+                          disabled={isCategoryMutating}
+                        >
+                          <SelectTrigger className="w-full mb-3">
+                            <SelectValue placeholder="Year" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {moment
+                              .months()
+                              .slice(moment().month())
+                              .map((month, index) => (
+                                <SelectItem
+                                  key={index}
+                                  value={String(moment().month() + index + 1)}
+                                >
+                                  {month}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                        {meta.touched && meta.error && (
+                          <Label className="text-base text-red-600 dark:text-red-600">
+                            {meta.error}
+                          </Label>
+                        )}
+                      </div>
+                    )}
+                  </Field>
+
+                  <Field name="creationDuration">
+                    {({
+                      field,
+                      meta,
+                    }: {
+                      field: FieldInputProps<CategoryCreationDuration>;
+                      meta: FieldMetaProps<CategoryCreationDuration>;
+                    }) => (
+                      <div className="space-y-1 my-2">
+                        <Label
+                          htmlFor="creationDuration"
+                          className="flex items-center space-x-2 text-gray-700"
+                        >
+                          <span>Creation Duration</span>
+                        </Label>
+                        <Select
+                          value={field.value}
+                          onValueChange={(value) =>
+                            categoryFormik.setFieldValue(field.name, value)
+                          }
+                          disabled={isCategoryMutating}
+                        >
+                          <SelectTrigger className="w-full mb-3">
+                            <SelectValue placeholder="Year" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.values(CategoryCreationDuration).map(
+                              (duration) => (
+                                <SelectItem key={duration} value={duration}>
+                                  {duration.charAt(0).toUpperCase() +
+                                    duration.slice(1)}
+                                </SelectItem>
+                              )
+                            )}
+                          </SelectContent>
+                        </Select>
+                        {meta.touched && meta.error && (
+                          <Label className="text-base text-red-600 dark:text-red-600">
+                            {meta.error}
+                          </Label>
+                        )}
+                      </div>
+                    )}
+                  </Field>
+                </>
+              )}
             </>
-          )}
-          </>
           )}
           <div className="flex justify-between mt-3">
             <Button
               type="reset"
               variant="destructive"
               onClick={() => categoryFormik.resetForm()}
-              disabled={isCategoryMutating > 0}
+              disabled={isCategoryMutating}
             >
               Reset
             </Button>
             <Button
               type="submit"
               variant="default"
-              loading={isCategoryMutating > 0}
+              loading={isCategoryMutating}
             >
               {editCategory ? "Update" : "Add"}
             </Button>
