@@ -183,7 +183,12 @@ const Transactions = () => {
                         {groupedTransactions[group][0].category?.icon}
                       </AvatarFallback>
                     </Avatar>
-                    {group}
+                    {group}:{" "}
+                    {groupedTransactions[group]?.reduce(
+                      (acc: number, transaction: any) =>
+                        acc + transaction.amount,
+                      0
+                    ) || 0}
                   </h2>
                 )}
               </h2>

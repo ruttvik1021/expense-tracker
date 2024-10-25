@@ -410,3 +410,93 @@ export const getCurrentAndLastMonthTransactionSum = async () => {
     prev: lastMonthSum,
   };
 };
+
+export const getLastMonthSummaryData = async () => {
+  const decodedToken = await verifySession();
+  await connectToDatabase();
+
+  const startOfMonth = new Date();
+  startOfMonth.setDate(1); // Set to the first day of the current month
+  startOfMonth.setHours(0, 0, 0, 0); // Start of the day
+
+  const startOfLastMonth = new Date(startOfMonth);
+  startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1); // Move to last month
+  startOfLastMonth.setDate(1); // Set to the first day of the previous month
+  startOfLastMonth.setHours(0, 0, 0, 0); // Start of the day
+
+  const endOfLastMonth = new Date(startOfLastMonth);
+  endOfLastMonth.setMonth(startOfLastMonth.getMonth() + 1); // Move to next month
+  endOfLastMonth.setDate(0); // Last day of the previous month
+  endOfLastMonth.setHours(23, 59, 59, 999); // End of the day
+
+  const pipeline: PipelineStage[] = [
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(decodedToken?.userId as string),
+        deletedAt: null,
+        // Ensure transactions are from last month
+        date: {
+          $gte: startOfLastMonth,
+          $lte: endOfLastMonth,
+        },
+      },
+    },
+    {
+      $facet: {
+        totalAmount: [
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$amount" }, // Total amount spent last month
+            },
+          },
+        ],
+        weeklyAvg: [
+          {
+            $group: {
+              _id: null,
+              weeklyTotal: { $sum: "$amount" }, // Total amount for each week
+              count: { $sum: 1 }, // Count of transactions for each week
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              weeklyAvg: { $avg: { $divide: ["$weeklyTotal", "$count"] } }, // Average for the week
+            },
+          },
+        ],
+        dailyAvg: [
+          {
+            $group: {
+              _id: null,
+              dailyTotal: { $sum: "$amount" }, // Total amount for each day
+              count: { $sum: 1 }, // Count of transactions for each day
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              dailyAvg: { $avg: { $divide: ["$dailyTotal", "$count"] } }, // Average for the day
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        totalAmount: { $arrayElemAt: ["$totalAmount.totalAmount", 0] },
+        weeklyAvg: { $arrayElemAt: ["$weeklyAvg.weeklyAvg", 0] },
+        dailyAvg: { $arrayElemAt: ["$dailyAvg.dailyAvg", 0] },
+      },
+    },
+  ];
+
+  const result = await TransactionModel.aggregate(pipeline);
+
+  return {
+    totalAmount: result[0].totalAmount || 0,
+    weeklyAvg: result[0].weeklyAvg || 0,
+    dailyAvg: result[0].dailyAvg || 0,
+  };
+};

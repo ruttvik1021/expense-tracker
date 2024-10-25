@@ -3,15 +3,21 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { queryKeys } from "@/utils/queryKeys";
-import { useQueries } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { ArrowDownIcon, ArrowUpIcon, WalletMinimalIcon } from "lucide-react";
 import {
   getCurrentAndLastMonthTransactionSum,
   getCurrentAndLastWeekTransactionSum,
   getDailyAndYesterdayTransactionSum,
+  getLastMonthSummaryData,
 } from "../../../server/actions/charts/charts";
 
 export default function TransactionsCards() {
+  const { data: lastMonthSummary } = useQuery({
+    queryKey: [queryKeys.lastMonthSummary],
+    queryFn: () => getLastMonthSummaryData(),
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+  });
   const queries = useQueries({
     queries: [
       {
@@ -42,16 +48,38 @@ export default function TransactionsCards() {
 
   return (
     <div className="flex flex-wrap gap-4">
+      <Card className="flex-1 min-w-[250px]">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <WalletMinimalIcon />
+            <h2 className="text-lg font-semibold">Last Month Summary</h2>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-baseline space-x-2">
+              <span className="text-3xl font-bold">
+                {lastMonthSummary?.totalAmount}
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <div className="flex items-baseline space-x-2">
+                <span className="text-md font-bold">Weekly Avg:</span>
+                <span>{lastMonthSummary?.weeklyAvg}</span>
+              </div>
+              <div className="flex items-baseline space-x-2">
+                <span className="text-md font-bold">Daily Avg:</span>
+                <span>{lastMonthSummary?.dailyAvg}</span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       {queries.map((query, index) => {
         const { difference, isDecrease } = getDifference(
           query.data?.prev ?? 0,
           query.data?.current ?? 0
         );
         return (
-          <Card
-            key={index}
-            className="flex-1 min-w-[250px]"
-          >
+          <Card key={index} className="flex-1 min-w-[250px]">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <WalletMinimalIcon />
