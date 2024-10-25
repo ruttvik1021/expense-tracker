@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { CategoryDocument } from "@/models/CategoryModel";
 import { queryKeys } from "@/utils/queryKeys";
-import { useIsMutating, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Field,
   FieldInputProps,
