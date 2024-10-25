@@ -203,12 +203,12 @@ const Category = () => {
               ) : isOverBudget ? (
                 <div className="flex justify-between w-full">
                   <p>You're over budget by:</p>
-                  <p>{formatNumber(totalSpent - totalBudget)}</p>
+                  <p>{formatNumber(totalSpent - (totalBudget || 0))}</p>
                 </div>
               ) : (
                 <div className="flex justify-between w-full">
                   <p>You're under budget by:</p>
-                  <p>{formatNumber(totalBudget - totalSpent)}</p>
+                  <p>{formatNumber((totalBudget || 0) - totalSpent)}</p>
                 </div>
               )}
             </div>
@@ -222,7 +222,7 @@ const Category = () => {
                   isOverBudget ? "text-red-500" : "text-green-500"
                 )}
               >
-                {formatNumber(totalSpent)}/{formatNumber(totalBudget)}
+                {formatNumber(totalSpent)}{totalBudget ? `/${formatNumber(totalBudget)}` : null}
               </span>
             </div>
             <Progress
