@@ -24,6 +24,5 @@ export const useTransactionById = (transactionId: string | null) => {
     queryKey: [queryKeys.transactions, transactionId],
     queryFn: () => getTransactionById(transactionId || ""),
     enabled: !!transactionId,
-    staleTime: 0,
   });
 };
