@@ -22,7 +22,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
           ref={ref}
           {...props}
-          autoFocus={false}
+          autoFocus={undefined}
         />
         {type === "password" && (
           <button
