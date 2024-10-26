@@ -67,7 +67,11 @@ export async function POST(req: Request) {
       .setExpirationTime("24h") // Optional - sets 'exp' claim (expiration)
       .sign(secret); // Signing key
 
-    return NextResponse.json({ message: "Login successful", token });
+    return NextResponse.json({
+      message: "Login successful",
+      token,
+      isEmailVerified: user.isVerified,
+    });
   } catch (error) {
     return NextResponse.json(
       { message: "Internal Server Error" },

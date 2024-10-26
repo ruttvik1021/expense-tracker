@@ -1,10 +1,4 @@
-import EmailVerification from "@/components/alerts/EmailVerification";
-import { NavHeader } from "@/components/common/Headers";
-import { ContextWrapper } from "@/components/wrapper/ContextWrapper";
-import QueryWrapper from "@/components/wrapper/QueryWrapper";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -28,17 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <QueryWrapper>
-          <ContextWrapper>
-            <main className="bg-background relative h-screen">
-              <EmailVerification />
-              <NavHeader />
-              <section className={"p-3"}>{children}</section>
-            </main>
-            <Toaster richColors position="top-center" />
-            <SpeedInsights />
-          </ContextWrapper>
-        </QueryWrapper>
+        <main className="bg-background relative h-screen">{children}</main>
       </body>
     </html>
   );

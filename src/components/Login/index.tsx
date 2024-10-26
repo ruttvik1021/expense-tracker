@@ -37,12 +37,13 @@ const validationSchema = Yup.object({
 const Login = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { authenticateUser } = useAuthContext();
+  const { authenticateUser, verifyUserEmail } = useAuthContext();
   const { mutate: loginMutate, isPending: isLogging } = useMutation({
     mutationKey: [queryKeys.user],
     mutationFn: (data: ILogin) => loginApi(data),
     onSuccess(data) {
       authenticateUser(data.data?.token);
+      verifyUserEmail(data.data?.isEmailVerified);
       router.push("/dashboard");
       toast.success(data.data?.message);
     },

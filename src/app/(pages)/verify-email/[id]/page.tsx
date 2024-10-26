@@ -15,7 +15,7 @@ const VerifyEmail = ({ params }: { params: { id: string } }) => {
       toast.error(verification.error);
     }
     if (verification.message) {
-      verifyUserEmail();
+      verifyUserEmail(true);
       toast.success(verification.message);
     }
     isAuthenticated ? router.push("/dashboard") : logoutUser();

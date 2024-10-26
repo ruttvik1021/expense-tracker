@@ -39,7 +39,7 @@ type ContextWrapperType = {
   isIconPreferred: boolean;
   setIsIconPreferred: (value: boolean) => void;
   isEmailVerified: boolean;
-  verifyUserEmail: () => void;
+  verifyUserEmail: (value: boolean) => void;
 };
 
 export const initialTransactionFilter = {
@@ -63,10 +63,12 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     refetchOnReconnect: true,
   });
 
-  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
-  const verifyUserEmail = () => {
-    localStorage.setItem("isEmailVerified", "true");
-    setIsEmailVerified(true);
+  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(
+    user?.data?.isVerified
+  );
+  const verifyUserEmail = (value: boolean) => {
+    localStorage.setItem("isEmailVerified", String(value));
+    setIsEmailVerified(value);
     refetchUser();
   };
   const [isIconPreferred, setIsIconPreferred] = useState<boolean>(false);
