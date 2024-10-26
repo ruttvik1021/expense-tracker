@@ -193,7 +193,7 @@ const Category = () => {
                 isOverBudget ? "text-red-500" : "text-green-500"
               }`}
             >
-              {totalBudget === 0 ? (
+              {totalBudget === 0 || !totalBudget ? (
                 <div>
                   <Label className="mr-1">Update your monthly budget</Label>
                   <Navlink
@@ -215,14 +215,17 @@ const Category = () => {
           </CardHeader>
           <CardContent className="space-y-1">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Spent/Budget</span>
+              <span className="text-sm font-medium">
+                Spent {totalBudget ? "/Budget" : ""}
+              </span>
               <span
                 className={cn(
                   "text-2xl font-bold",
                   isOverBudget ? "text-red-500" : "text-green-500"
                 )}
               >
-                {formatNumber(totalSpent)}{totalBudget ? `/${formatNumber(totalBudget)}` : null}
+                {formatNumber(totalSpent)}
+                {totalBudget ? `/${formatNumber(totalBudget)}` : null}
               </span>
             </div>
             <Progress

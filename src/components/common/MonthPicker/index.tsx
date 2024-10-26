@@ -43,7 +43,6 @@ const MonthYearPicker = ({
 
   const [open, setOpen] = useState<boolean>(false);
   const [year, setYear] = useState<string>(date.getFullYear()?.toString());
-  const months = moment.months();
 
   const userCreated = new Date(userData?.data?.createdAt);
   const currentDate = new Date(); // Current date
@@ -55,6 +54,15 @@ const MonthYearPicker = ({
     { length: currentYear - createdAtYear + 1 },
     (_, i) => createdAtYear + i
   );
+
+  const months = moment.months();
+
+  const monthsByYear = () => {
+    if (parseInt(year) === createdAtYear) {
+      return months.slice(userCreated.getMonth()); // Start from the created month
+    }
+    return months;
+  };
 
   const handlePrevMonthClick = () => {
     const newDate = new Date(date);
@@ -70,7 +78,7 @@ const MonthYearPicker = ({
 
   const handleMonthChangeClick = (value: string) => {
     const newDate = new Date(date);
-    newDate.setMonth(months.indexOf(value));
+    newDate.setMonth(moment().month(value).month());
     newDate.setFullYear(parseInt(year));
     handleMonthChange(newDate);
     setOpen(!open);
@@ -94,7 +102,7 @@ const MonthYearPicker = ({
               btnClassName
             )}
           >
-            {months[date.getMonth()]} {date.getFullYear()}
+            {moment(date).format("MMMM")} {date.getFullYear()}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80">
@@ -116,20 +124,22 @@ const MonthYearPicker = ({
           ) : null}
 
           <div className="grid grid-cols-3 gap-2">
-            {months.map((month, index) => (
+            {monthsByYear().map((month) => (
               <button
                 key={month}
                 className={`p-2 text-center rounded-full ${
-                  date.getMonth() === index &&
-                  date.getFullYear() === parseInt(year)
+                  month === moment(date).format("MMMM") &&
+                  parseInt(year) === currentYear
                     ? "bg-selected text-white"
-                    : parseInt(year) === currentYear && index > currentMonth
+                    : parseInt(year) === currentYear &&
+                      moment().month(month).month() > currentMonth
                     ? "bg-destructive/40"
                     : "bg-primary-foreground "
                 }`}
                 onClick={() => handleMonthChangeClick(month)}
                 disabled={
-                  parseInt(year) === currentYear && index > currentMonth
+                  parseInt(year) === currentYear &&
+                  moment().month(month).month() > currentMonth
                 }
               >
                 {month}
