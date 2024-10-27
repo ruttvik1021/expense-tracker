@@ -9,7 +9,7 @@ const Profile = () => {
     <div className="container mx-auto p-4">
       <div className="max-w-2xl mx-auto">
         <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-4">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="password">Password</TabsTrigger>
           </TabsList>
