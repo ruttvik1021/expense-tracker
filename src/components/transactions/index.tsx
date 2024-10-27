@@ -218,8 +218,9 @@ const Transactions = () => {
                           <div className="flex items-center text-center font-bold text-md">
                             <IndianRupee className="icon" />
                             {`${transaction.amount} ${
-                              transaction.source?.source &&
-                              `(${transaction.source?.source})`
+                              transaction.source?.source
+                                ? `(${transaction.source?.source})`
+                                : ""
                             }`}
                           </div>
 
