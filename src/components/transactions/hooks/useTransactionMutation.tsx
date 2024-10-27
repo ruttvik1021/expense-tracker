@@ -17,11 +17,9 @@ export const useTransactionMutation = () => {
     message && toast.success(message);
     queryClient.invalidateQueries({
       queryKey: [queryKeys.categories, categoryFilter],
-      refetchType: "none",
     });
     queryClient.invalidateQueries({
       queryKey: [queryKeys.transactions, transactionFilter],
-      refetchType: "none",
     });
 
     queryClient.invalidateQueries({

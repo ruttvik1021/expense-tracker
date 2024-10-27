@@ -3,4 +3,5 @@ export interface ITransaction {
   category: string;
   date: string;
   spentOn: string;
+  source: string;
 }

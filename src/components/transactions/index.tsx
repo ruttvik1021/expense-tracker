@@ -216,7 +216,9 @@ const Transactions = () => {
 
                           <div className="flex items-center text-center font-bold text-md">
                             <IndianRupee className="icon" />
-                            {transaction.amount}
+                            {`${transaction.amount} (${
+                              transaction.source?.source || "-"
+                            })`}
                           </div>
 
                           <div className="flex gap-1">
@@ -253,6 +255,7 @@ const Transactions = () => {
             <TableRow>
               <TableHead>For:</TableHead>
               <TableHead>Amount</TableHead>
+              <TableHead>Source</TableHead>
               <TableHead>Date</TableHead>
               <TableHead className="w-2">Actions</TableHead>
             </TableRow>
@@ -287,6 +290,7 @@ const Transactions = () => {
                   <IndianRupee className="icon" />
                   {transaction.amount}
                 </TableCell>
+                <TableCell>{transaction.source?.source || "-"}</TableCell>
                 <TableCell className="text-sm">
                   {moment(transaction.date).utc().format("DD/MM")}
                 </TableCell>

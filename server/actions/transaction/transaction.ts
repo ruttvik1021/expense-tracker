@@ -1,9 +1,9 @@
 "use server";
-import TransactionModel from "@/models/TransactionModel";
-import { ITransaction, ITransactionFilter } from "./schema";
-import { verifySession } from "@/lib/session";
 import { connectToDatabase } from "@/lib/mongodb";
+import { verifySession } from "@/lib/session";
+import TransactionModel from "@/models/TransactionModel";
 import mongoose, { PipelineStage } from "mongoose";
+import { ITransaction, ITransactionFilter } from "./schema";
 
 export const addTransactionFn = async (values: ITransaction) => {
   const decodedToken = await verifySession();
@@ -93,12 +93,21 @@ export const getTransactions = async (body: Partial<ITransactionFilter>) => {
     },
     { $unwind: "$category" },
     {
+      $lookup: {
+        from: "sources",
+        localField: "source",
+        foreignField: "_id",
+        as: "source",
+      },
+    },
+    { $unwind: "$source" },
+    {
       $project: {
         _id: 1,
         amount: 1,
         spentOn: 1,
         date: 1,
-        source: 1,
+        source: { source: 1, _id: 1 },
         category: { category: 1, icon: 1, _id: 1 },
       },
     },
