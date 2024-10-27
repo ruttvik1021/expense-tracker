@@ -13,11 +13,11 @@ const Profile = () => {
             <TabsTrigger value="profile">Profile</TabsTrigger>
             <TabsTrigger value="password">Password</TabsTrigger>
           </TabsList>
-          <TabsContent value="profile" className="flex justify-center">
+          <TabsContent value="profile">
             <UpdateProfile />
             <PaymentSources />
           </TabsContent>
-          <TabsContent value="password" className="flex justify-center">
+          <TabsContent value="password">
             <UpdatePassword />
           </TabsContent>
         </Tabs>
