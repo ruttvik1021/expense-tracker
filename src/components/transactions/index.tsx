@@ -235,9 +235,7 @@ const Transactions = () => {
                             <IndianRupee className="icon" />
                             {`${transaction.amount} ${
                               groupBy === GroupBy.CATEGORY
-                                ? transaction.source?.source 
-                                  ? `(${transaction.source?.source})` 
-                                  : ""
+                                ? `(${transaction.source?.source || "Other"})`
                                 : groupBy === GroupBy.SOURCE 
                                 ? `(${transaction?.category?.category})`
                                 : ""
