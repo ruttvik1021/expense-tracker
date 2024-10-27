@@ -48,13 +48,21 @@ import TransactionForm, {
   transactionFormInitialValues,
 } from "./transactionForm";
 
+enum GroupBy {
+  NONE = "none",
+  DATE = "date",
+  CATEGORY = "category",
+  SOURCE = "source",
+}
+
 const groupTransactionsBy = [
-  { label: "Table", value: "none" },
-  { label: "Category", value: "category" },
+  { label: "Table", value: GroupBy.NONE },
+  { label: "Category", value: GroupBy.CATEGORY },
+  { label: "Source", value: GroupBy.SOURCE },
 ];
 
 const Transactions = () => {
-  const [groupBy, setGroupBy] = useState(groupTransactionsBy[0].value);
+  const [groupBy, setGroupBy] = useState(GroupBy.NONE);
   const { categoryFilter, transactionFilter } = useAuthContext();
   const searchParams = useSearchParams();
   const addBycategoryId = searchParams.get("addBycategory") || "";
@@ -116,7 +124,11 @@ const Transactions = () => {
   const groupedTransactions = data?.transactions.reduce(
     (groups: { [key: string]: any[] }, transaction: any) => {
       const group =
-        groupBy === "date" ? transaction.date : transaction.category.category;
+        groupBy === GroupBy.DATE
+          ? transaction.date
+          : groupBy === GroupBy.SOURCE
+          ? transaction.source?.source || "Other"
+          : transaction.category.category;
       if (!groups[group]) {
         groups[group] = [];
       }
@@ -142,7 +154,10 @@ const Transactions = () => {
           </div>
         </div>
         <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
-          <Select onValueChange={setGroupBy} value={groupBy}>
+          <Select
+            onValueChange={(value) => setGroupBy(value as GroupBy)}
+            value={groupBy}
+          >
             <SelectTrigger id="groupBy" className="sm:w-full sm:max-w-[180px]">
               <SelectValue placeholder="Group Transactions by" />
             </SelectTrigger>
@@ -169,18 +184,20 @@ const Transactions = () => {
         </p>
       </div>
       <Separator />
-      {groupBy !== "none" ? (
+      {groupBy !== GroupBy.NONE ? (
         groupedTransactions &&
         Object.keys(groupedTransactions).map((group) => (
           <>
             <div key={group} className="mb-6">
               <h2 className="text-md my-2 font-bold text-selected">
-                {groupBy === "date" ? (
+                {groupBy === GroupBy.DATE ? (
                   moment(group).utc().format("DD/MM/YYYY")
                 ) : (
                   <div className="flex items-center gap-2">
                     <Label className="text-3xl">
-                      {groupedTransactions[group][0].category?.icon}
+                      {groupBy === GroupBy.CATEGORY
+                        ? groupedTransactions[group][0].category?.icon
+                        : ""}
                     </Label>
                     <Label className="text-selected text-lg font-semibold">
                       {group}:{" "}
@@ -210,17 +227,17 @@ const Transactions = () => {
 
                           <div className="flex-1">
                             <h2 className="text-md font-bold">
-                              {transaction.spentOn ||
-                                transaction?.category?.category}
+                              {transaction.spentOn}
                             </h2>
                           </div>
 
                           <div className="flex items-center text-center font-bold text-md">
                             <IndianRupee className="icon" />
                             {`${transaction.amount} ${
-                              transaction.source?.source
+                              transaction.source?.source &&
+                              groupBy !== GroupBy.SOURCE
                                 ? `(${transaction.source?.source})`
-                                : ""
+                                : `(${transaction?.category?.category})`
                             }`}
                           </div>
 
@@ -293,7 +310,7 @@ const Transactions = () => {
                   <IndianRupee className="icon" />
                   {transaction.amount}
                 </TableCell>
-                <TableCell>{transaction.source?.source || "-"}</TableCell>
+                <TableCell>{transaction.source?.source || "Other"}</TableCell>
                 <TableCell className="text-sm">
                   {moment(transaction.date).utc().format("DD/MM")}
                 </TableCell>

@@ -53,7 +53,6 @@ export const transactionFormValidationSchema = Yup.object({
     .required("Amount is required")
     .positive("Amount must be positive"),
   category: Yup.string().required("Category is required"),
-  source: Yup.string().required("Source is required"),
   spentOn: Yup.string().required("Spent on is required"),
   date: Yup.string()
     .required("Date is required")
@@ -237,11 +236,6 @@ const TransactionForm = ({
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              {meta.touched && meta.error && (
-                <Label className="text-base text-red-600 dark:text-red-600 pl-2">
-                  {meta.error}
-                </Label>
-              )}
             </div>
           )}
         </Field>

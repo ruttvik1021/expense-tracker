@@ -15,7 +15,7 @@ export const addTransactionFn = async (values: ITransaction) => {
     date,
     category,
     userId: decodedToken?.userId,
-    source,
+    source: source || null,
   });
 
   await newTransaction.save();
@@ -100,10 +100,11 @@ export const getTransactions = async (body: Partial<ITransactionFilter>) => {
         as: "source",
       },
     },
-    { $unwind: {
+    {
+      $unwind: {
         path: "$source",
         preserveNullAndEmptyArrays: true, // Keep categories with no transactions
-      } 
+      },
     },
     {
       $project: {
