@@ -1,19 +1,15 @@
 "use client";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Circle, PlusCircleIcon } from "lucide-react";
-import { useAuthContext } from "../wrapper/ContextWrapper";
+import CommonTooltip from "../common/CommonTooltip";
 import { Button } from "../ui/button";
+import { useAuthContext } from "../wrapper/ContextWrapper";
+import { TooltipTrigger } from "../ui/tooltip";
 
 const CustomAddIcon = ({
   onClick,
-  tooltip,
+  tooltip = "Add",
   type = "ICON",
-  disabled,
+  disabled = false,
 }: {
   onClick: () => void;
   tooltip?: string;
@@ -21,44 +17,37 @@ const CustomAddIcon = ({
   disabled?: boolean;
 }) => {
   const { isIconPreferred } = useAuthContext();
-  return type === "TEXT" ? (
-    <Button
-      variant="outline"
-      className="border border-green-600"
-      onClick={onClick}
-      disabled={disabled}
-    >
-      Add
-    </Button>
-  ) : (
-    <TooltipProvider>
-      <Tooltip>
+
+  if (type === "TEXT") {
+    return (
+      <Button
+        variant="outline"
+        className="border border-green-600"
+        onClick={onClick}
+        disabled={disabled}
+      >
+        {tooltip}
+      </Button>
+    );
+  }
+
+  const IconComponent = isIconPreferred ? PlusCircleIcon : Circle;
+  const iconClass = `icon ${disabled ? "opacity-50 cursor-not-allowed" : ""}`;
+  const iconStyle = isIconPreferred ? "" : "fill-green-600 rounded-full border";
+
+  return (
+    <CommonTooltip
+      trigger={
         <TooltipTrigger asChild>
-          {disabled ? (
-            // Render the icon without the TooltipTrigger if disabled
-            isIconPreferred ? (
-              <PlusCircleIcon className="icon opacity-50 cursor-not-allowed" />
-            ) : (
-              <Circle className="fill-green-600 rounded-full icon border opacity-50 cursor-not-allowed" />
-            )
-          ) : (
-            <TooltipTrigger asChild>
-              {isIconPreferred ? (
-                <PlusCircleIcon onClick={onClick} className="icon" />
-              ) : (
-                <Circle
-                  onClick={onClick}
-                  className="fill-green-600 rounded-full icon border"
-                />
-              )}
-            </TooltipTrigger>
-          )}
+          <IconComponent
+            onClick={!disabled ? onClick : undefined}
+            className={`${iconClass} ${iconStyle}`}
+          />
         </TooltipTrigger>
-        <TooltipContent className="bg-green-200 text-black">
-          <p>{tooltip || "Add"}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+      }
+      text={tooltip}
+      hoverClass="bg-green-200"
+    />
   );
 };
 

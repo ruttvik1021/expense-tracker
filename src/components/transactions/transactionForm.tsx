@@ -27,12 +27,14 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useTransactionMutation } from "./hooks/useTransactionMutation";
+import { useSources } from "../paymentSources/hooks/useSourcesQuery";
 
 export interface TransactionFormValues {
   spentOn: string;
   category: string;
   date: string;
   amount: number;
+  source: string;
 }
 
 interface CategoryFormProps {
@@ -65,6 +67,7 @@ export const transactionFormInitialValues = {
   category: "",
   spentOn: "",
   date: moment().format(),
+  source: "",
 };
 
 const TransactionForm = ({
@@ -75,6 +78,7 @@ const TransactionForm = ({
   const pathname = usePathname();
   const disableDatePicker = pathname === "/transactions" ? false : true;
   const { data } = useCategories();
+  const { data: paymentSources } = useSources();
 
   const queryClient = useQueryClient();
   const { addTransaction, updateTransaction } = useTransactionMutation();
@@ -187,6 +191,45 @@ const TransactionForm = ({
                   {meta.error}
                 </Label>
               )}
+            </div>
+          )}
+        </Field>
+        <Field name="source">
+          {({ field }: { field: FieldInputProps<string> }) => (
+            <div className="spcace-y-1 my-2">
+              <Label
+                htmlFor="source"
+                className="flex items-center space-x-2 text-gray-700"
+              >
+                <Tag className="w-5 h-5" />
+                <span>Payment Source</span>
+              </Label>
+              <Select
+                onValueChange={(e) =>
+                  transactionFormik.setFieldValue("source", e)
+                }
+                value={field.value}
+                disabled={isTransactionMutating}
+              >
+                <SelectTrigger className="mt-2">
+                  <SelectValue placeholder="Select a Source" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {paymentSources?.map((source: any) => (
+                      <SelectItem
+                        value={source._id as string}
+                        key={source._id as string}
+                        disabled={isTransactionMutating}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Label>{source.source}</Label>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           )}
         </Field>

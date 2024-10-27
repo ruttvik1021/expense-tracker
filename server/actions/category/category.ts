@@ -35,6 +35,7 @@ export const createCategory = async (body: CategorySchema) => {
       icon,
       budget,
       userId: decodedToken?.userId,
+      periodType: periodType,
     });
 
     await newCategory.save();
@@ -47,11 +48,11 @@ export const createCategory = async (body: CategorySchema) => {
         icon: newCategory.icon,
         budget: newCategory.budget,
         totalAmountSpent: 0,
+        periodType: periodType,
       },
     };
   } else {
     const categoriesToCreate = [];
-    const now = moment(); // Using moment.js for date manipulation
     let periodStart: moment.Moment;
 
     // Determine periodStart based on startMonth and creationDuration
@@ -69,6 +70,7 @@ export const createCategory = async (body: CategorySchema) => {
             budget,
             userId: decodedToken?.userId,
             createdAt: periodStart.toDate(),
+            periodType: periodType,
           })
         );
 
@@ -104,6 +106,7 @@ export const createCategory = async (body: CategorySchema) => {
             budget,
             userId: decodedToken?.userId,
             createdAt: periodStart.toDate(),
+            periodType: periodType,
           })
         );
 
@@ -139,6 +142,7 @@ export const createCategory = async (body: CategorySchema) => {
         icon: cat.icon,
         budget: cat.budget,
         totalAmountSpent: 0,
+        periodType: cat.periodType,
       })),
     };
   }
@@ -252,6 +256,7 @@ export const getCategories = async (body: {
         icon: { $first: "$icon" },
         budget: { $first: "$budget" },
         totalAmountSpent: { $sum: "$transactions.amount" },
+        periodType: { $first: "$periodType" },
       },
     },
     ...sortStage, // Apply sorting after $group

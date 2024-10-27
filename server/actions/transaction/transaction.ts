@@ -8,13 +8,14 @@ import mongoose, { PipelineStage } from "mongoose";
 export const addTransactionFn = async (values: ITransaction) => {
   const decodedToken = await verifySession();
   await connectToDatabase();
-  const { amount, spentOn, date, category } = values;
+  const { amount, spentOn, date, category, source } = values;
   const newTransaction = new TransactionModel({
     amount,
     spentOn,
     date,
     category,
     userId: decodedToken?.userId,
+    source,
   });
 
   await newTransaction.save();
@@ -97,6 +98,7 @@ export const getTransactions = async (body: Partial<ITransactionFilter>) => {
         amount: 1,
         spentOn: 1,
         date: 1,
+        source: 1,
         category: { category: 1, icon: 1, _id: 1 },
       },
     },

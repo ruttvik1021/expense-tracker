@@ -14,9 +14,12 @@ export const CategorySkeleton = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="flex justify-between items-center p-0">
+      <CardContent className="flex justify-between items-stretch p-0">
         <Skeleton className="h-4 w-[100px]" />
-        <Skeleton className="h-4 w-[100px]" />
+        <div>
+          <Skeleton className="h-4 w-[100px] mb-3" />
+          <Skeleton className="h-4 w-[100px]" />
+        </div>
       </CardContent>
     </Card>
   );

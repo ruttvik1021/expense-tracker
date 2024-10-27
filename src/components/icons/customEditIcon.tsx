@@ -1,39 +1,51 @@
 "use client";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipTrigger } from "@/components/ui/tooltip";
 import { Circle, SquarePenIcon } from "lucide-react";
+import CommonTooltip from "../common/CommonTooltip";
 import { useAuthContext } from "../wrapper/ContextWrapper";
+import { Button } from "../ui/button";
 
 const CustomEditIcon = ({
   onClick,
-  tooltip,
+  tooltip = "Edit",
+  type = "ICON",
+  disabled = false,
 }: {
   onClick: () => void;
   tooltip?: string;
+  type?: "ICON" | "TEXT";
+  disabled?: boolean;
 }) => {
   const { isIconPreferred } = useAuthContext();
+
+  if (type === "TEXT") {
+    return (
+      <Button
+        variant="outline"
+        className="border border-yellow-600"
+        onClick={onClick}
+        disabled={disabled}
+      >
+        {tooltip}
+      </Button>
+    );
+  }
+
+  const IconComponent = isIconPreferred ? SquarePenIcon : Circle;
+  const iconStyle = isIconPreferred
+    ? "icon"
+    : "fill-yellow-600 rounded-full icon border";
+
   return (
-    <TooltipProvider>
-      <Tooltip>
+    <CommonTooltip
+      trigger={
         <TooltipTrigger asChild>
-          {isIconPreferred ? (
-            <SquarePenIcon onClick={onClick} className="icon" />
-          ) : (
-            <Circle
-              onClick={onClick}
-              className="fill-yellow-600 rounded-full icon border"
-            />
-          )}
+          <IconComponent onClick={onClick} className={iconStyle} />
         </TooltipTrigger>
-        <TooltipContent className="bg-yellow-400 text-black">
-          <p>{tooltip || "Edit"}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+      }
+      text={tooltip}
+      hoverClass="bg-yellow-200"
+    />
   );
 };
 

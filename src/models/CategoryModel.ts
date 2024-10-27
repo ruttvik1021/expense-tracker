@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { PeriodType } from "../../server/actions/category/schema";
 
 // Define the Category interface based on the Mongoose document
 export interface CategoryDocument extends Document {
@@ -6,8 +7,7 @@ export interface CategoryDocument extends Document {
   icon: string;
   budget: number;
   userId: mongoose.Schema.Types.ObjectId;
-  createdAt: Date;
-  updatedAt: Date;
+  periodType: string;
   deletedAt: Date;
 }
 
@@ -18,8 +18,11 @@ const CategorySchema: Schema<CategoryDocument> = new Schema(
     icon: { type: String, required: true },
     budget: { type: Number, required: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    periodType: {
+      type: String,
+      required: true,
+    },
     deletedAt: { type: Date, default: null },
-    createdAt: { type: Date, default: Date.now },
   },
   {
     timestamps: true,

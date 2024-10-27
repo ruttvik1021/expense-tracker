@@ -3,8 +3,6 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IUser extends Document {
   email: string;
   password: string;
-  createdAt: Date;
-  updatedAt: Date;
   name: string;
   budget: number;
   isVerified: boolean; // New field to track email verification status

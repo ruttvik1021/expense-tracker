@@ -11,6 +11,7 @@ import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { getLastMonthAmount } from "../../../server/actions/profile/profile";
+import { FeatureRestrictedWarning } from "../alerts/EmailVerification";
 import MonthYearPicker from "../common/MonthPicker";
 import { Navlink } from "../common/Navigation";
 import PageHeader from "../common/Pageheader";
@@ -33,11 +34,13 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useAuthContext } from "../wrapper/ContextWrapper";
-import CategoryForm, { categoryFormInitialValues } from "./categoryForm";
+import CategoryForm, {
+  categoryFormInitialValues,
+  PeriodType,
+} from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
-import { FeatureRestrictedWarning } from "../alerts/EmailVerification";
 
 export enum CategorySortBy {
   CATEGORY = "category",
@@ -313,6 +316,17 @@ const Category = () => {
                       >
                         {category.category}
                       </p>
+
+                      <div className="flex">
+                        {category.periodType &&
+                          category.periodType !== PeriodType.ONCE && (
+                            <>
+                              <Label className="text-sm mt-1">
+                                {category.periodType.toUpperCase()}
+                              </Label>
+                            </>
+                          )}
+                      </div>
                     </div>
                     <div className="text-right">
                       <p className="text-base">

@@ -51,7 +51,7 @@ const MonthYearPicker = ({
   const createdAtYear = userCreated.getFullYear();
 
   const years = Array.from(
-    { length: currentYear - createdAtYear + 1 },
+    { length: currentYear - createdAtYear + 2 },
     (_, i) => createdAtYear + i
   );
 
@@ -131,16 +131,9 @@ const MonthYearPicker = ({
                   month === moment(date).format("MMMM") &&
                   parseInt(year) === currentYear
                     ? "bg-selected text-white"
-                    : parseInt(year) === currentYear &&
-                      moment().month(month).month() > currentMonth
-                    ? "bg-destructive/40"
-                    : "bg-primary-foreground "
+                    : "bg-primary-foreground"
                 }`}
                 onClick={() => handleMonthChangeClick(month)}
-                disabled={
-                  parseInt(year) === currentYear &&
-                  moment().month(month).month() > currentMonth
-                }
               >
                 {month}
               </button>

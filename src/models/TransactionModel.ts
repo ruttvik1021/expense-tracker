@@ -7,9 +7,8 @@ export interface TransactionDocument extends Document {
   date: string;
   userId: mongoose.Schema.Types.ObjectId;
   category: mongoose.Schema.Types.ObjectId;
-  createdAt: Date;
-  updatedAt: Date;
   deletedAt: Date;
+  source: string;
 }
 
 // Define the Category schema
@@ -17,6 +16,7 @@ const TransactionSchema: Schema<TransactionDocument> = new Schema(
   {
     amount: { type: Number, required: true },
     spentOn: { type: String, default: "" },
+    source: { type: String, default: "" },
     date: { type: String },
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
