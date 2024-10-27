@@ -46,7 +46,6 @@ const MonthYearPicker = ({
 
   const userCreated = new Date(userData?.data?.createdAt);
   const currentDate = new Date(); // Current date
-  const currentMonth = currentDate.getMonth(); // Current month (0-11)
   const currentYear = currentDate.getFullYear(); // Current year
   const createdAtYear = userCreated.getFullYear();
 

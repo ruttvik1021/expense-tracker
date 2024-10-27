@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { PeriodType } from "../../server/actions/category/schema";
 
 // Define the Category interface based on the Mongoose document
 export interface CategoryDocument extends Document {
