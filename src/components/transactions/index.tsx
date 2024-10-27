@@ -234,10 +234,13 @@ const Transactions = () => {
                           <div className="flex items-center text-center font-bold text-md">
                             <IndianRupee className="icon" />
                             {`${transaction.amount} ${
-                              transaction.source?.source &&
-                              groupBy !== GroupBy.SOURCE
-                                ? `(${transaction.source?.source})`
-                                : `(${transaction?.category?.category})`
+                              groupBy === GroupBy.CATEGORY
+                                ? transaction.source?.source 
+                                  ? `(${transaction.source?.source})` 
+                                  : ""
+                                : groupBy === GroupBy.SOURCE 
+                                ? `(${transaction?.category?.category})`
+                                : ""
                             }`}
                           </div>
 
