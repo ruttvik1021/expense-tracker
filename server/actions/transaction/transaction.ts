@@ -100,7 +100,11 @@ export const getTransactions = async (body: Partial<ITransactionFilter>) => {
         as: "source",
       },
     },
-    { $unwind: "$source" },
+    { $unwind: {
+        path: "$source",
+        preserveNullAndEmptyArrays: true, // Keep categories with no transactions
+      } 
+    },
     {
       $project: {
         _id: 1,
