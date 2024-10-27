@@ -92,6 +92,7 @@ const Transactions = () => {
     amount: transactionData?.data.amount || 0,
     category: transactionData?.data.category || addBycategoryId || "",
     spentOn: transactionData?.data.spentOn || "",
+    source: transactionData?.data.source || "",
     date:
       transactionData?.data.date ||
       moment(categoryDate).format() ||
@@ -216,9 +217,11 @@ const Transactions = () => {
 
                           <div className="flex items-center text-center font-bold text-md">
                             <IndianRupee className="icon" />
-                            {`${transaction.amount} (${
-                              transaction.source?.source || "-"
-                            })`}
+                            {`${transaction.amount} ${
+                              transaction.source?.source
+                                ? `(${transaction.source?.source})`
+                                : null
+                            }`}
                           </div>
 
                           <div className="flex gap-1">
