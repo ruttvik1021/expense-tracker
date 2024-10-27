@@ -195,13 +195,7 @@ const TransactionForm = ({
           )}
         </Field>
         <Field name="source">
-          {({
-            field,
-            meta,
-          }: {
-            field: FieldInputProps<string>;
-            meta: FieldMetaProps<string>;
-          }) => (
+          {({ field }: { field: FieldInputProps<string> }) => (
             <div className="spcace-y-1 my-2">
               <Label
                 htmlFor="source"
