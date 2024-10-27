@@ -11,13 +11,10 @@ const Profile = () => {
         <Tabs defaultValue="profile" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-4">
             <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="source">Payment Sources</TabsTrigger>
             <TabsTrigger value="password">Password</TabsTrigger>
           </TabsList>
           <TabsContent value="profile" className="flex justify-center">
             <UpdateProfile />
-          </TabsContent>
-          <TabsContent value="source" className="flex justify-center">
             <PaymentSources />
           </TabsContent>
           <TabsContent value="password" className="flex justify-center">
