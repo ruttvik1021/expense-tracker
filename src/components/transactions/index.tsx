@@ -14,7 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
-import { IndianRupee } from "lucide-react";
+import { IndianRupee, MoreVertical } from "lucide-react";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -27,6 +27,12 @@ import ResponsiveDialogAndDrawer from "../responsiveDialogAndDrawer";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { Label } from "../ui/label";
 import {
   Select,
@@ -236,25 +242,41 @@ const Transactions = () => {
                             {`${transaction.amount} ${
                               groupBy === GroupBy.CATEGORY
                                 ? `(${transaction.source?.source || "Other"})`
-                                : groupBy === GroupBy.SOURCE 
+                                : groupBy === GroupBy.SOURCE
                                 ? `(${transaction?.category?.category})`
                                 : ""
                             }`}
                           </div>
 
-                          <div className="flex gap-1">
-                            <CustomEditIcon
-                              onClick={() => {
-                                setTransactionToEdit(transaction._id);
-                                setOpen({ type: "EDIT", open: true });
-                              }}
-                            />
-                            <CustomDeleteIcon
-                              onClick={() => {
-                                setTransactionToDelete(transaction._id);
-                                setOpen({ type: "DELETE", open: true });
-                              }}
-                            />
+                          <div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <TableCell className="flex justify-around items-center">
+                                  <MoreVertical />
+                                  <span className="sr-only">More</span>
+                                </TableCell>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent className="w-4 rounded-lg">
+                                <DropdownMenuItem>
+                                  <CustomEditIcon
+                                    onClick={() => {
+                                      setTransactionToEdit(transaction._id);
+                                      setOpen({ type: "EDIT", open: true });
+                                    }}
+                                    type="LINK"
+                                  />
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <CustomDeleteIcon
+                                    onClick={() => {
+                                      setTransactionToDelete(transaction._id);
+                                      setOpen({ type: "DELETE", open: true });
+                                    }}
+                                    type="LINK"
+                                  />
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </div>
                         </div>
 
@@ -278,7 +300,7 @@ const Transactions = () => {
               <TableHead>Amount</TableHead>
               <TableHead>Source</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead className="w-2">Actions</TableHead>
+              <TableHead className="w-1">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -315,20 +337,34 @@ const Transactions = () => {
                 <TableCell className="text-sm">
                   {moment(transaction.date).utc().format("DD/MM")}
                 </TableCell>
-                <TableCell className="flex justify-around items-center">
-                  <CustomEditIcon
-                    onClick={() => {
-                      setTransactionToEdit(transaction._id);
-                      setOpen({ type: "EDIT", open: true });
-                    }}
-                  />
-                  <CustomDeleteIcon
-                    onClick={() => {
-                      setTransactionToDelete(transaction._id);
-                      setOpen({ type: "DELETE", open: true });
-                    }}
-                  />
-                </TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <TableCell className="flex justify-around items-center">
+                      <MoreVertical />
+                      <span className="sr-only">More</span>
+                    </TableCell>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-4 rounded-lg">
+                    <DropdownMenuItem>
+                      <CustomEditIcon
+                        onClick={() => {
+                          setTransactionToEdit(transaction._id);
+                          setOpen({ type: "EDIT", open: true });
+                        }}
+                        type="LINK"
+                      />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <CustomDeleteIcon
+                        onClick={() => {
+                          setTransactionToDelete(transaction._id);
+                          setOpen({ type: "DELETE", open: true });
+                        }}
+                        type="LINK"
+                      />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableRow>
             ))}
           </TableBody>
