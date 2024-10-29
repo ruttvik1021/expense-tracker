@@ -5,6 +5,7 @@ import PageHeader from "@/components/common/Pageheader";
 import TransactionsCards from "@/components/charts/transactionsCards";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { FeatureRestrictedWarning } from "@/components/alerts/EmailVerification";
+import TopSources from "@/components/charts/topSources";
 
 const Dashboard = () => {
   const { isEmailVerified } = useAuthContext();
@@ -18,7 +19,8 @@ const Dashboard = () => {
           <div className="my-5">
             <TransactionsCards />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <TopSources />
             <Top5CategoriesOfMonth />
             <Top5TransactionsOfMonth />
           </div>
