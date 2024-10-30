@@ -1,4 +1,5 @@
-import Category from "@/components/category";
+import dynamic from "next/dynamic";
+const Category = dynamic(() => import("@/components/category"), { ssr: false });
 
 const Categories = () => {
   return (
