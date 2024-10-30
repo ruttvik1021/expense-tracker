@@ -14,7 +14,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
-import { IndianRupee, MoreHorizontal, MoreVertical } from "lucide-react";
+import {
+  IndianRupee,
+  IndianRupeeIcon,
+  MoreHorizontal,
+  MoreVertical,
+} from "lucide-react";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -225,9 +230,9 @@ const Transactions = () => {
                       <>
                         <div
                           key={transaction._id}
-                          className="w-full px-2 shadow-none"
+                          className="w-full p-1 shadow-none"
                         >
-                          <div className="flex flex-wrap gap-1 font-semibold">
+                          <div className="flex flex-wrap gap-1 font-semibold mb-1">
                             <p className="text-wrap">
                               {transaction.spentOn ||
                                 transaction.category.category}
@@ -235,24 +240,23 @@ const Transactions = () => {
                           </div>
                           <div className="flex justify-between gap-2 flex-wrap">
                             <div>
-                              <p className="font-normal">Amount</p>
-                              <p>{transaction.amount}</p>
+                              <p className="flex gap-1 items-center">
+                                <IndianRupeeIcon className="w-4 h-4" />
+                                {transaction.amount}
+                              </p>
                             </div>
                             <div>
-                              <p className="font-normal">Source</p>
                               <p>{transaction.source?.source || "Other"}</p>
                             </div>
                             <div>
-                              <p className="font-normal">Date</p>
                               <p>
                                 {moment(transaction.date).utc().format("DD/MM")}
                               </p>
                             </div>
                             <div>
-                              <p className="font-normal">Actions</p>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <MoreHorizontal className="mt-0 p-0" />
+                                  <MoreHorizontal />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="mr-3 rounded-lg">
                                   <DropdownMenuItem>
@@ -280,7 +284,7 @@ const Transactions = () => {
                         </div>
 
                         {index !== groupedTransactions[group].length - 1 && (
-                          <Separator className="my-3" />
+                          <Separator className="my-2" />
                         )}
                       </>
                     )
@@ -383,7 +387,7 @@ const Transactions = () => {
                 key={transaction._id}
                 className="w-full mb-3 p-1 shadow-none"
               >
-                <div className="flex flex-wrap gap-1 font-semibold">
+                <div className="flex flex-wrap gap-1 font-semibold mb-1">
                   <p className="text-wrap space-x-2">
                     <span>{transaction.category.icon}</span>
                     <span>{transaction.category.category}:</span>
@@ -394,33 +398,43 @@ const Transactions = () => {
                 </div>
                 <div className="flex justify-between gap-2 flex-wrap">
                   <div>
-                    <p className="font-semibold">Amount</p>
-                    <p>{transaction.amount}</p>
+                    <p className="flex gap-1 items-center">
+                      <IndianRupeeIcon className="w-4 h-4" />
+                      {transaction.amount}
+                    </p>
                   </div>
                   <div>
-                    <p className="font-semibold">Source</p>
                     <p>{transaction.source?.source || "Other"}</p>
                   </div>
                   <div>
-                    <p className="font-semibold">Date</p>
                     <p>{moment(transaction.date).utc().format("DD/MM")}</p>
                   </div>
                   <div>
-                    <p className="font-semibold">Actions</p>
-                    <div className="flex">
-                      <CustomEditIcon
-                        onClick={() => {
-                          setTransactionToEdit(transaction._id);
-                          setOpen({ type: "EDIT", open: true });
-                        }}
-                      />
-                      <CustomDeleteIcon
-                        onClick={() => {
-                          setTransactionToDelete(transaction._id);
-                          setOpen({ type: "DELETE", open: true });
-                        }}
-                      />
-                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <MoreHorizontal />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="mr-3 rounded-lg">
+                        <DropdownMenuItem>
+                          <CustomEditIcon
+                            onClick={() => {
+                              setTransactionToEdit(transaction._id);
+                              setOpen({ type: "EDIT", open: true });
+                            }}
+                            type="LINK"
+                          />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <CustomDeleteIcon
+                            onClick={() => {
+                              setTransactionToDelete(transaction._id);
+                              setOpen({ type: "DELETE", open: true });
+                            }}
+                            type="LINK"
+                          />
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
               </Card>
