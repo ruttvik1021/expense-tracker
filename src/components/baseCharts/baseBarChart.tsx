@@ -100,25 +100,26 @@ export default function BaseBarGraph({
                         }}
                       >
                         {tooltipKey && (
-                          <p
-                            className="mb-1"
-                            style={{
-                              borderBottom: "4px solid",
-                              borderColor: item.payload.fill,
-                            }}
-                          >
-                            {item.payload[tooltipKey]}
-                          </p>
+                          <p className="mb-1">{item.payload[tooltipKey]}</p>
                         )}
-                        <div className="flex justify-between items-center">
+                        <div
+                          className="flex justify-between items-center"
+                          style={{
+                            borderTop: "4px solid",
+                            borderColor: item.payload.fill,
+                          }}
+                        >
                           <div className="flex">
                             <span className="font-semibold text-foreground">
                               {iconNameKey
                                 ? item.payload[iconNameKey]
-                                : item.payload[yAxisKey]}:
+                                : item.payload[yAxisKey]}
+                              :
                             </span>
                           </div>
-                          <span className="text-foreground">{value}</span>
+                          <span className="text-foreground">
+                            {value.toLocaleString("en-IN")}
+                          </span>
                         </div>
                       </div>
                     );

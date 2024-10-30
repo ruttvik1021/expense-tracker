@@ -45,8 +45,8 @@ const TopSources = () => {
           description={""}
           yAxisKey={"group"}
           xAxisKey={"amount"}
-          tooltipKey={"group"}
-          iconNameKey={"amount"}
+          tooltipKey={""}
+          iconNameKey={""}
           chartData={result || []}
           isLoading={isLoading}
           filterContent={

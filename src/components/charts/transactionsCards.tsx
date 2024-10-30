@@ -57,17 +57,21 @@ export default function TransactionsCards() {
           <div className="space-y-2">
             <div className="flex items-baseline space-x-2">
               <span className="text-3xl font-bold">
-                {lastMonthSummary?.totalAmount}
+                {lastMonthSummary?.totalAmount.toLocaleString("en-IN")}
               </span>
             </div>
             <div className="flex justify-between items-center text-sm">
               <div className="flex items-baseline space-x-2">
                 <span className="text-md font-bold">Weekly Avg:</span>
-                <span>{lastMonthSummary?.weeklyAvg}</span>
+                <span>
+                  {lastMonthSummary?.weeklyAvg.toLocaleString("en-IN")}
+                </span>
               </div>
               <div className="flex items-baseline space-x-2">
                 <span className="text-md font-bold">Daily Avg:</span>
-                <span>{lastMonthSummary?.dailyAvg}</span>
+                <span>
+                  {lastMonthSummary?.dailyAvg.toLocaleString("en-IN")}
+                </span>
               </div>
             </div>
           </div>
@@ -96,7 +100,7 @@ export default function TransactionsCards() {
                 <div className="space-y-2">
                   <div className="flex items-baseline space-x-2">
                     <span className="text-3xl font-bold">
-                      {query.data?.current.toFixed(0)}
+                      {query.data?.current.toLocaleString("en-IN")}
                     </span>
                     <span
                       className={cn("flex items-center text-xl font-medium", {
@@ -109,12 +113,13 @@ export default function TransactionsCards() {
                       ) : (
                         <ArrowUpIcon className="mr-1 h-4 w-4" />
                       )}
-                      {difference.toFixed(0)}
+                      {difference.toLocaleString("en-IN")}
                     </span>
                   </div>
                   <p className="text-sm">
-                    {isDecrease ? "Down" : "Up"} by {difference.toFixed(0)}{" "}
-                    compared to {query.data?.prev.toFixed(0)}{" "}
+                    {isDecrease ? "Down" : "Up"} by{" "}
+                    {difference.toLocaleString("en-IN")} compared to{" "}
+                    {query.data?.prev.toLocaleString("en-IN")}{" "}
                     {comparisonTexts[index]}
                   </p>
                 </div>

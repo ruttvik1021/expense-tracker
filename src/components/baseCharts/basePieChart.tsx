@@ -134,7 +134,7 @@ export default function BasePieGraph({
                               y={viewBox.cy}
                               className="fill-foreground text-3xl font-bold"
                             >
-                              {total?.toLocaleString()}
+                              {total?.toLocaleString("en-IN")}
                             </tspan>
                             <tspan
                               x={viewBox.cx}

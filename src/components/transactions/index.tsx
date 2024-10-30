@@ -193,7 +193,9 @@ const Transactions = () => {
         <p className="flex items-center mx-2">
           {" "}
           <IndianRupee className="icon" />{" "}
-          <span className="font-bold text-lg">{totalSpent}</span>
+          <span className="font-bold text-lg">
+            {totalSpent.toLocaleString("en-IN")}
+          </span>
         </p>
       </div>
       <Separator />
@@ -214,11 +216,13 @@ const Transactions = () => {
                     </Label>
                     <Label className="text-selected text-lg font-semibold">
                       {group}:{" "}
-                      {groupedTransactions[group]?.reduce(
-                        (acc: number, transaction: any) =>
-                          acc + transaction.amount,
-                        0
-                      ) || 0}
+                      {groupedTransactions[group]
+                        ?.reduce(
+                          (acc: number, transaction: any) =>
+                            acc + transaction.amount,
+                          0
+                        )
+                        .toLocaleString("en-IN") || 0}
                     </Label>
                   </div>
                 )}
@@ -238,44 +242,63 @@ const Transactions = () => {
                                 transaction.category.category}
                             </p>
                           </div>
-                          <div className="flex justify-between gap-2 flex-wrap">
-                            <div>
-                              <p className="flex gap-1 items-center">
-                                <IndianRupeeIcon className="w-4 h-4" />
-                                {transaction.amount}
+                          <div className="grid grid-cols-7 gap-2 items-center">
+                            {/* Amount */}
+                            <div className="col-span-2">
+                              <p className="flex items-center gap-1 text-sm font-medium">
+                                <IndianRupee className="w-3 h-3" />
+                                {transaction.amount.toLocaleString("en-IN")}
                               </p>
                             </div>
-                            <div>
-                              <p>{transaction.source?.source || "Other"}</p>
+
+                            {/* Source */}
+                            <div className="col-span-2">
+                              <p className="text-sm">
+                                {transaction.source?.source || "Other"}
+                              </p>
                             </div>
-                            <div>
-                              <p>
+
+                            {/* Date */}
+                            <div className="col-span-2">
+                              <p className="text-sm">
                                 {moment(transaction.date).utc().format("DD/MM")}
                               </p>
                             </div>
-                            <div>
+
+                            {/* Actions */}
+                            <div className="col-span-1 flex justify-end">
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <MoreHorizontal />
+                                  <button className="p-1 rounded-full hover:bg-accent">
+                                    <MoreHorizontal className="w-4 h-4" />
+                                    <span className="sr-only">
+                                      More options
+                                    </span>
+                                  </button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="mr-3 rounded-lg">
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="w-32"
+                                >
                                   <DropdownMenuItem>
                                     <CustomEditIcon
+                                      type="LINK"
                                       onClick={() => {
                                         setTransactionToEdit(transaction._id);
                                         setOpen({ type: "EDIT", open: true });
                                       }}
-                                      type="LINK"
                                     />
+                                    <span className="ml-2">Edit</span>
                                   </DropdownMenuItem>
                                   <DropdownMenuItem>
                                     <CustomDeleteIcon
+                                      type="LINK"
                                       onClick={() => {
                                         setTransactionToDelete(transaction._id);
                                         setOpen({ type: "DELETE", open: true });
                                       }}
-                                      type="LINK"
                                     />
+                                    <span className="ml-2">Delete</span>
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
@@ -338,7 +361,7 @@ const Transactions = () => {
                     </TableCell>
                     <TableCell className="flex items-center">
                       <IndianRupee className="icon" />
-                      {transaction.amount}
+                      {transaction.amount.toLocaleString("en-IN")}
                     </TableCell>
                     <TableCell>
                       {transaction.source?.source || "Other"}
@@ -396,42 +419,58 @@ const Transactions = () => {
                     {transaction.spentOn || transaction.category.category}
                   </p>
                 </div>
-                <div className="flex justify-between gap-2 flex-wrap">
-                  <div>
-                    <p className="flex gap-1 items-center">
-                      <IndianRupeeIcon className="w-4 h-4" />
-                      {transaction.amount}
+                <div className="grid grid-cols-7 gap-2 items-center">
+                  {/* Amount */}
+                  <div className="col-span-2">
+                    <p className="flex items-center gap-1 text-sm font-medium">
+                      <IndianRupee className="w-3 h-3" />
+                      {transaction.amount.toLocaleString("en-IN")}
                     </p>
                   </div>
-                  <div>
-                    <p>{transaction.source?.source || "Other"}</p>
+
+                  {/* Source */}
+                  <div className="col-span-2">
+                    <p className="text-sm">
+                      {transaction.source?.source || "Other"}
+                    </p>
                   </div>
-                  <div>
-                    <p>{moment(transaction.date).utc().format("DD/MM")}</p>
+
+                  {/* Date */}
+                  <div className="col-span-2">
+                    <p className="text-sm">
+                      {moment(transaction.date).utc().format("DD/MM")}
+                    </p>
                   </div>
-                  <div>
+
+                  {/* Actions */}
+                  <div className="col-span-1 flex justify-end">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <MoreHorizontal />
+                        <button className="p-1 rounded-full hover:bg-accent">
+                          <MoreHorizontal className="w-4 h-4" />
+                          <span className="sr-only">More options</span>
+                        </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="mr-3 rounded-lg">
+                      <DropdownMenuContent align="end" className="w-32">
                         <DropdownMenuItem>
                           <CustomEditIcon
+                            type="LINK"
                             onClick={() => {
                               setTransactionToEdit(transaction._id);
                               setOpen({ type: "EDIT", open: true });
                             }}
-                            type="LINK"
                           />
+                          <span className="ml-2">Edit</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <CustomDeleteIcon
+                            type="LINK"
                             onClick={() => {
                               setTransactionToDelete(transaction._id);
                               setOpen({ type: "DELETE", open: true });
                             }}
-                            type="LINK"
                           />
+                          <span className="ml-2">Delete</span>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

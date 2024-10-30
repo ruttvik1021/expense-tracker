@@ -239,7 +239,8 @@ const Category = () => {
             <div className="flex justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">
-                  Last Month: {lastMonthAmount?.amount.toFixed(2) || 0}
+                  Last Month:{" "}
+                  {lastMonthAmount?.amount.toLocaleString("en-IN") || 0}
                 </p>
               </div>
               <div
@@ -253,7 +254,7 @@ const Category = () => {
                   <ArrowUpIcon className="mr-1 h-4 w-4" />
                 )}
                 <span className="text-sm font-bold">
-                  {Math.abs(difference).toFixed(2)}
+                  {Math.abs(difference).toLocaleString("en-IN")}
                 </span>
               </div>
             </div>
@@ -332,7 +333,7 @@ const Category = () => {
                       <p className="text-base">
                         Budget:{" "}
                         <Badge className="font-bold hover:bg-none">
-                          {category.budget}
+                          {category.budget.toLocaleString("en-IN")}
                         </Badge>
                       </p>
                       <p className="text-base">
@@ -355,7 +356,7 @@ const Category = () => {
                             router.push(`transactions`);
                           }}
                         >
-                          {category.totalAmountSpent}
+                          {category.totalAmountSpent.toLocaleString("en-IN")}
                         </Badge>
                       </p>
                     </div>
