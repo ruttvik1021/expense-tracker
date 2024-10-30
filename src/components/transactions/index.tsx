@@ -293,125 +293,139 @@ const Transactions = () => {
         ))
       ) : (
         <>
-          <Table className="overflow-auto">
-            <TableHeader>
-              <TableRow>
-                <TableHead>For:</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Source</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="w-1">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data?.transactions.map((transaction: any) => (
-                //     <Card key={transaction._id} className="w-full mb-3 p-1 shadow-none">
-                //       <div className="flex flex-wrap gap-1 font-semibold">
-                //         <p className="text-wrap space-x-2">
-                //           <span>{transaction.category.icon}</span>
-                //           <span>{transaction.category.category}:</span>
-                //         </p>
-                //         <p className="text-wrap">
-                //           {transaction.spentOn || transaction.category.category}
-                //         </p>
-                //       </div>
-                //       <div className="flex justify-between gap-2 flex-wrap">
-                //         <div>
-                //           <p className="font-semibold">Amount</p>
-                //           <p>{transaction.amount}</p>
-                //         </div>
-                //         <div>
-                //           <p className="font-semibold">Source</p>
-                //           <p>{transaction.source?.source || "Other"}</p>
-                //         </div>
-                //         <div>
-                //           <p className="font-semibold">Date</p>
-                //           <p>{moment(transaction.date).utc().format("DD/MM")}</p>
-                //         </div>
-                //         <div>
-                //           <p className="font-semibold">Actions</p>
-                //           <div className="flex">
-                //             <CustomEditIcon
-                //               onClick={() => {
-                //                 setTransactionToEdit(transaction._id);
-                //                 setOpen({ type: "EDIT", open: true });
-                //               }}
-                //             />
-                //             <CustomDeleteIcon
-                //               onClick={() => {
-                //                 setTransactionToDelete(transaction._id);
-                //                 setOpen({ type: "DELETE", open: true });
-                //               }}
-                //             />
-                //           </div>
-                //         </div>
-                //       </div>
-                //     </Card>
-
-                <TableRow key={transaction._id}>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Avatar className="w-6 h-6">
-                              <AvatarFallback>
-                                {transaction?.category?.icon}
-                              </AvatarFallback>
-                            </Avatar>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-background">
-                            <Label className="text-primary">
-                              {transaction?.category?.category}
-                            </Label>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      <Label className="text-wrap">
-                        {transaction.spentOn || transaction?.category?.category}
-                      </Label>
-                    </div>
-                  </TableCell>
-                  <TableCell className="flex items-center">
-                    <IndianRupee className="icon" />
-                    {transaction.amount}
-                  </TableCell>
-                  <TableCell>{transaction.source?.source || "Other"}</TableCell>
-                  <TableCell className="text-sm">
-                    {moment(transaction.date).utc().format("DD/MM")}
-                  </TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <TableCell className="flex justify-around items-center">
-                        <MoreVertical />
-                        <span className="sr-only">More</span>
-                      </TableCell>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="mr-3 rounded-lg">
-                      <DropdownMenuItem>
-                        <CustomEditIcon
-                          onClick={() => {
-                            setTransactionToEdit(transaction._id);
-                            setOpen({ type: "EDIT", open: true });
-                          }}
-                          type="LINK"
-                        />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <CustomDeleteIcon
-                          onClick={() => {
-                            setTransactionToDelete(transaction._id);
-                            setOpen({ type: "DELETE", open: true });
-                          }}
-                          type="LINK"
-                        />
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+          {/* Table View for larger screens */}
+          <div className="hidden md:block">
+            <Table className="overflow-auto">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>For:</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Source</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead className="w-1">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {data?.transactions.map((transaction: any) => (
+                  <TableRow key={transaction._id}>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Avatar className="w-6 h-6">
+                                <AvatarFallback>
+                                  {transaction?.category?.icon}
+                                </AvatarFallback>
+                              </Avatar>
+                            </TooltipTrigger>
+                            <TooltipContent className="bg-background">
+                              <Label className="text-primary">
+                                {transaction?.category?.category}
+                              </Label>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <Label className="text-wrap">
+                          {transaction.spentOn ||
+                            transaction?.category?.category}
+                        </Label>
+                      </div>
+                    </TableCell>
+                    <TableCell className="flex items-center">
+                      <IndianRupee className="icon" />
+                      {transaction.amount}
+                    </TableCell>
+                    <TableCell>
+                      {transaction.source?.source || "Other"}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {moment(transaction.date).utc().format("DD/MM")}
+                    </TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <TableCell className="flex justify-around items-center">
+                          <MoreVertical />
+                          <span className="sr-only">More</span>
+                        </TableCell>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="mr-3 rounded-lg">
+                        <DropdownMenuItem>
+                          <CustomEditIcon
+                            onClick={() => {
+                              setTransactionToEdit(transaction._id);
+                              setOpen({ type: "EDIT", open: true });
+                            }}
+                            type="LINK"
+                          />
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <CustomDeleteIcon
+                            onClick={() => {
+                              setTransactionToDelete(transaction._id);
+                              setOpen({ type: "DELETE", open: true });
+                            }}
+                            type="LINK"
+                          />
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Card View for mobile devices */}
+          <div className="block md:hidden">
+            {data?.transactions.map((transaction: any) => (
+              <Card
+                key={transaction._id}
+                className="w-full mb-3 p-1 shadow-none"
+              >
+                <div className="flex flex-wrap gap-1 font-semibold">
+                  <p className="text-wrap space-x-2">
+                    <span>{transaction.category.icon}</span>
+                    <span>{transaction.category.category}:</span>
+                  </p>
+                  <p className="text-wrap">
+                    {transaction.spentOn || transaction.category.category}
+                  </p>
+                </div>
+                <div className="flex justify-between gap-2 flex-wrap">
+                  <div>
+                    <p className="font-semibold">Amount</p>
+                    <p>{transaction.amount}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Source</p>
+                    <p>{transaction.source?.source || "Other"}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Date</p>
+                    <p>{moment(transaction.date).utc().format("DD/MM")}</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Actions</p>
+                    <div className="flex">
+                      <CustomEditIcon
+                        onClick={() => {
+                          setTransactionToEdit(transaction._id);
+                          setOpen({ type: "EDIT", open: true });
+                        }}
+                      />
+                      <CustomDeleteIcon
+                        onClick={() => {
+                          setTransactionToDelete(transaction._id);
+                          setOpen({ type: "DELETE", open: true });
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
         </>
       )}
       <ResponsiveDialogAndDrawer
