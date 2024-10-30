@@ -29,7 +29,7 @@ export async function middleware(req: NextRequest) {
 
   // Redirect non-logged-in users trying to access protected routes to login
   if (!token && protectedRoutes.includes(url.pathname)) {
-    url.pathname === '/register' ? url.pathname === '/register' : url.pathname = "/login";
+    url.pathname = url.pathname === "/register" ? "/register" : "/login";
     return NextResponse.redirect(url);
   }
 
