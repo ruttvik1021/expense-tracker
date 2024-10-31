@@ -54,7 +54,7 @@ const MyContext = createContext<ContextWrapperType | null>(null);
 export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const token = Cookies.get("token");
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!token);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const { data: user, refetch: refetchUser } = useQuery({
     queryKey: [queryKeys.profile],
     queryFn: () => getProfile(),
