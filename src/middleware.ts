@@ -17,6 +17,26 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if(protectedRoutes.includes(url.pathname)) {
+    if (token) {
+      try {
+        await jwtVerify(
+          token.value,
+          new TextEncoder().encode(process.env.JWT_SECRET!)
+        );
+        return NextResponse.next(); // Token is valid, proceed as normal
+      } catch (err) {
+        // If token verification fails, redirect to /login
+        url.pathname = "/login";
+        return NextResponse.redirect(url);
+      }
+    }
+  }
+
+  if(unprotectedRoutes.includes(url.pathname)){
+    
+  }
+
   // Redirect logged-in users away from unprotected routes to /dashboard
   if (token && unprotectedRoutes.includes(url.pathname)) {
     url.pathname = "/dashboard";
@@ -30,19 +50,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // If a token is present, verify its validity
-  if (token) {
-    try {
-      await jwtVerify(
-        token.value,
-        new TextEncoder().encode(process.env.JWT_SECRET!)
-      );
-      return NextResponse.next(); // Token is valid, proceed as normal
-    } catch (err) {
-      // If token verification fails, redirect to /login
-      url.pathname = "/register" ? "/register" : "/login";
-      return NextResponse.redirect(url);
-    }
-  }
+  
 
   // Allow access to unprotected routes if no token
   return NextResponse.next();
