@@ -2,6 +2,7 @@
 
 import { signUpApi } from "@/ajax/authApi";
 import { Button } from "@/components/ui/button";
+import { Navlink } from "@/components/common/Navigation";
 import {
   Card,
   CardContent,
@@ -164,9 +165,10 @@ const Register = () => {
           </CardContent>
           <CardFooter>
             Already registered ?{" "}
-            <Link href={"/login"} className="ml-2 text-blue-700">
-              Login here
-            </Link>
+            <Navlink
+              link={{ href: "/login", label: "Login here" }}
+              className="ml-2 text-blue-700"
+            />
           </CardFooter>
         </Card>
       </FormikProvider>

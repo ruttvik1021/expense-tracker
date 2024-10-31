@@ -2,6 +2,7 @@
 
 import { loginApi } from "@/ajax/authApi";
 import { Button } from "@/components/ui/button";
+import { Navlink } from "@/components/common/Navigation";
 import {
   Card,
   CardContent,
@@ -21,7 +22,6 @@ import {
   FormikProvider,
   useFormik,
 } from "formik";
-import Link from "next/link";
 import { toast } from "sonner";
 import * as Yup from "yup";
 import { useAuthContext } from "../wrapper/ContextWrapper";
@@ -143,9 +143,10 @@ const Login = () => {
             </CardContent>
             <CardFooter>
               Don't have an account ?{" "}
-              <Link href={"/register"} className="ml-2 text-blue-700">
-                Register here
-              </Link>
+              <Navlink
+                link={{ href: "/register", label: "Register here" }}
+                className="ml-2 text-blue-700"
+              />
             </CardFooter>
           </Card>
         </FormikProvider>
