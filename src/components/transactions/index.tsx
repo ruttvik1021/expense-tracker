@@ -16,7 +16,6 @@ import {
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
 import {
   IndianRupee,
-  IndianRupeeIcon,
   MoreHorizontal,
   MoreVertical,
 } from "lucide-react";
