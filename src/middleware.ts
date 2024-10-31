@@ -39,7 +39,7 @@ export async function middleware(req: NextRequest) {
       return NextResponse.next(); // Token is valid, proceed as normal
     } catch (err) {
       // If token verification fails, redirect to /login
-      url.pathname = "/login";
+      url.pathname = "/register" ? "/register" : "/login";
       return NextResponse.redirect(url);
     }
   }
