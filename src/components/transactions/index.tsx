@@ -287,7 +287,6 @@ const Transactions = () => {
                                         setOpen({ type: "EDIT", open: true });
                                       }}
                                     />
-                                    <span className="ml-2">Edit</span>
                                   </DropdownMenuItem>
                                   <DropdownMenuItem>
                                     <CustomDeleteIcon
@@ -297,7 +296,6 @@ const Transactions = () => {
                                         setOpen({ type: "DELETE", open: true });
                                       }}
                                     />
-                                    <span className="ml-2">Delete</span>
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
