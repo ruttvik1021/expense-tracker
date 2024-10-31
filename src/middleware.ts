@@ -8,6 +8,8 @@ export async function middleware(req: NextRequest) {
   const token = cookieStore.get("token");
   const url = req.nextUrl.clone();
 
+  
+  const verifyEmailRoute = ["/verify-email"]
   const protectedRoutes = ["/category", "/transaction", "/dashboard"];
   const unprotectedRoutes = ["/", "/login", "/register"];
 
@@ -31,36 +33,29 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(url);
       }
     }
-  }
-
-  if(unprotectedRoutes.includes(url.pathname)){
-    
-  }
-
-  // Redirect logged-in users away from unprotected routes to /dashboard
-  if (token && unprotectedRoutes.includes(url.pathname)) {
-    url.pathname = "/dashboard";
-    return NextResponse.redirect(url);
-  }
-
-  // Redirect non-logged-in users to /login for protected routes
-  if (!token && protectedRoutes.includes(url.pathname)) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  // If a token is present, verify its validity
-  
-
-  // Allow access to unprotected routes if no token
-  return NextResponse.next();
+  if(unprotectedRoutes.includes(url.pathname)){
+    if (token) {
+      try {
+        await jwtVerify(
+          token.value,
+          new TextEncoder().encode(process.env.JWT_SECRET!)
+        );
+        url.pathname = '/dashboard'
+        return NextResponse.redirect(url); // Token is valid, proceed as normal
+      } catch (err) {
+        // If token verification fails, redirect to /login
+        url.pathname = "/login";
+        return NextResponse.redirect(url);
+      }
+    }
+    return NextResponse.next();
+  }
 }
 
 export const config = {
-  matcher: [
-    "/category",
-    "/transaction",
-    "/dashboard",
-    "/verify-email",
-  ],
+  matcher: [...verifyEmailRoute, ...protectedRoutes, ...unprotectedRoutes],
 };
