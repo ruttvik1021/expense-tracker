@@ -8,9 +8,13 @@ export async function middleware(req: NextRequest) {
   const token = cookieStore.get("token");
   const url = req.nextUrl.clone();
 
-  
-  const verifyEmailRoute = ["/verify-email"]
-  const protectedRoutes = ["/category", "/transaction", "/dashboard", '/profile'];
+  const verifyEmailRoute = ["/verify-email"];
+  const protectedRoutes = [
+    "/category",
+    "/transaction",
+    "/dashboard",
+    "/profile",
+  ];
   const unprotectedRoutes = ["/", "/login", "/register"];
 
   // Handle /verify-email route
@@ -19,7 +23,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if(protectedRoutes.includes(url.pathname)) {
+  if (protectedRoutes.includes(url.pathname)) {
     if (token) {
       try {
         await jwtVerify(
@@ -37,9 +41,9 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if(unprotectedRoutes.includes(url.pathname)){
+  if (unprotectedRoutes.includes(url.pathname)) {
     if (token) {
-      url.pathname = '/dashboard'
+      url.pathname = "/dashboard";
       return NextResponse.redirect(url);
     }
     return NextResponse.next();
@@ -47,5 +51,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/category", "/transaction", "/dashboard", "/verify-email", '/profile'],
+  matcher: ["/(.*)"],
 };
