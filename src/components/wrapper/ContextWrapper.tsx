@@ -63,9 +63,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     refetchOnReconnect: true,
   });
 
-  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(
-   false
-  );
+  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
   const verifyUserEmail = (value: boolean) => {
     localStorage.setItem("isEmailVerified", String(value));
     setIsEmailVerified(value);
@@ -106,8 +104,6 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
 
     if (token) {
       authenticateUser(token);
-    } else {
-      logoutUser();
     }
   }, [token]);
 
