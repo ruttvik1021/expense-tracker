@@ -108,7 +108,7 @@ const LandingPage = () => {
                 <Image
                   width={400}
                   height={400}
-                  src={"/dashboard.jpg"}
+                  src={"/dashboard.png"}
                   alt={"Dashboard Preview"}
                   className="w-full max-w-xl mx-auto rounded-xl object-cover object-center shadow-2xl"
                 />
