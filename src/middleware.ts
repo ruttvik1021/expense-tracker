@@ -54,7 +54,5 @@ export const config = {
     "/transaction",
     "/dashboard",
     "/verify-email",
-    "/login",
-    "/register",
   ],
 };
