@@ -14,7 +14,7 @@ export async function middleware(req: NextRequest) {
   const unprotectedRoutes = ["/", "/login", "/register"];
 
   // Handle /verify-email route
-  if (url.pathname === "/verify-email") {
+  if (verifyEmailRoute.includes(url.pathname)) {
     url.pathname = token ? "/dashboard" : "/login";
     return NextResponse.redirect(url);
   }
@@ -39,18 +39,8 @@ export async function middleware(req: NextRequest) {
 
   if(unprotectedRoutes.includes(url.pathname)){
     if (token) {
-      try {
-        await jwtVerify(
-          token.value,
-          new TextEncoder().encode(process.env.JWT_SECRET!)
-        );
-        url.pathname = '/dashboard'
-        return NextResponse.redirect(url); // Token is valid, proceed as normal
-      } catch (err) {
-        // If token verification fails, redirect to /login
-        url.pathname = "/login";
-        return NextResponse.redirect(url);
-      }
+      url.pathname = '/dashboard'
+      return NextResponse.redirect(url);
     }
     return NextResponse.next();
   }
