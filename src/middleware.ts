@@ -47,5 +47,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [...verifyEmailRoute, ...protectedRoutes, ...unprotectedRoutes],
+  matcher: ["/category", "/transaction", "/dashboard", "/verify-email", "/login", "/register"],
 };
