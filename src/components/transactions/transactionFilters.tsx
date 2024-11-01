@@ -29,9 +29,11 @@ import {
   initialTransactionFilter,
   useAuthContext,
 } from "../wrapper/ContextWrapper";
+import { CategorySortBy } from "../category";
 
 export default function TransactionFilters() {
-  const { transactionFilter, setTransactionFilter } = useAuthContext();
+  const { transactionFilter, setTransactionFilter, setCategoryFilter } =
+    useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const { data: categories } = useCategories();
 
@@ -79,7 +81,14 @@ export default function TransactionFilters() {
                 </Label>
                 <MonthYearPicker
                   navigationButton={false}
-                  handleMonthChange={(value) => setFieldValue("month", value)}
+                  handleMonthChange={(value) => {
+                    setFieldValue("month", value);
+                    setCategoryFilter({
+                      categoryDate: new Date(value),
+                      sortBy: CategorySortBy.CATEGORY,
+                    });
+                    setFieldValue("categoryId", "");
+                  }}
                   date={new Date(values.month)}
                   btnClassName="w-full"
                 />

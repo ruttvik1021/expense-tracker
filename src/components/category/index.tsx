@@ -138,9 +138,7 @@ const Category = () => {
       <div className="mb-3">
         <div className="flex items-center justify-between mb-2">
           <PageHeader title="Category" />
-          {moment(categoryFilter.categoryDate).isBefore(
-            moment().add(1, "month").startOf("month")
-          ) &&
+          {moment(categoryFilter.categoryDate).isSame(moment(), "month") &&
             (isEmailVerified || (data && data?.categories?.length < 5)) && (
               <CustomAddIcon
                 onClick={() => {
