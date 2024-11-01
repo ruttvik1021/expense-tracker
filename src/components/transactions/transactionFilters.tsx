@@ -1,12 +1,11 @@
 "use client";
 
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { Circle, FilterIcon } from "lucide-react";
 import moment from "moment";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -109,7 +108,7 @@ export default function TransactionFilters() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label className="text-sm font-medium">Amount Range</Label>
                 <div className="flex items-center space-x-2">
                   <div className="w-full">
@@ -152,7 +151,7 @@ export default function TransactionFilters() {
                     </Field>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <Button type="submit" className="w-full" variant="default">
                 Apply Filters
               </Button>
