@@ -42,7 +42,7 @@ export enum PeriodType {
   MONTHLY = "monthly",
   QUARTERLY = "quarterly",
   HALF_YEARLY = "half-yearly",
-  ANNUALLY = "annually",
+  // ANNUALLY = "annually",
 }
 
 export enum CategoryCreationDuration {
@@ -137,7 +137,7 @@ const CategoryForm = ({
             }) => (
               <div className="my-2">
                 <Avatar
-                  className={`cursor-pointer p-1 border-2 ${
+                  className={`cursor-pointer rounded-full p-1 border-2 ${
                     meta.touched && meta.error
                       ? "border-red-600"
                       : "border-selected"
@@ -145,7 +145,9 @@ const CategoryForm = ({
                   {...field}
                   onClick={() => !isCategoryMutating && setOpen(true)}
                 >
-                  <AvatarFallback>{field.value}</AvatarFallback>
+                  <AvatarFallback className="rounded-full">
+                    {field.value}
+                  </AvatarFallback>
                 </Avatar>
                 {meta.touched && meta.error && (
                   <Label className="text-left text-base text-red-600 dark:text-red-600">
@@ -272,7 +274,7 @@ const CategoryForm = ({
                 )}
               </Field>
 
-              {categoryFormik.values.periodType !== PeriodType.ONCE && (
+              {!(categoryFormik.values.periodType === PeriodType.ONCE) && (
                 <>
                   <Field name="startMonth">
                     {({
@@ -335,7 +337,7 @@ const CategoryForm = ({
                           htmlFor="creationDuration"
                           className="flex items-center space-x-2 text-gray-700"
                         >
-                          <span>Creation Duration</span>
+                          <span>Create Till</span>
                         </Label>
                         <Select
                           value={field.value}
