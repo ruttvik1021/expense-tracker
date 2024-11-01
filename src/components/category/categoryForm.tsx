@@ -34,6 +34,7 @@ import {
 } from "../ui/select";
 import { useAuthContext } from "../wrapper/ContextWrapper";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
+import { Separator } from "../ui/separator";
 
 export interface CategoryFormValues {
   icon: string;
@@ -185,20 +186,24 @@ const CategoryForm = ({
             <ul>
               {isLoading && <li>Loading...</li>}
               {previousMonthCategories?.categories.map((category, index) => (
-                <li
-                  className="flex items-center space-x-4 p-1 gap-1 my-1"
-                  key={index}
-                >
-                  <Checkbox
-                    checked={selectedCategories.includes(category._id)}
-                    onCheckedChange={() =>
-                      handleCategorySelection(category._id)
-                    }
-                  />
-                  <Label>
-                    {category.category}: {category.budget}
-                  </Label>
-                </li>
+                <>
+                  <li
+                    className="flex items-center space-x-4 p-1 gap-1 my-1"
+                    key={index}
+                    onClick={() => handleCategorySelection(category._id)}
+                  >
+                    <Checkbox
+                      checked={selectedCategories.includes(category._id)}
+                      onCheckedChange={() =>
+                        handleCategorySelection(category._id)
+                      }
+                    />
+                    <Label>
+                      {category.category}: {category.budget}
+                    </Label>
+                  </li>
+                  <Separator />
+                </>
               ))}
             </ul>
           </div>
