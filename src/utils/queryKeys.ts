@@ -20,4 +20,5 @@ export const queryKeys = {
   transactionsToday: "transactionsToday",
   lastMonthSummary: "lastMonthSummary",
   sources: "sources",
+  lastMonthCategories: "lastMonthCategories",
 };

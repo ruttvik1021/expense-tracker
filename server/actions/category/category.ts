@@ -18,11 +18,25 @@ export const createCategory = async (body: CategorySchema) => {
   const { category, icon, budget, periodType, startMonth, creationDuration } =
     body;
 
+  // Calculate start and end of the current month
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999
+  );
+
   // Check if category already exists
   const isCategoryAlreadyCreated = await CategoryModel.findOne({
     category,
     userId: decodedToken?.userId,
     deletedAt: null,
+    createdAt: { $gte: startOfMonth, $lte: endOfMonth },
   });
 
   if (periodType === PeriodType.ONCE) {
@@ -340,5 +354,85 @@ export const updateCategoryById = async ({
   return {
     message: "Category updated successfully",
     category: plainObject,
+  };
+};
+
+export const getPreviousMonthCategories = async () => {
+  const previousMonth = new Date();
+  previousMonth.setMonth(previousMonth.getMonth() - 1);
+  return await getCategories({
+    categoryDate: previousMonth,
+    sortBy: CategorySortBy.CATEGORY,
+  });
+};
+
+export const importFromLastMonth = async ({ list }: { list: string[] }) => {
+  const decodedToken = await verifySession();
+  await connectToDatabase();
+
+  // Calculate start and end of the current month using `new Date()`
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999
+  );
+
+  // Fetch all categories in the list to import
+  const categoriesToImport = await CategoryModel.find({
+    _id: { $in: list.map((id) => new mongoose.Types.ObjectId(id)) },
+  });
+
+  // Fetch existing categories for the user in the current month
+  const existingCategories = await CategoryModel.find({
+    userId: decodedToken?.userId,
+    deletedAt: null,
+    category: { $in: categoriesToImport.map((cat) => cat.category) },
+    createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+  });
+
+  const existingCategoryNames = new Set(
+    existingCategories.map((cat) => cat.category)
+  );
+
+  // Separate already-created and new categories
+  const alreadyCreatedCategories: string[] = [];
+  const categoriesToCreate: CategorySchema[] = [];
+
+  for (const category of categoriesToImport) {
+    if (existingCategoryNames.has(category.category)) {
+      alreadyCreatedCategories.push(category.category);
+    } else {
+      categoriesToCreate.push(
+        new CategoryModel({
+          category: category.category,
+          icon: category.icon,
+          budget: category.budget,
+          userId: decodedToken?.userId,
+          periodType: PeriodType.ONCE,
+        })
+      );
+    }
+  }
+
+  // Insert new categories if any
+  if (categoriesToCreate.length > 0) {
+    await CategoryModel.insertMany(categoriesToCreate);
+  }
+
+  // Return response message
+  return {
+    message:
+      alreadyCreatedCategories.length > 0
+        ? `Categories already created this month: ${alreadyCreatedCategories.join(
+            ", "
+          )}`
+        : "Categories imported successfully",
+    error: alreadyCreatedCategories.length > 0 ? true : false,
   };
 };
