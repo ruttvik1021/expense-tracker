@@ -13,7 +13,7 @@ import UpdateProfile from "@/components/updateProfile";
 
 const Profile = () => {
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto">
       <div className="space-y-6">
         <Card>
           {" "}
