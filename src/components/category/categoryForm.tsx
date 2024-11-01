@@ -46,7 +46,7 @@ export enum PeriodType {
 }
 
 export enum CategoryCreationDuration {
-  // NEXT_12_MONTHS = "next12Months",
+  NEXT_12_MONTHS = "next12Months",
   YEAR_END = "yearEnd",
 }
 
