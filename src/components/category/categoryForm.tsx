@@ -184,8 +184,11 @@ const CategoryForm = ({
           <div className="rounded-sm border p-1 max-h-40 overflow-auto mb-3">
             <ul>
               {isLoading && <li>Loading...</li>}
-              {previousMonthCategories?.categories.map((category) => (
-                <li className="flex items-center space-x-4 p-1 gap-1 my-1">
+              {previousMonthCategories?.categories.map((category, index) => (
+                <li
+                  className="flex items-center space-x-4 p-1 gap-1 my-1"
+                  key={index}
+                >
                   <Checkbox
                     checked={selectedCategories.includes(category._id)}
                     onCheckedChange={() =>
