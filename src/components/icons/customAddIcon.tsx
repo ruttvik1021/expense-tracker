@@ -46,7 +46,7 @@ const CustomAddIcon = ({
 
   const IconComponent = isIconPreferred ? PlusCircleIcon : Circle;
   const iconClass = `icon ${disabled ? "opacity-50 cursor-not-allowed" : ""}`;
-  const iconStyle = isIconPreferred ? "" : "fill-green-600 rounded-full border";
+  const iconStyle = isIconPreferred ? "" : "fill-green-600 rounded-sm border";
 
   return (
     <CommonTooltip

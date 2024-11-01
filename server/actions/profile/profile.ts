@@ -6,7 +6,7 @@ import UserModel from "@/models/UserModel";
 import bcrypt from "bcryptjs";
 import { UpdatePasswordPayload, UpdateProfilePayload } from "./schema";
 import TransactionModel from "@/models/TransactionModel";
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 
 export const updateProfile = async (profile: UpdateProfilePayload) => {
   const decodedToken = await verifySession();
@@ -54,29 +54,81 @@ export const updatePassword = async (values: UpdatePasswordPayload) => {
 export const getLastMonthAmount = async (date: Date) => {
   const decodedToken = await verifySession();
   await connectToDatabase();
-  const now = new Date(date);
-  const firstDayOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const firstDayOfLastMonth = new Date(
-    now.getFullYear(),
-    now.getMonth() - 1,
-    1
-  );
-  const transactions = await TransactionModel.aggregate([
+
+  const startOfMonth = new Date();
+  startOfMonth.setDate(1); // Set to the first day of the current month
+  startOfMonth.setHours(0, 0, 0, 0); // Start of the day
+
+  const endOfMonth = new Date(startOfMonth);
+  endOfMonth.setMonth(endOfMonth.getMonth() + 1); // Move to next month
+  endOfMonth.setDate(0); // Go back to the last day of the current month
+  endOfMonth.setHours(23, 59, 59, 999); // End of the day
+
+  // Calculate start and end of the previous month
+  const startOfLastMonth = new Date(startOfMonth);
+  startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1); // Move to last month
+  startOfLastMonth.setDate(1); // Set to the first day of the previous month
+  startOfLastMonth.setHours(0, 0, 0, 0); // Start of the day
+
+  const endOfLastMonth = new Date(startOfLastMonth);
+  endOfLastMonth.setMonth(startOfLastMonth.getMonth() + 1); // Move to next month
+  endOfLastMonth.setDate(0); // Last day of the previous month
+  endOfLastMonth.setHours(23, 59, 59, 999); // End of the day
+
+  const pipeline: PipelineStage[] = [
     {
       $match: {
         userId: new mongoose.Types.ObjectId(decodedToken?.userId as string),
-        date: {
-          $gte: firstDayOfLastMonth,
-          $lt: firstDayOfThisMonth,
-        },
+        deletedAt: null,
       },
     },
     {
-      $group: {
-        _id: null,
-        total: { $sum: "$amount" },
+      $facet: {
+        lastMonthTransactions: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $gte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      startOfLastMonth,
+                    ],
+                  },
+                  {
+                    $lte: [
+                      {
+                        $dateFromString: {
+                          dateString: "$date",
+                        },
+                      },
+                      endOfLastMonth,
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$amount" }, // Sum for last month
+            },
+          },
+        ],
       },
     },
-  ]);
-  return { amount: (transactions.length && transactions[0].total) || 0 };
+  ];
+
+  const result = await TransactionModel.aggregate(pipeline);
+
+  return {
+    amount: result[0].lastMonthTransactions.length
+      ? result[0].lastMonthTransactions[0].totalAmount
+      : 0,
+  };
 };

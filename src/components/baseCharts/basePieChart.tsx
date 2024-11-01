@@ -81,7 +81,7 @@ export default function BasePieGraph({
           <ChartContainer config={chartConfig}>
             {isLoading ? (
               <LoadingSkeleton />
-            ) : coloredData.length ? (
+            ) : coloredData.length && total ? (
               <PieChart>
                 <ChartTooltip
                   cursor={false}

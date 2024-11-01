@@ -6,10 +6,10 @@ export const CategorySkeleton = () => {
     <Card className="p-4">
       <CardHeader className="p-0 mb-3">
         <div className="flex justify-between ">
-          <Skeleton className="h-12 w-12 rounded-full" />
+          <Skeleton className="h-12 w-12 rounded-sm" />
           <div className="flex gap-2">
-            <Skeleton className="h-6 w-6 rounded-full" />
-            <Skeleton className="h-6 w-6 rounded-full" />
+            <Skeleton className="h-6 w-6 rounded-sm" />
+            <Skeleton className="h-6 w-6 rounded-sm" />
           </div>
         </div>
       </CardHeader>

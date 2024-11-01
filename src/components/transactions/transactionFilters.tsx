@@ -64,7 +64,7 @@ export default function TransactionFilters() {
             <SheetTitle>Transaction Filters</SheetTitle>
             <Circle
               onClick={() => setIsOpen(false)}
-              className="fill-destructive rounded-full icon border"
+              className="fill-destructive rounded-sm icon border"
             />
           </div>
           <SheetDescription>

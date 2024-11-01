@@ -98,7 +98,7 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
             <Brand />
             <Circle
               onClick={toggleDrawer}
-              className="fill-destructive rounded-full icon border"
+              className="fill-destructive rounded-sm icon border"
             />
           </div>
           {links.map((item) => (

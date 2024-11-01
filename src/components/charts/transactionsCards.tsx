@@ -50,12 +50,21 @@ export default function TransactionsCards() {
     <div className="flex flex-wrap gap-4">
       <Card className="flex-1 min-w-[250px]">
         <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <WalletMinimalIcon />
-            <h2 className="text-lg font-semibold">Last Month Summary</h2>
+          <div className="flex justify-between items-center gap-2 mb-2">
+            <div className="flex gap-2 items-center">
+              <WalletMinimalIcon />
+              <h2 className="text-lg font-semibold">Last Month</h2>
+            </div>
+            <div className="space-x-1">
+              <span className="font-bold">
+                {lastMonthSummary?.daysWithTransactions}
+              </span>
+              <span>transaction days</span>
+            </div>
           </div>
           <div className="space-y-2">
             <div className="flex items-baseline space-x-2">
+              <span className="text-3xl font-bold">Total:</span>
               <span className="text-3xl font-bold">
                 {lastMonthSummary?.totalAmount.toLocaleString("en-IN")}
               </span>
@@ -63,13 +72,13 @@ export default function TransactionsCards() {
             <div className="flex justify-between items-center text-sm">
               <div className="flex items-baseline space-x-2">
                 <span className="text-md font-bold">Weekly Avg:</span>
-                <span>
+                <span className="text-md font-bold">
                   {lastMonthSummary?.weeklyAvg.toLocaleString("en-IN")}
                 </span>
               </div>
               <div className="flex items-baseline space-x-2">
                 <span className="text-md font-bold">Daily Avg:</span>
-                <span>
+                <span className="text-md font-bold">
                   {lastMonthSummary?.dailyAvg.toLocaleString("en-IN")}
                 </span>
               </div>

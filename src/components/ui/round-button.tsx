@@ -8,7 +8,7 @@ const RoundButton = ({ children, ...props }: RoundButtonProps) => {
   return (
     <Button
       {...props}
-      className="rounded-full flex items-center justify-center p-0"
+      className="rounded-sm flex items-center justify-center p-0"
     >
       {children}
     </Button>

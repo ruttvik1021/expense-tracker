@@ -1,32 +1,42 @@
+"use client";
 import PaymentSources from "@/components/paymentSources/paymentSources";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import UpdatePassword from "@/components/updatepassword";
 import UpdateProfile from "@/components/updateProfile";
-import React from "react";
 
 const Profile = () => {
   return (
-    <div className="container flex flex-wrap mx-auto p-4 gap-3">
-      <div className="flex-1 max-w-2xl mx-auto">
-        <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-4">
-            <TabsTrigger value="profile">Profile</TabsTrigger>
-            <TabsTrigger value="password">Password</TabsTrigger>
-          </TabsList>
-          <TabsContent value="profile">
-            <div className="place-items-center w-full">
-              <UpdateProfile />
-            </div>
-          </TabsContent>
-          <TabsContent value="password">
-            <div className="place-items-center w-full">
+    <div className="container mx-auto p-6">
+      <div className="space-y-6">
+        <Card>
+          {" "}
+          <CardContent className="space-y-6">
+            <PaymentSources />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Profile Settings</CardTitle>
+            <CardDescription>
+              Manage your account preferences and settings.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <UpdateProfile />
+            <Separator />
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Security</h3>
               <UpdatePassword />
             </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-      <div className="flex-1">
-        <PaymentSources />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

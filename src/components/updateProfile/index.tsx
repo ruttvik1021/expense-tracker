@@ -16,14 +16,6 @@ import {
   updateProfile,
 } from "../../../server/actions/profile/profile";
 import { Button } from "../ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
@@ -70,13 +62,9 @@ const UpdateProfile = () => {
 
   return (
     <FormikProvider value={updateProfileFormik}>
-      <Card className="w-full max-w-sm shadow-selected">
-        <Form onSubmit={updateProfileFormik.handleSubmit}>
-          <CardHeader>
-            <CardTitle>Profile</CardTitle>
-            <CardDescription>Update your account details here.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      <Form onSubmit={updateProfileFormik.handleSubmit}>
+        <div className="grid gap-4 md:grid-cols-3 items-end">
+          <div className="space-y-2">
             <Field name="name">
               {({
                 field,
@@ -101,6 +89,8 @@ const UpdateProfile = () => {
                 </div>
               )}
             </Field>
+          </div>
+          <div className="space-y-2">
             <Field name="budget">
               {({
                 field,
@@ -125,14 +115,12 @@ const UpdateProfile = () => {
                 </div>
               )}
             </Field>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" loading={isProfileUpdating || isLoading}>
-              Update Profile
-            </Button>
-          </CardFooter>
-        </Form>
-      </Card>
+          </div>
+          <Button type="submit" loading={isProfileUpdating || isLoading}>
+            Update Profile
+          </Button>
+        </div>
+      </Form>
     </FormikProvider>
   );
 };

@@ -431,13 +431,48 @@ export const getLastMonthSummaryData = async () => {
 
   const pipeline: PipelineStage[] = [
     {
+      $addFields: {
+        dateAsDate: {
+          $cond: {
+            if: {
+              $regexMatch: {
+                input: "$date",
+                regex: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/,
+              },
+            },
+            then: { $toDate: "$date" }, // Convert valid date strings to Date objects
+            else: null, // Invalid dates are set to null
+          },
+        },
+      },
+    },
+    {
       $match: {
         userId: new mongoose.Types.ObjectId(decodedToken?.userId as string),
         deletedAt: null,
-        // Ensure transactions are from last month
-        date: {
-          $gte: startOfLastMonth,
-          $lte: endOfLastMonth,
+        $expr: {
+          $and: [
+            {
+              $gte: [
+                {
+                  $dateFromString: {
+                    dateString: "$date", // Convert the string date to Date
+                  },
+                },
+                startOfLastMonth, // Compare to the target date
+              ],
+            },
+            {
+              $lte: [
+                {
+                  $dateFromString: {
+                    dateString: "$date", // Convert the string date to Date
+                  },
+                },
+                endOfLastMonth, // Compare to the target date
+              ],
+            },
+          ],
         },
       },
     },
@@ -454,31 +489,39 @@ export const getLastMonthSummaryData = async () => {
         weeklyAvg: [
           {
             $group: {
-              _id: null,
+              _id: { week: { $week: "$dateAsDate" } }, // Group by week number
               weeklyTotal: { $sum: "$amount" }, // Total amount for each week
-              count: { $sum: 1 }, // Count of transactions for each week
             },
           },
           {
             $group: {
               _id: null,
-              weeklyAvg: { $avg: { $divide: ["$weeklyTotal", "$count"] } }, // Average for the week
+              weeklyAvg: { $avg: "$weeklyTotal" }, // Average per week
             },
           },
         ],
         dailyAvg: [
           {
             $group: {
-              _id: null,
+              _id: { day: { $dayOfMonth: "$dateAsDate" } }, // Group by day
               dailyTotal: { $sum: "$amount" }, // Total amount for each day
-              count: { $sum: 1 }, // Count of transactions for each day
             },
           },
           {
             $group: {
               _id: null,
-              dailyAvg: { $avg: { $divide: ["$dailyTotal", "$count"] } }, // Average for the day
+              dailyAvg: { $avg: "$dailyTotal" }, // Average per day
             },
+          },
+        ],
+        daysWithTransactionsCount: [
+          {
+            $group: {
+              _id: { day: { $dayOfYear: "$dateAsDate" } }, // Group by unique days
+            },
+          },
+          {
+            $count: "daysWithTransactions", // Count the unique days with transactions
           },
         ],
       },
@@ -488,6 +531,9 @@ export const getLastMonthSummaryData = async () => {
         totalAmount: { $arrayElemAt: ["$totalAmount.totalAmount", 0] },
         weeklyAvg: { $arrayElemAt: ["$weeklyAvg.weeklyAvg", 0] },
         dailyAvg: { $arrayElemAt: ["$dailyAvg.dailyAvg", 0] },
+        daysWithTransactions: {
+          $arrayElemAt: ["$daysWithTransactionsCount.daysWithTransactions", 0],
+        },
       },
     },
   ];
@@ -498,5 +544,6 @@ export const getLastMonthSummaryData = async () => {
     totalAmount: result[0].totalAmount || 0,
     weeklyAvg: result[0].weeklyAvg || 0,
     dailyAvg: result[0].dailyAvg || 0,
+    daysWithTransactions: result[0]?.daysWithTransactions || 0,
   };
 };

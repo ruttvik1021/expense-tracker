@@ -14,11 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
-import {
-  IndianRupee,
-  MoreHorizontal,
-  MoreVertical,
-} from "lucide-react";
+import { IndianRupee, MoreHorizontal, MoreVertical } from "lucide-react";
 import moment from "moment";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -268,7 +264,7 @@ const Transactions = () => {
                             <div className="col-span-1 flex justify-end">
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <button className="p-1 rounded-full hover:bg-accent">
+                                  <button className="p-1 rounded-sm hover:bg-accent">
                                     <MoreHorizontal className="w-4 h-4" />
                                     <span className="sr-only">
                                       More options
@@ -373,7 +369,7 @@ const Transactions = () => {
                           <span className="sr-only">More</span>
                         </TableCell>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="mr-3 rounded-lg">
+                      <DropdownMenuContent className="mr-3 rounded-sm">
                         <DropdownMenuItem>
                           <CustomEditIcon
                             onClick={() => {
@@ -443,7 +439,7 @@ const Transactions = () => {
                   <div className="col-span-1 flex justify-end">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1 rounded-full hover:bg-accent">
+                        <button className="p-1 rounded-sm hover:bg-accent">
                           <MoreHorizontal className="w-4 h-4" />
                           <span className="sr-only">More options</span>
                         </button>

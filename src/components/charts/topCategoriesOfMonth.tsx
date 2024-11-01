@@ -6,8 +6,8 @@ import { FeatureRestrictedWarning } from "../alerts/EmailVerification";
 import MonthYearPicker from "../common/MonthPicker";
 import { useAuthContext } from "../wrapper/ContextWrapper";
 
-import BasePieGraph from "../baseCharts/basePieChart";
 import { getCategoriesForChart } from "../../../server/actions/charts/charts";
+import BasePieGraph from "../baseCharts/basePieChart";
 
 const Top5CategoriesOfMonth = () => {
   const { isEmailVerified } = useAuthContext();
@@ -24,7 +24,7 @@ const Top5CategoriesOfMonth = () => {
         <FeatureRestrictedWarning message="Verify email to see the charts" />
       ) : (
         <BasePieGraph
-          title={"Top Categories"}
+          title={"Category Wise"}
           description={""}
           labelKey={"category"}
           valueKey={"totalAmountSpent"}

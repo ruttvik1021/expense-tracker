@@ -10,18 +10,10 @@ import {
 } from "formik";
 import { toast } from "sonner";
 import * as Yup from "yup";
+import { updatePassword } from "../../../server/actions/profile/profile";
 import { Button } from "../ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { updatePassword } from "../../../server/actions/profile/profile";
 
 const PasswordSchema = Yup.object().shape({
   currentPassword: Yup.string().required("Current password is required"),
@@ -73,13 +65,9 @@ const UpdatePassword = () => {
 
   return (
     <FormikProvider value={updatePasswordFormik}>
-      <Card className="w-full max-w-sm shadow-selected">
-        <Form onSubmit={updatePasswordFormik.handleSubmit}>
-          <CardHeader>
-            <CardTitle>Password</CardTitle>
-            <CardDescription>Change your password here</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      <Form onSubmit={updatePasswordFormik.handleSubmit}>
+        <div className="grid gap-4 md:grid-cols-4 items-end">
+          <div className="space-y-2">
             <Field name="currentPassword">
               {({
                 field,
@@ -104,6 +92,8 @@ const UpdatePassword = () => {
                 </div>
               )}
             </Field>
+          </div>
+          <div className="space-y-2">
             <Field name="newPassword">
               {({
                 field,
@@ -128,6 +118,8 @@ const UpdatePassword = () => {
                 </div>
               )}
             </Field>
+          </div>
+          <div className="space-y-2">
             <Field name="confirmNewPassword">
               {({
                 field,
@@ -154,14 +146,14 @@ const UpdatePassword = () => {
                 </div>
               )}
             </Field>
-          </CardContent>
-          <CardFooter>
+          </div>
+          <div className="space-y-2">
             <Button type="submit" loading={isUpdating}>
               Update Password
             </Button>
-          </CardFooter>
-        </Form>
-      </Card>
+          </div>
+        </div>
+      </Form>
     </FormikProvider>
   );
 };
