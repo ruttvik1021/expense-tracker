@@ -30,18 +30,6 @@ const useColorCycle = (data: ChartDataItem[]) => {
   }));
 };
 
-const LoadingSkeleton = () => (
-  <div className="flex flex-col justify-between space-y-4 py-4">
-    {[...Array(5)].map((_, idx) => (
-      <div
-        key={idx}
-        className="h-5 sm:h-20 bg-primary/10 animate-pulse rounded mt-2 sm:mt-10"
-        style={{ width: `${90 - idx * 10}%` }} // Decreasing width for each bar
-      ></div>
-    ))}
-  </div>
-);
-
 export default function BasePieGraph({
   title,
   description,
@@ -80,7 +68,7 @@ export default function BasePieGraph({
         <CardContent className="pt-6">
           <ChartContainer config={chartConfig}>
             {isLoading ? (
-              <LoadingSkeleton />
+              <Label>Getting data...</Label>
             ) : coloredData.length && total ? (
               <PieChart>
                 <ChartTooltip

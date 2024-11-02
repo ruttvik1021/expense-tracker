@@ -9,9 +9,8 @@ import { useAuthContext } from "../wrapper/ContextWrapper";
 import { getTransactions } from "../../../server/actions/transaction/transaction";
 import BaseBarGraph from "../baseCharts/baseBarChart";
 
-const TopSources = () => {
+const TopSources = ({ month }: { month: Date }) => {
   const { isEmailVerified } = useAuthContext();
-  const [month, setMonth] = React.useState(new Date());
   const { data, isLoading } = useQuery({
     queryKey: [queryKeys.transactions, { month: month.toISOString() }],
     queryFn: () => getTransactions({ month: month.toISOString() }),
@@ -49,14 +48,6 @@ const TopSources = () => {
           iconNameKey={""}
           chartData={result || []}
           isLoading={isLoading}
-          filterContent={
-            <>
-              <MonthYearPicker
-                handleMonthChange={(value) => setMonth(value)}
-                date={month}
-              />
-            </>
-          }
         />
       )}
     </>
