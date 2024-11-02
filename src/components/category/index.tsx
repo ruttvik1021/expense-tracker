@@ -126,7 +126,7 @@ const Category = () => {
     useSpentVsBudgetData("Categories");
 
   const { data: lastMonthAmount } = useQuery({
-    queryKey: [queryKeys.monthAmount],
+    queryKey: [queryKeys.monthAmount, categoryFilter.categoryDate],
     queryFn: () => getLastMonthAmount(categoryFilter.categoryDate),
   });
 
