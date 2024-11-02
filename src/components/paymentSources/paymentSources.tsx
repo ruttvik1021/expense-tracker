@@ -56,7 +56,7 @@ const PaymentSources = () => {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between my-3">
-        <PageHeader title={"Payment Methods"} />
+        <PageHeader title={"Payment Sources"} />
         <div className="flex gap-3">
           <Input
             type="text"

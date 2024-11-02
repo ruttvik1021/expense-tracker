@@ -38,7 +38,7 @@ const TopSources = ({ month }: { month: Date }) => {
         <FeatureRestrictedWarning message="Verify email to see the charts" />
       ) : (
         <BaseBarGraph
-          title={"Method Wise"}
+          title={"Source Wise"}
           description={""}
           yAxisKey={"group"}
           xAxisKey={"amount"}
