@@ -66,7 +66,7 @@ const PaymentSources = () => {
             onChange={(e) => setCreateSource(e.target.value)}
             disabled={addSource.isPending}
           />
-          <CustomAddIcon onClick={handleAddSource} type="TEXT" />
+          <CustomAddIcon onClick={handleAddSource} type="TEXT" disabled={!createSource}/>
         </div>
       </div>
       <Separator />
