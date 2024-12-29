@@ -32,6 +32,8 @@ const TopSources = ({ month }: { month: Date }) => {
       }))
     : [];
 
+  const sortedResult = result.sort((a, b) => b.amount - a.amount);
+
   return (
     <>
       {!isEmailVerified ? (
@@ -44,7 +46,7 @@ const TopSources = ({ month }: { month: Date }) => {
           xAxisKey={"amount"}
           tooltipKey={""}
           iconNameKey={""}
-          chartData={result || []}
+          chartData={sortedResult || []}
           isLoading={isLoading}
         />
       )}
