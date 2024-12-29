@@ -55,7 +55,7 @@ export const getLastMonthAmount = async (date: Date) => {
   const decodedToken = await verifySession();
   await connectToDatabase();
 
-  const startOfMonth = new Date();
+  const startOfMonth = new Date(date);
   startOfMonth.setDate(1); // Set to the first day of the current month
   startOfMonth.setHours(0, 0, 0, 0); // Start of the day
 
