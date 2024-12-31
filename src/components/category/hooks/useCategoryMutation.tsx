@@ -31,18 +31,6 @@ export const useCategoryMutation = () => {
         toast.error(data.error);
         return;
       }
-      // queryClient.setQueryData(
-      //   [queryKeys.categories, categoryFilter],
-      //   (prev: any) => {
-      //     return {
-      //       categories: [data.category].concat(prev.categories),
-      //     };
-      //   }
-      // );
-      // queryClient.setQueryData(
-      //   [queryKeys.category, data.category?._id],
-      //   data.category
-      // );
       onSuccessFn(data.message);
     },
   });
@@ -50,19 +38,6 @@ export const useCategoryMutation = () => {
   const deleteCategory = useMutation({
     mutationFn: deleteCategoryById,
     onSettled: (data) => {
-      // queryClient.setQueryData(
-      //   [queryKeys.categories, categoryFilter],
-      //   (prev: any) => {
-      //     return {
-      //       categories: prev.categories.filter(
-      //         (category: any) => category._id.toString() !== data?.id
-      //       ),
-      //     };
-      //   }
-      // );
-      // queryClient.removeQueries({
-      //   queryKey: [queryKeys.category, data?.id],
-      // });
       onSuccessFn(data?.message);
     },
   });
@@ -71,30 +46,6 @@ export const useCategoryMutation = () => {
     mutationFn: ({ id, values }: { id: string; values: CategoryFormValues }) =>
       updateCategoryById({ id, values }),
     onSuccess: (data) => {
-      // queryClient.setQueryData(
-      //   [queryKeys.categories, categoryFilter],
-      //   (prev: any) => {
-      //     return {
-      //       categories: prev.categories.map((category: any) => {
-      //         if (category._id.toString() === data.category._id) {
-      //           return {
-      //             ...category,
-      //             category: data.category.category,
-      //             icon: data.category.icon,
-      //             budget: data.category.budget,
-      //           };
-      //         }
-      //         return category;
-      //       }),
-      //     };
-      //   }
-      // );
-      // queryClient.setQueryData([queryKeys.category, data.category?._id], {
-      //   ...data.category,
-      //   category: data.category.category,
-      //   icon: data.category.icon,
-      //   budget: data.category.budget,
-      // });
       onSuccessFn(data.message);
     },
   });

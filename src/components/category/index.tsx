@@ -10,7 +10,7 @@ import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { getLastMonthAmount } from "../../../server/actions/profile/profile";
+import { getLastMonthAmount } from "../../../server/actions/category/category";
 import { FeatureRestrictedWarning } from "../alerts/EmailVerification";
 import MonthYearPicker from "../common/MonthPicker";
 import { Navlink } from "../common/Navigation";
