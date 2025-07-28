@@ -43,9 +43,13 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    console.log("Password hashed")
+
     const { tokenExpiration, verificationToken } = await sendVerificationEmail({
       to: email,
     });
+
+    console.log("Email Sent")
 
     const newUser = new UserModel({
       email,
@@ -56,6 +60,8 @@ export async function POST(req: Request) {
     });
 
     await newUser.save();
+
+    console.log("User Created")
 
     // const userNameForEmail = this.configService.get('NODEMAILER_USER');
     // const passwordForEmail = this.configService.get('NODEMAILER_PASS');
