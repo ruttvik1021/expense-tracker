@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("token");
+  const url = req.nextUrl.clone();
 
   const verifyEmailRoute = ["/verify-email"];
   const protectedRoutes = [
