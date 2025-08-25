@@ -47,7 +47,7 @@ export default function TransactionsCards() {
 
   return (
     <div className="flex flex-wrap gap-4">
-      <Card className="flex-1 shadow-soft hover:shadow-medium transition-shadow animate-fade-in">
+      <Card className="md:flex-1 shadow-soft hover:shadow-medium transition-shadow animate-fade-in w-full">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
             Last Month
@@ -67,7 +67,7 @@ export default function TransactionsCards() {
         );
         return (
           <Card
-            className="flex-1 shadow-soft hover:shadow-medium transition-shadow animate-fade-in"
+            className="md:flex-1 shadow-soft hover:shadow-medium transition-shadow animate-fade-in w-full"
             key={index}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
