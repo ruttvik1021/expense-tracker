@@ -1,12 +1,9 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import useSpentVsBudgetData from "@/hooks/useSpentVsBudgetData";
-import { queryKeys } from "@/utils/queryKeys";
-import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { getLastMonthAmount } from "../../../server/actions/category/category";
 import { FeatureRestrictedWarning } from "../alerts/EmailVerification";
 import MonthYearPicker from "../common/MonthPicker";
 import PageHeader from "../common/Pageheader";
@@ -114,18 +111,7 @@ const Category = () => {
     setOpen({ type: "ADD", open: false });
   };
 
-  const { totalBudget, totalSpent, isOverBudget, percentageSpent } =
-    useSpentVsBudgetData("Categories");
-
-  const { data: lastMonthAmount } = useQuery({
-    queryKey: [queryKeys.monthAmount, categoryFilter.categoryDate],
-    queryFn: () => getLastMonthAmount(categoryFilter.categoryDate),
-  });
-
-  const difference = totalSpent - lastMonthAmount?.amount;
-  const isDecrease = difference < 0;
-
-  console.log("totalBudget", totalBudget);
+  const { isOverBudget } = useSpentVsBudgetData("Categories");
 
   return (
     <>
