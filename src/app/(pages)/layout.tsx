@@ -16,10 +16,12 @@ export default function PageLayout({
       <body>
         <QueryWrapper>
           <ContextWrapper>
-            <main className="bg-background relative h-screen">
+            <main className="bg-background relative h-screen justify-center">
               <EmailVerification />
               <NavHeader />
-              <section className={"p-3"}>{children}</section>
+              <section className={"p-3 md:px-40 sm:px-3 mt-5"}>
+                {children}
+              </section>
             </main>
             <Toaster richColors position="top-center" />
             <SpeedInsights />

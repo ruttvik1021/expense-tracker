@@ -26,7 +26,12 @@ const useSpentVsBudgetData = (page: "Categories" | "Transactions") => {
   let percentageSpent = 0;
 
   if (page === "Categories") {
-    totalBudget = userData?.data ? userData?.data?.budget : 0;
+    totalBudget = userData?.data?.budget
+      ? userData?.data?.budget
+      : categoryData?.categories?.reduce(
+          (acc: number, category: any) => acc + category.budget,
+          0
+        ) || 0;
     totalSpent =
       categoryData?.categories?.reduce(
         (acc: number, category: any) => acc + category.totalAmountSpent,
@@ -43,6 +48,8 @@ const useSpentVsBudgetData = (page: "Categories" | "Transactions") => {
 
   isOverBudget = totalSpent > totalBudget;
   percentageSpent = isOverBudget ? 100 : (totalSpent / totalBudget) * 100;
+
+  console.log("totalBudget", totalBudget);
 
   return {
     totalBudget,

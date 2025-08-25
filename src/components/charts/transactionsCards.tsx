@@ -1,10 +1,10 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { queryKeys } from "@/utils/queryKeys";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { ArrowDownIcon, ArrowUpIcon, WalletMinimalIcon } from "lucide-react";
+import { ArrowDownIcon, ArrowUpIcon, Wallet } from "lucide-react";
 import {
   getCurrentAndLastMonthTransactionSum,
   getCurrentAndLastWeekTransactionSum,
@@ -48,41 +48,16 @@ export default function TransactionsCards() {
 
   return (
     <div className="flex flex-wrap gap-4">
-      <Card className="flex-1 min-w-[250px]">
-        <CardContent className="p-4">
-          <div className="flex justify-between items-center gap-2 mb-2">
-            <div className="flex gap-2 items-center">
-              <WalletMinimalIcon />
-              <h2 className="text-lg font-semibold">Last Month</h2>
-            </div>
-            <div className="space-x-1">
-              <span className="font-bold">
-                {lastMonthSummary?.daysWithTransactions}
-              </span>
-              <span>transaction days</span>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-baseline space-x-2">
-              <span className="text-3xl font-bold">Total:</span>
-              <span className="text-3xl font-bold">
-                {lastMonthSummary?.totalAmount.toLocaleString("en-IN")}
-              </span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <div className="flex items-baseline space-x-2">
-                <span className="text-md font-bold">Weekly Avg:</span>
-                <span className="text-md font-bold">
-                  {lastMonthSummary?.weeklyAvg.toLocaleString("en-IN")}
-                </span>
-              </div>
-              <div className="flex items-baseline space-x-2">
-                <span className="text-md font-bold">Daily Avg:</span>
-                <span className="text-md font-bold">
-                  {lastMonthSummary?.dailyAvg.toLocaleString("en-IN")}
-                </span>
-              </div>
-            </div>
+      <Card className="flex-1 shadow-soft hover:shadow-medium transition-shadow animate-fade-in">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
+            Last Month
+          </CardTitle>
+          <Wallet className="h-4 w-4 sm:h-5 sm:w-5 text-success flex-shrink-0" />
+        </CardHeader>
+        <CardContent className="pt-2">
+          <div className="text-xl sm:text-2xl font-bold text-success">
+            {lastMonthSummary?.daysWithTransactions}
           </div>
         </CardContent>
       </Card>
@@ -92,47 +67,30 @@ export default function TransactionsCards() {
           query.data?.current ?? 0
         );
         return (
-          <Card key={index} className="flex-1 min-w-[250px]">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <WalletMinimalIcon />
-                <h2 className="text-lg font-semibold">
-                  {titles[index]} Expense
-                </h2>
+          <Card className="flex-1 shadow-soft hover:shadow-medium transition-shadow animate-fade-in">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
+                {titles[index]} Expense
+              </CardTitle>
+              <Wallet className="h-4 w-4 sm:h-5 sm:w-5 text-success flex-shrink-0" />
+            </CardHeader>
+            <CardContent className="pt-2">
+              <div
+                className={cn(
+                  "text-xl sm:text-2xl font-bold text-success flex items-center",
+                  {
+                    "text-green-500": isDecrease,
+                    "text-red-500": !isDecrease,
+                  }
+                )}
+              >
+                {isDecrease ? (
+                  <ArrowDownIcon className="mr-1 h-4 w-4" />
+                ) : (
+                  <ArrowUpIcon className="mr-1 h-4 w-4" />
+                )}
+                {difference.toLocaleString("en-IN")}
               </div>
-
-              {query.isLoading ? (
-                <div>Loading...</div>
-              ) : query.isError ? (
-                <div>Error loading data.</div>
-              ) : (
-                <div className="space-y-2">
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-3xl font-bold">
-                      {query.data?.current.toLocaleString("en-IN")}
-                    </span>
-                    <span
-                      className={cn("flex items-center text-xl font-medium", {
-                        "text-green-500": isDecrease,
-                        "text-red-500": !isDecrease,
-                      })}
-                    >
-                      {isDecrease ? (
-                        <ArrowDownIcon className="mr-1 h-4 w-4" />
-                      ) : (
-                        <ArrowUpIcon className="mr-1 h-4 w-4" />
-                      )}
-                      {difference.toLocaleString("en-IN")}
-                    </span>
-                  </div>
-                  <p className="text-sm">
-                    {isDecrease ? "Down" : "Up"} by{" "}
-                    {difference.toLocaleString("en-IN")} compared to{" "}
-                    {query.data?.prev.toLocaleString("en-IN")}{" "}
-                    {comparisonTexts[index]}
-                  </p>
-                </div>
-              )}
             </CardContent>
           </Card>
         );

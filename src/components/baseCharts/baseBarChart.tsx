@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -49,10 +49,9 @@ export default function BaseBarGraph({
     <div className="space-y-4">
       <Card className={cn("w-full")}>
         <div className="flex items-center justify-between p-6">
-          <div>
-            <h2 className="text-2xl font-bold">{title}</h2>
-            <p className="text-sm text-muted-foreground">{description}</p>
-          </div>
+          <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
+            {title}
+          </CardTitle>
           {filterContent && <div>{filterContent}</div>}
         </div>
         <Separator className="bg-selected" />
@@ -129,7 +128,7 @@ export default function BaseBarGraph({
                     dataKey={yAxisKey}
                     position="insideLeft"
                     offset={8}
-                    className="fill-foreground text-md sm:text-2xl font-medium"
+                    className="fill-foreground text-lg sm:text-lg font-medium"
                   />
                 </Bar>
               </BarChart>

@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -58,10 +58,9 @@ export default function BasePieGraph({
     <div className="space-y-4">
       <Card className={cn("w-full")}>
         <div className="flex items-center justify-between p-6">
-          <div>
-            <h2 className="text-2xl font-bold">{title}</h2>
-            <p className="text-sm text-muted-foreground">{description}</p>
-          </div>
+          <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
+            {title}
+          </CardTitle>
           {filterContent && <div>{filterContent}</div>}
         </div>
         <Separator className="bg-selected" />

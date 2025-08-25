@@ -23,7 +23,7 @@ import TransactionForm, {
   transactionFormInitialValues,
 } from "../transactions/transactionForm";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
 import { Progress } from "../ui/progress";
 import {
@@ -133,6 +133,8 @@ const Category = () => {
   const difference = totalSpent - lastMonthAmount?.amount;
   const isDecrease = difference < 0;
 
+  console.log("totalBudget", totalBudget);
+
   return (
     <>
       <div className="mb-3">
@@ -144,7 +146,7 @@ const Category = () => {
                 onClick={() => {
                   setOpen({ type: "ADD", open: true });
                 }}
-                type="ICON"
+                type="TEXT"
               />
             )}
         </div>
@@ -180,21 +182,16 @@ const Category = () => {
         </div>
       </div>
       <div
-        className={`grid gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5`}
+        className={`grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}
       >
-        <Card
-          className={cn(
-            "w-full max-w-md",
-            isOverBudget ? "shadow-red-500" : "shadow-green-500"
-          )}
-        >
-          <CardHeader className="pb-2">
+        {/* <Card className="shadow-soft hover:shadow-medium transition-shadow animate-fade-in hover-scale">
+          <CardHeader className="pb-3">
             <div
               className={`flex items-center text-sm font-bold ${
                 isOverBudget ? "text-red-500" : "text-green-500"
               }`}
             >
-              {totalBudget === 0 || !totalBudget ? (
+              {totalBudget === 0 ? (
                 <div>
                   <Label className="mr-1">Update your monthly budget</Label>
                   <Navlink
@@ -215,60 +212,55 @@ const Category = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-1">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">
-                Spent {totalBudget ? "/Budget" : ""}
-              </span>
-              <span
-                className={cn(
-                  "text-2xl font-bold",
-                  isOverBudget ? "text-red-500" : "text-green-500"
-                )}
-              >
-                {formatNumber(totalSpent)}
-                {totalBudget ? `/${formatNumber(totalBudget)}` : null}
-              </span>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Spent</span>
+              <span className="font-medium">{formatNumber(totalSpent)}</span>
             </div>
             <Progress
               value={percentageSpent}
               className="h-2 w-full"
               fillColor={isOverBudget ? "red-500" : "green-500"}
             />
-            <div className="flex justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Last Month:{" "}
-                  {lastMonthAmount?.amount.toLocaleString("en-IN") || 0}
-                </p>
-              </div>
-              <div
-                className={`flex items-center text-sm ${
-                  isDecrease ? "text-green-500" : "text-red-500"
-                }`}
-              >
-                {isDecrease ? (
-                  <ArrowDownIcon className="mr-1 h-4 w-4" />
-                ) : (
-                  <ArrowUpIcon className="mr-1 h-4 w-4" />
-                )}
-                <span className="text-sm font-bold">
-                  {Math.abs(difference).toLocaleString("en-IN")}
-                </span>
-              </div>
-            </div>
           </CardContent>
-        </Card>
+        </Card> */}
         {isLoading
           ? Array.from({ length: 5 }).map((_, i) => (
               <CategorySkeleton key={i} />
             ))
           : data?.categories?.map((category: any) => {
               return (
-                <Card key={category._id} className="p-4 shadow-selected">
-                  <CardHeader className="p-0 mb-3">
-                    <div className="flex justify-between">
-                      <p className="text-4xl">{category.icon}</p>
-                      <div className="flex gap-2">
+                <Card
+                  key={category.id}
+                  className="shadow-soft hover:shadow-medium transition-shadow animate-fade-in hover-scale"
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <span
+                          className="text-xl sm:text-2xl flex-shrink-0"
+                          onClick={() => {
+                            setTransactionFilter({
+                              ...(transactionFilter || {}),
+                              categoryId: category._id,
+                              month: new Date(
+                                categoryFilter.categoryDate
+                              ).toISOString(),
+                            });
+                            router.push(`transactions`);
+                          }}
+                        >
+                          {category.icon}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <CardTitle className="text-base sm:text-lg truncate">
+                            {category.category}
+                          </CardTitle>
+                          <Badge variant="secondary" className="text-xs mt-1">
+                            {category.periodType.toUpperCase()}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center gap-2">
                         {moment(categoryFilter.categoryDate).isBefore(
                           moment().add(1, "month").startOf("month")
                         ) && (
@@ -298,51 +290,14 @@ const Category = () => {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex justify-between p-0">
-                    <div>
-                      <p
-                        className={`font-bold text-base cursor-pointer hover:text-selected`}
-                        onClick={() => {
-                          setTransactionFilter({
-                            ...(transactionFilter || {}),
-                            categoryId: category._id,
-                            month: new Date(
-                              categoryFilter.categoryDate
-                            ).toISOString(),
-                          });
-                          router.push(`transactions`);
-                        }}
-                      >
-                        {category.category}
-                      </p>
 
-                      <div className="flex">
-                        {category.periodType &&
-                          category.periodType !== PeriodType.ONCE && (
-                            <>
-                              <Label className="text-sm mt-1">
-                                {category.periodType.toUpperCase()}
-                              </Label>
-                            </>
-                          )}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-base">
-                        Budget:{" "}
-                        <Badge className="font-bold hover:bg-none">
-                          {category.budget.toLocaleString("en-IN")}
-                        </Badge>
-                      </p>
-                      <p className="text-base">
-                        Spent:{" "}
-                        <Badge
-                          className={cn("font-bold cursor-pointer", {
-                            "bg-red-500":
-                              category.totalAmountSpent > category.budget,
-                            "bg-green-500":
-                              category.totalAmountSpent <= category.budget,
-                          })}
+                  <CardContent className="space-y-4">
+                    {/* Budget Info */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Spent</span>
+                        <span
+                          className="font-medium"
                           onClick={() => {
                             setTransactionFilter({
                               ...(transactionFilter || {}),
@@ -354,12 +309,117 @@ const Category = () => {
                             router.push(`transactions`);
                           }}
                         >
-                          {category.totalAmountSpent.toLocaleString("en-IN")}
-                        </Badge>
-                      </p>
+                          {category.totalAmountSpent} / {category.budget}
+                        </span>
+                      </div>
+
+                      <Progress
+                        value={
+                          Number(category.totalAmountSpent / category.budget) *
+                          100
+                        }
+                        className="h-2"
+                        fillColor={isOverBudget ? "red-500" : "green-500"}
+                      />
                     </div>
                   </CardContent>
                 </Card>
+                // <Card key={category._id} className="p-4 shadow-selected">
+                //   <CardHeader className="p-0 mb-3">
+                //     <div className="flex justify-between">
+                //       <p className="text-4xl">{category.icon}</p>
+                // <div className="flex gap-2">
+                //   {moment(categoryFilter.categoryDate).isBefore(
+                //     moment().add(1, "month").startOf("month")
+                //   ) && (
+                //     <>
+                //       <CustomAddIcon
+                //         onClick={() =>
+                //           setTransactionToAddCategory({
+                //             id: category._id,
+                //             date: categoryFilter.categoryDate,
+                //           })
+                //         }
+                //       />
+                //       <CustomEditIcon
+                //         onClick={() => {
+                //           setCategoryToEdit(category._id);
+                //           setOpen({ type: "EDIT", open: true });
+                //         }}
+                //       />
+                //       <CustomDeleteIcon
+                //         onClick={() => {
+                //           setCategoryToDelete(category._id);
+                //           setOpen({ type: "DELETE", open: true });
+                //         }}
+                //       />
+                //     </>
+                //   )}
+                // </div>
+                //     </div>
+                //   </CardHeader>
+                //   <CardContent className="flex justify-between p-0">
+                //     <div>
+                //       <p
+                //         className={`font-bold text-base cursor-pointer hover:text-selected`}
+                // onClick={() => {
+                //   setTransactionFilter({
+                //     ...(transactionFilter || {}),
+                //     categoryId: category._id,
+                //     month: new Date(
+                //       categoryFilter.categoryDate
+                //     ).toISOString(),
+                //   });
+                //   router.push(`transactions`);
+                // }}
+                //       >
+                //         {category.category}
+                //       </p>
+
+                //       <div className="flex">
+                //         {category.periodType &&
+                //           category.periodType !== PeriodType.ONCE && (
+                //             <>
+                //               <Label className="text-sm mt-1">
+                //                 {category.periodType.toUpperCase()}
+                //               </Label>
+                //             </>
+                //           )}
+                //       </div>
+                //     </div>
+                //     <div className="text-right">
+                //       <p className="text-base">
+                //         Budget:{" "}
+                //         <Badge className="font-bold hover:bg-none">
+                //           {category.budget.toLocaleString("en-IN")}
+                //         </Badge>
+                //       </p>
+                //       <p className="text-base">
+                //         Spent:{" "}
+                //         <Badge
+                //           className={cn("font-bold cursor-pointer", {
+                //             "bg-red-500":
+                //               category.totalAmountSpent > category.budget,
+                //             "bg-green-500":
+                //               category.totalAmountSpent <= category.budget,
+                //           })}
+                // onClick={() => {
+                //   setTransactionFilter({
+                //     ...(transactionFilter || {}),
+                //     categoryId: category._id,
+                //     month: new Date(
+                //       categoryFilter.categoryDate
+                //     ).toISOString(),
+                //   });
+                //   router.push(`transactions`);
+                // }}
+                //         >
+                //           {category.totalAmountSpent.toLocaleString("en-IN")}
+                //         </Badge>
+                //       </p>
+                //     </div>
+                //   </CardContent>
+                // </Card>
               );
             })}
       </div>

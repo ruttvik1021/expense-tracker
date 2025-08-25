@@ -88,10 +88,7 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent
-        side="top"
-        className="rounded-b-xl shadow-lg border-b-4 border-selected"
-      >
+      <SheetContent side="top" className="shadow-lg border-selected">
         <div className="flex justify-end items-center"></div>
         <nav className="grid gap-6 text-lg font-medium">
           <div className="flex justify-between items-center">
