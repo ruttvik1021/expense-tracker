@@ -33,7 +33,6 @@ const useColorCycle = (data: ChartDataItem[]) => {
 
 export default function BaseBarGraph({
   title,
-  description,
   yAxisKey,
   xAxisKey,
   chartData,

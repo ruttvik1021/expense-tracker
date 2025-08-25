@@ -44,7 +44,6 @@ export default function TransactionsCards() {
   };
 
   const titles = ["Monthly", "Weekly", "Daily"];
-  const comparisonTexts = ["last month", "last week", "yesterday"];
 
   return (
     <div className="flex flex-wrap gap-4">
@@ -67,7 +66,10 @@ export default function TransactionsCards() {
           query.data?.current ?? 0
         );
         return (
-          <Card className="flex-1 shadow-soft hover:shadow-medium transition-shadow animate-fade-in">
+          <Card
+            className="flex-1 shadow-soft hover:shadow-medium transition-shadow animate-fade-in"
+            key={index}
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
                 {titles[index]} Expense

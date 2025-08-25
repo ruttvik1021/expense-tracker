@@ -32,7 +32,6 @@ const useColorCycle = (data: ChartDataItem[]) => {
 
 export default function BasePieGraph({
   title,
-  description,
   valueKey,
   labelKey,
   chartData,
