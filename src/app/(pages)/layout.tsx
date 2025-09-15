@@ -36,7 +36,7 @@ export default function PageLayout({
               </div>
 
               {/* Main Content Area */}
-              <section className="flex-1 overflow-auto p-6 md:px-10 sm:px-4">
+              <section className="flex-1 overflow-auto md:px-10 sm:px-4">
                 {children}
               </section>
             </main>
