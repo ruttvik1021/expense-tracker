@@ -12,17 +12,11 @@ import { Label } from "@/components/ui/label";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { User } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { LogoutButton, Navbar, NavDrawer } from "../Navigation";
+import { ILink, LogoutButton, Navbar, NavDrawer } from "../Navigation";
 import IconToggle from "../Toggles/IconToggle";
 import ThemeToggleButton from "../Toggles/ThemeToggle";
 
-const navLinks = [
-  { label: "Home", href: "/dashboard" },
-  { label: "Category", href: "/category" },
-  { label: "Transactions", href: "/transactions" },
-];
-
-export const NavHeader = () => {
+export const NavHeader = ({ navLinks }: { navLinks: ILink[] }) => {
   const router = useRouter();
   const { isAuthenticated } = useAuthContext();
   if (isAuthenticated) {

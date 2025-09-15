@@ -11,7 +11,7 @@ const IconToggle = () => {
     setIsIconPreferred(value);
   };
   return (
-    <div className="flex justify-between items-center w-full">
+    <div className="flex items-center w-full gap-3">
       <Circle
         className="fill-green-600 rounded-sm icon border"
         onClick={() => handlePreferrenceChange(false)}

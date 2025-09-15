@@ -169,16 +169,21 @@ const CategoryForm = ({
 
   return (
     <>
-      <div className="flex justify-center">
-        <Button
-          variant="link"
-          size="sm"
-          className="border my-2"
-          onClick={() => setGetFromPreviousMonth(!getFromPreviousMonth)}
-        >
-          {getFromPreviousMonth ? "Create New" : "Get from previous month"}
-        </Button>
-      </div>
+      {editCategory ? (
+        <></>
+      ) : (
+        <div className="flex justify-center">
+          <Button
+            variant="link"
+            size="sm"
+            className="border my-2"
+            onClick={() => setGetFromPreviousMonth(!getFromPreviousMonth)}
+          >
+            {getFromPreviousMonth ? "Create New" : "Get from previous month"}
+          </Button>
+        </div>
+      )}
+
       {getFromPreviousMonth ? (
         <>
           <p>Imported categories will be added to this month only</p>

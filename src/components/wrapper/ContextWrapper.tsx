@@ -40,6 +40,16 @@ type ContextWrapperType = {
   setIsIconPreferred: (value: boolean) => void;
   isEmailVerified: boolean;
   verifyUserEmail: (value: boolean) => void;
+  user:
+    | {
+        error: string;
+        data?: undefined;
+      }
+    | {
+        data: any;
+        error?: undefined;
+      }
+    | undefined;
 };
 
 export const initialTransactionFilter = {
@@ -128,6 +138,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     setIsIconPreferred,
     isEmailVerified,
     verifyUserEmail,
+    user,
   };
 
   return (
