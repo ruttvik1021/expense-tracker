@@ -10,10 +10,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
-import { User, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { ILink, LogoutButton, Navlink } from "../Navigation";
-import IconToggle from "../Toggles/IconToggle";
 import ThemeToggleButton from "../Toggles/ThemeToggle";
 import PageHeader from "../Pageheader";
 
