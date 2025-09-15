@@ -156,6 +156,7 @@ const Transactions = () => {
               onClick={() => {
                 setOpen({ type: "ADD", open: true });
               }}
+              type="TEXT"
             />
           </div>
         </div>

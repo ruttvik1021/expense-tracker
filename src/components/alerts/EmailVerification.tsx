@@ -20,22 +20,24 @@ const EmailVerification = () => {
 
   if (isAuthenticated && !isEmailVerified) {
     return (
-      <Alert className="bg-destructive/60 rounded-none rounded-b-2xl">
-        <AlertDescription className="font-bold text-black">
-          <Label className="flex items-center gap-2 text-sm">
-            <AlertTriangleIcon className="w-5 h-5" /> Please verify the email
-            sent to you.
-            <Button
-              className="h-5 p-2"
-              variant="secondary"
-              onClick={() => resendEmail()}
-              loading={isPending}
-            >
-              Resend
-            </Button>
-          </Label>
-        </AlertDescription>
-      </Alert>
+      <div className="flex justify-center items-center w-full p-3">
+        <Alert className="bg-destructive/60">
+          <AlertDescription className="font-bold text-black">
+            <Label className="flex items-center gap-2 text-sm">
+              <AlertTriangleIcon className="w-5 h-5" /> Please verify the email
+              sent to you.
+              <Button
+                className="h-5 p-2"
+                variant="secondary"
+                onClick={() => resendEmail()}
+                loading={isPending}
+              >
+                Resend
+              </Button>
+            </Label>
+          </AlertDescription>
+        </Alert>
+      </div>
     );
   }
   return null;

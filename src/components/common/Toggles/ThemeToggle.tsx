@@ -31,6 +31,7 @@ const ThemeToggleButton = () => {
         setActiveTheme(Modes.LIGHT);
         htmlElement.classList.remove(Modes.DARK);
       }}
+      className="w-full"
     />
   ) : (
     <Moon
@@ -38,6 +39,7 @@ const ThemeToggleButton = () => {
         setActiveTheme(Modes.DARK);
         htmlElement.classList.remove(Modes.LIGHT);
       }}
+      className="w-full"
     />
   );
 };

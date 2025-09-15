@@ -160,49 +160,10 @@ const Category = () => {
         </div>
       </div>
       <div
-        className={`grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4`}
+        className={`grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3`}
       >
-        {/* <Card className="shadow-soft hover:shadow-medium transition-shadow animate-fade-in hover-scale">
-          <CardHeader className="pb-3">
-            <div
-              className={`flex items-center text-sm font-bold ${
-                isOverBudget ? "text-red-500" : "text-green-500"
-              }`}
-            >
-              {totalBudget === 0 ? (
-                <div>
-                  <Label className="mr-1">Update your monthly budget</Label>
-                  <Navlink
-                    link={{ href: "profile", label: "here", isActive: true }}
-                  />
-                </div>
-              ) : isOverBudget ? (
-                <div className="flex justify-between w-full">
-                  <p>You're over budget by:</p>
-                  <p>{formatNumber(totalSpent - (totalBudget || 0))}</p>
-                </div>
-              ) : (
-                <div className="flex justify-between w-full">
-                  <p>You're under budget by:</p>
-                  <p>{formatNumber((totalBudget || 0) - totalSpent)}</p>
-                </div>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-1">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Spent</span>
-              <span className="font-medium">{formatNumber(totalSpent)}</span>
-            </div>
-            <Progress
-              value={percentageSpent}
-              className="h-2 w-full"
-              fillColor={isOverBudget ? "red-500" : "green-500"}
-            />
-          </CardContent>
-        </Card> */}
         {isLoading
-          ? Array.from({ length: 5 }).map((_, i) => (
+          ? Array.from({ length: 3 }).map((_, i) => (
               <CategorySkeleton key={i} />
             ))
           : data?.categories?.map((category: any) => {
@@ -215,7 +176,7 @@ const Category = () => {
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <span
-                          className="text-xl sm:text-2xl flex-shrink-0"
+                          className="text-xl sm:text-2xl flex-shrink-0 border rounded-full p-2"
                           onClick={() => {
                             setTransactionFilter({
                               ...(transactionFilter || {}),
@@ -302,102 +263,6 @@ const Category = () => {
                     </div>
                   </CardContent>
                 </Card>
-                // <Card key={category._id} className="p-4 shadow-selected">
-                //   <CardHeader className="p-0 mb-3">
-                //     <div className="flex justify-between">
-                //       <p className="text-4xl">{category.icon}</p>
-                // <div className="flex gap-2">
-                //   {moment(categoryFilter.categoryDate).isBefore(
-                //     moment().add(1, "month").startOf("month")
-                //   ) && (
-                //     <>
-                //       <CustomAddIcon
-                //         onClick={() =>
-                //           setTransactionToAddCategory({
-                //             id: category._id,
-                //             date: categoryFilter.categoryDate,
-                //           })
-                //         }
-                //       />
-                //       <CustomEditIcon
-                //         onClick={() => {
-                //           setCategoryToEdit(category._id);
-                //           setOpen({ type: "EDIT", open: true });
-                //         }}
-                //       />
-                //       <CustomDeleteIcon
-                //         onClick={() => {
-                //           setCategoryToDelete(category._id);
-                //           setOpen({ type: "DELETE", open: true });
-                //         }}
-                //       />
-                //     </>
-                //   )}
-                // </div>
-                //     </div>
-                //   </CardHeader>
-                //   <CardContent className="flex justify-between p-0">
-                //     <div>
-                //       <p
-                //         className={`font-bold text-base cursor-pointer hover:text-selected`}
-                // onClick={() => {
-                //   setTransactionFilter({
-                //     ...(transactionFilter || {}),
-                //     categoryId: category._id,
-                //     month: new Date(
-                //       categoryFilter.categoryDate
-                //     ).toISOString(),
-                //   });
-                //   router.push(`transactions`);
-                // }}
-                //       >
-                //         {category.category}
-                //       </p>
-
-                //       <div className="flex">
-                //         {category.periodType &&
-                //           category.periodType !== PeriodType.ONCE && (
-                //             <>
-                //               <Label className="text-sm mt-1">
-                //                 {category.periodType.toUpperCase()}
-                //               </Label>
-                //             </>
-                //           )}
-                //       </div>
-                //     </div>
-                //     <div className="text-right">
-                //       <p className="text-base">
-                //         Budget:{" "}
-                //         <Badge className="font-bold hover:bg-none">
-                //           {category.budget.toLocaleString("en-IN")}
-                //         </Badge>
-                //       </p>
-                //       <p className="text-base">
-                //         Spent:{" "}
-                //         <Badge
-                //           className={cn("font-bold cursor-pointer", {
-                //             "bg-red-500":
-                //               category.totalAmountSpent > category.budget,
-                //             "bg-green-500":
-                //               category.totalAmountSpent <= category.budget,
-                //           })}
-                // onClick={() => {
-                //   setTransactionFilter({
-                //     ...(transactionFilter || {}),
-                //     categoryId: category._id,
-                //     month: new Date(
-                //       categoryFilter.categoryDate
-                //     ).toISOString(),
-                //   });
-                //   router.push(`transactions`);
-                // }}
-                //         >
-                //           {category.totalAmountSpent.toLocaleString("en-IN")}
-                //         </Badge>
-                //       </p>
-                //     </div>
-                //   </CardContent>
-                // </Card>
               );
             })}
       </div>

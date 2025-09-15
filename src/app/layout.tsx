@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Expense Tracker",
+  title: "FinTrack",
   description: "Track your daily expenses",
   generator: "Next.js",
   manifest: "/manifest.json",
