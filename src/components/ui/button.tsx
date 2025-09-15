@@ -55,11 +55,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           className={cn(buttonVariants({ variant, size, className }), {
             "border-selected": loading,
             "border-2": loading,
-            "text-black": loading,
+            "text-primary": loading,
           })}
           ref={ref}
           onClick={loading ? () => {} : props.onClick}
-          disabled={loading}
           {...props}
         >
           {loading && <div className="absolute inset-0 loading-border " />}

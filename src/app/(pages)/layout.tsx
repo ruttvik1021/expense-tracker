@@ -19,9 +19,7 @@ export default function PageLayout({
             <main className="bg-background relative h-screen justify-center">
               <EmailVerification />
               <NavHeader />
-              <section className={"p-3 md:px-40 sm:px-3 mt-3"}>
-                {children}
-              </section>
+              <section className={"md:px-40 sm:px-3"}>{children}</section>
             </main>
             <Toaster richColors position="top-center" />
             <SpeedInsights />
