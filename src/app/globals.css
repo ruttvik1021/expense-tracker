@@ -113,11 +113,9 @@ body,
 html {
   margin: 0;
   padding: 0;
-  height: 100%;
   width: 100%;
   user-select: none;
   overscroll-behavior: none;
-  padding-bottom: 10px
 }
 
 /* Add to your global CSS or a CSS module */
