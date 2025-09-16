@@ -44,7 +44,7 @@ export const sendVerificationEmail = async ({ to }: { to: string }) => {
   const tokenExpiration = new Date(Date.now() + TOKEN_EXPIRATION_DURATION); // 1 day
 
   const mailOptions = {
-    from: "ExpenseTracker",
+    from: "AkiraFlow",
     to,
     subject: "Email verification",
     html: signUpTemplate(verificationToken),

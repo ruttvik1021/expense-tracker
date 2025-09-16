@@ -67,8 +67,15 @@ export default function ChatPage() {
   const [newCategory, setNewCategory] = useState<Partial<ICategory> | null>(
     null
   );
+
   const [pendingTransaction, setPendingTransaction] =
     useState<PendingTransaction | null>(null);
+
+  console.log("unused", {
+    isCategoryDialogOpen,
+    newCategory,
+    pendingTransaction,
+  });
 
   const scrollToBottom = () => {
     chatContainerRef.current?.scrollTo({
@@ -184,27 +191,27 @@ export default function ChatPage() {
     setCategoryDialogOpen(true);
   };
 
-  const handleCategoryCreated = async () => {
-    if (pendingTransaction) {
-      const categoryMap = new Map(
-        (categories?.categories as any[]).map((c) => [
-          (c.category || (c as any).name).toLowerCase(),
-          (c as any).id || (c as any)._id,
-        ])
-      );
-      const { category, ...rest } = pendingTransaction;
-      const newCategoryId = categoryMap.get(category.toLowerCase());
+  //   const handleCategoryCreated = async () => {
+  //     if (pendingTransaction) {
+  //       const categoryMap = new Map(
+  //         (categories?.categories as any[]).map((c) => [
+  //           (c.category || (c as any).name).toLowerCase(),
+  //           (c as any).id || (c as any)._id,
+  //         ])
+  //       );
+  //       const { category, ...rest } = pendingTransaction;
+  //       const newCategoryId = categoryMap.get(category.toLowerCase());
 
-      if (newCategoryId) {
-        setSelectedTransaction({
-          ...rest,
-          category: category,
-        } as ITransaction);
-        setTransactionDialogOpen(true);
-      }
-      setPendingTransaction(null);
-    }
-  };
+  //       if (newCategoryId) {
+  //         setSelectedTransaction({
+  //           ...rest,
+  //           category: category,
+  //         } as ITransaction);
+  //         setTransactionDialogOpen(true);
+  //       }
+  //       setPendingTransaction(null);
+  //     }
+  //   };
 
   return (
     <>
