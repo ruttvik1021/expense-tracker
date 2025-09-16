@@ -1,11 +1,11 @@
 import { config } from "dotenv";
 config();
 
-import "@/ai/flows/automated-transaction-from-receipt.ts";
-import "@/ai/flows/personalized-spending-insights.ts";
-import "@/ai/flows/contextual-financial-tips.ts";
-import "@/ai/flows/smart-bill-alerts-with-advice.ts";
-import "@/ai/flows/proactive-insights.ts";
-import "@/ai/flows/chat-flow.ts";
-import "@/ai/flows/create-transaction-from-text.ts";
-import "@/ai/flows/create-category-from-text.ts";
+import "@/ai/flows/automated-transaction-from-receipt";
+import "@/ai/flows/personalized-spending-insights";
+import "@/ai/flows/contextual-financial-tips";
+import "@/ai/flows/smart-bill-alerts-with-advice";
+import "@/ai/flows/proactive-insights";
+import "@/ai/flows/chat-flow";
+import "@/ai/flows/create-transaction-from-text";
+import "@/ai/flows/create-category-from-text";
