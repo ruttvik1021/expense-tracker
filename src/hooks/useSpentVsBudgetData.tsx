@@ -49,8 +49,6 @@ const useSpentVsBudgetData = (page: "Categories" | "Transactions") => {
   isOverBudget = totalSpent > totalBudget;
   percentageSpent = isOverBudget ? 100 : (totalSpent / totalBudget) * 100;
 
-  console.log("totalBudget", totalBudget);
-
   return {
     totalBudget,
     totalSpent,

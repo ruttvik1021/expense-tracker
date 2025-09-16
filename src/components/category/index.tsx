@@ -111,7 +111,7 @@ const Category = () => {
     setOpen({ type: "ADD", open: false });
   };
 
-  const { isOverBudget } = useSpentVsBudgetData("Categories");
+  const { totalBudget, totalSpent } = useSpentVsBudgetData("Categories");
 
   return (
     <>
@@ -124,7 +124,6 @@ const Category = () => {
                 onClick={() => {
                   setOpen({ type: "ADD", open: true });
                 }}
-                type="TEXT"
               />
             )}
         </div>
@@ -162,6 +161,35 @@ const Category = () => {
       <div
         className={`grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3`}
       >
+        <Card className="shadow-soft hover:shadow-medium transition-shadow animate-fade-in hover-scale">
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="min-w-0 flex-1">
+                  <CardTitle className="text-base sm:text-lg truncate">
+                    Total Spending
+                  </CardTitle>
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="space-y-4">
+            {/* Budget Info */}
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Spent</span>
+                <span className="font-medium">
+                  {totalSpent} / {totalBudget}
+                </span>
+              </div>
+
+              <Progress
+                value={(Number(totalSpent) / Number(totalBudget)) * 100}
+              />
+            </div>
+          </CardContent>
+        </Card>
         {isLoading
           ? Array.from({ length: 3 }).map((_, i) => (
               <CategorySkeleton key={i} />
@@ -254,11 +282,10 @@ const Category = () => {
 
                       <Progress
                         value={
-                          Number(category.totalAmountSpent / category.budget) *
+                          (Number(category.totalAmountSpent) /
+                            Number(category.budget)) *
                           100
                         }
-                        className="h-2"
-                        fillColor={isOverBudget ? "red-500" : "green-500"}
                       />
                     </div>
                   </CardContent>

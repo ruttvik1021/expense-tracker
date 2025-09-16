@@ -65,12 +65,11 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const token = Cookies.get("token");
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
   const { data: user, refetch: refetchUser } = useQuery({
     queryKey: [queryKeys.profile],
     queryFn: () => getProfile(),
     enabled: isAuthenticated,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
   });
 
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);

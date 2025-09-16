@@ -31,7 +31,7 @@ export const Navlink = ({
       key={link.href}
       href={link.href}
       className={cn(
-        "text-primary transition-colors",
+        "text-primary transition-colors flex items-center gap-2",
         link.isActive ? "font-bold text-selected" : "",
         className
       )}
@@ -45,13 +45,18 @@ export const Navlink = ({
 
 export const Brand = () => {
   return (
-    <Image
-      src={"/icon-512x512.png"}
-      alt={""}
-      width={36}
-      height={36}
-      style={{ borderRadius: "50%" }}
-    />
+    <div className="flex items-center gap-3">
+      <Image
+        src={"/icon-512x512.png"}
+        alt={"AkiraFlow"}
+        width={36}
+        height={36}
+        style={{ borderRadius: "50%" }}
+      />
+      <h2 className="text-2xl font-bold tracking-tight text-blue-700">
+        AkiraFlow
+      </h2>
+    </div>
   );
 };
 
@@ -88,7 +93,7 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="top" className="shadow-lg border-selected">
+      <SheetContent side="left" className="shadow-lg border-selected">
         <div className="flex justify-end items-center"></div>
         <nav className="grid gap-6 text-lg font-medium">
           <div className="flex justify-between items-center">

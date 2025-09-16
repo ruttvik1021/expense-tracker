@@ -1,4 +1,4 @@
-# FinTrack
+# AkiraFlow
 
 Full-stack personal expense tracking application built with Next.js + TypeScript, Tailwind CSS and MongoDB.
 
@@ -21,7 +21,7 @@ This README documents how to get the project running locally, explains the main 
 
 ## Project overview
 
-FinTrack is a web app that helps you record, categorize and visualize your daily expenses. The app includes account management (register/login/verify email), categories, payment sources, transactions, charts and basic analytics.
+AkiraFlow is a web app that helps you record, categorize and visualize your daily expenses. The app includes account management (register/login/verify email), categories, payment sources, transactions, charts and basic analytics.
 
 This repository uses the Next.js (app router) framework with server actions and API routes in the `src/app` and `server` directories. The backend stores data in MongoDB via Mongoose models found under `src/models`.
 
