@@ -28,7 +28,7 @@ export const Sidebar = ({ navLinks }: { navLinks: ILink[] }) => {
     <div className="flex h-full flex-col justify-between p-6">
       {/* Top: Logo and nav */}
       <div>
-        <PageHeader title="FinTrack"></PageHeader>
+        <PageHeader title="AkiraFlow"></PageHeader>
         <nav className="flex flex-col gap-4 my-3">
           {navLinks.map((item) => (
             <Navlink
@@ -74,7 +74,9 @@ export const Sidebar = ({ navLinks }: { navLinks: ILink[] }) => {
 
       {/* Mobile: Top Bar with Hamburger */}
       <div className="md:hidden flex items-center justify-between bg-drawer p-4 border-b border-border shadow-md">
-        <div className="text-xl font-bold">FinTrack</div>
+        <h2 className="text-3xl font-bold tracking-tight text-blue-700">
+          AkiraFlow
+        </h2>
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle sidebar"

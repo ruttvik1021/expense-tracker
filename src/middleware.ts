@@ -11,6 +11,7 @@ export async function middleware(req: NextRequest) {
     "/transaction",
     "/dashboard",
     "/profile",
+    "/chat",
   ];
   const unprotectedRoutes = ["/", "/login", "/register"];
 
@@ -57,5 +58,6 @@ export const config = {
     "/",
     "/login",
     "/register",
+    "/chat",
   ],
 };

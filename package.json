@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@genkit-ai/googleai": "^1.19.2",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -33,9 +34,11 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "dotenv": "^17.2.2",
     "embla-carousel-react": "^8.2.1",
     "emoji-picker-react": "^4.12.0",
     "formik": "^2.4.6",
+    "genkit": "^1.19.2",
     "joi": "^17.13.3",
     "jose": "^5.8.0",
     "js-cookie": "^3.0.5",
@@ -59,6 +62,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/dotenv": "^8.2.3",
     "@types/js-cookie": "^3.0.6",
     "@types/next-pwa": "^5.6.9",
     "@types/node": "^20",

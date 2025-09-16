@@ -80,7 +80,9 @@ const Register = () => {
                     fill-rule="evenodd"
                   ></path>
                 </svg>
-                <h1 className="text-2xl font-bold">FinTrack</h1>
+                <h2 className="text-3xl font-bold tracking-tight text-blue-700">
+                  AkiraFlow
+                </h2>
               </div>
               <h2 className="text-4xl font-bold mb-2">Create an account</h2>
               <p className="text-primary mb-6">
@@ -202,12 +204,9 @@ const Register = () => {
       </div>
       <div className="w-1/2 bg-[#181c22] hidden md:flex items-center justify-center p-12">
         <div className="text-center">
-          <span
-            className="material-symbols-outlined text-9xl text-blue-700 mb-4"
-            style={{ fontSize: 120 }}
-          >
-            FinTrack
-          </span>
+          <h2 className="text-3xl font-bold tracking-tight text-blue-700">
+            AkiraFlow
+          </h2>
           <h2 className="text-4xl font-bold mb-4 text-primary-foreground">
             Track Expenses with AI
           </h2>

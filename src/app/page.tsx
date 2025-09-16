@@ -5,10 +5,10 @@ const LandingPage = () => {
   return (
     <div className="bg-gray-900 text-white font-sans">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-gray-800 px-10 py-4">
+      <header className="flex items-center justify-between border-b border-gray-800 px-10 py-2">
         <div className="flex items-center gap-3">
-          <h2 className="material-symbols-outlined text-3xl text-blue-700 font-bold tracking-tight">
-            FinTrack
+          <h2 className="text-3xl font-bold tracking-tight text-blue-700">
+            AkiraFlow
           </h2>
         </div>
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
@@ -25,12 +25,6 @@ const LandingPage = () => {
             className="bg-blue-700 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-md"
           >
             Get Started
-          </Link>
-          <Link
-            href="/login"
-            className="bg-gray-800 hover:bg-gray-700 text-white font-bold text-sm px-4 py-2 rounded-md"
-          >
-            Login
           </Link>
         </div>
       </header>
@@ -199,9 +193,9 @@ const LandingPage = () => {
       <footer className="border-t border-gray-800 py-10 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <Link href="/" className="flex items-center gap-2 text-white">
-            <span className="material-symbols-outlined text-2xl text-blue-700 font-bold">
-              FinTrack
-            </span>
+            <h2 className="text-3xl font-bold tracking-tight text-blue-700">
+              AkiraFlow
+            </h2>
           </Link>
           <div className="flex gap-4 text-sm text-gray-400">
             <Link href="#">Privacy Policy</Link>

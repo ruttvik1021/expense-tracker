@@ -27,10 +27,10 @@ const signUpTemplate = (link: string) => {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Welcome to FinTrack</title>
+          <title>Welcome to AkiraFlow: Graceful Control Over Your Cash Flow.</title>
         </head>
         <body>
-          <h1>Welcome to FinTrack</h1>
+          <h1>Welcome to AkiraFlow</h1>
           <p>We are glad to have you on our platform.</p>
           <p>Click the below link to verify your email:</p>
           <a href="${url}" target='_blank'>${url}</a>

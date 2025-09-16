@@ -6,11 +6,23 @@ import { Toaster } from "sonner";
 import "./globals.css";
 import { Sidebar } from "@/components/common/Sidebar";
 import { NavHeader } from "@/components/common/Headers";
+import AppWrapper from "@/components/wrapper/AppWrapper";
+import { ILink } from "@/components/common/Navigation";
+import { Home, Smile, IndianRupee, MessageCircle } from "lucide-react";
 
-const navLinks = [
-  { label: "Home", href: "/dashboard" },
-  { label: "Category", href: "/category" },
-  { label: "Transactions", href: "/transactions" },
+const navLinks: ILink[] = [
+  { label: "Home", href: "/dashboard", icon: <Home className="h-4 w-4" /> },
+  { label: "Category", href: "/category", icon: <Smile className="h-4 w-4" /> },
+  {
+    label: "Transactions",
+    href: "/transactions",
+    icon: <IndianRupee className="h-4 w-4" />,
+  },
+  {
+    label: "Chat with AI",
+    href: "/chat",
+    icon: <MessageCircle className="h-4 w-4" />,
+  },
 ];
 
 export default function PageLayout({
@@ -37,7 +49,7 @@ export default function PageLayout({
 
               {/* Main Content Area */}
               <section className="flex-1 overflow-auto md:px-10 sm:px-4">
-                {children}
+                <AppWrapper>{children}</AppWrapper>
               </section>
             </main>
 
