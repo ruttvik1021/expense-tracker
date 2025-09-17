@@ -41,11 +41,8 @@ export default function InsightsPage() {
     startInsightsTransition(async () => {
       const allTransactions = transactions?.transactions || [];
 
-      const currentMonthData = allTransactions.map((item) => ({
-        amount: item.amount,
-        spentOn: item.spentOn,
-        date: item.date,
-      }));
+      const currentMonthData = allTransactions.map(t => `${t.amount}|${t.spentOn}|${t.date.split("T")[0]}`)
+   .join("\n");
 
       const result = await getProactiveInsights({
         currentMonthTransactions: JSON.stringify(currentMonthData),
