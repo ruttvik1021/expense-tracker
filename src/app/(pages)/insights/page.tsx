@@ -44,7 +44,7 @@ export default function InsightsPage() {
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+      <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-4">
         <div className="flex items-center gap-3">
           <Sparkles className="h-6 w-6 text-primary" />
           <CardTitle>Your Proactive Financial Insights</CardTitle>
