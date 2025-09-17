@@ -126,7 +126,7 @@ export default function ChatPage() {
         history: newHistory.slice(0, -1), // Pass history without the latest user message
         message,
         transactionContext: JSON.stringify(transactions?.transactions || []),
-        availableCategories: JSON.stringify(categories?.categories || []),
+        availableCategories: categories?.categories.map((item) => JSON.stringify(item)),
       });
 
       setHistory((prev) => [
