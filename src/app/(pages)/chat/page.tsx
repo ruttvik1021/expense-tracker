@@ -3,14 +3,6 @@
 import { chat } from "@/ai/flows/chat-flow";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import PageHeader from "@/components/common/Pageheader";
 import { cn } from "@/lib/utils";
@@ -22,14 +14,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 
 import type { ITransaction } from "@/utils/types/transactionTypes";
 import type { ICategory } from "@/utils/types/categoryTypes";
@@ -53,7 +37,7 @@ type PendingTransaction = any | null;
 export default function ChatPage() {
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState("");
-  const [contextRange, setContextRange] = useState("current-month");
+  // const [contextRange, setContextRange] = useState("current-month");
   const [isPending, startTransition] = useTransition();
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -107,15 +91,15 @@ export default function ChatPage() {
     const now = new Date();
     let startDate = new Date();
 
-    if (contextRange === "current-month") {
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    } else if (contextRange === "last-3-months") {
-      startDate = new Date(now.getFullYear(), now.getMonth() - 3, 1);
-    } else if (contextRange === "last-6-months") {
-      startDate = new Date(now.getFullYear(), now.getMonth() - 6, 1);
-    } else if (contextRange === "last-12-months") {
-      startDate = new Date(now.getFullYear() - 1, now.getMonth(), 1);
-    }
+    // if (contextRange === "current-month") {
+    //   startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    // } else if (contextRange === "last-3-months") {
+    //   startDate = new Date(now.getFullYear(), now.getMonth() - 3, 1);
+    // } else if (contextRange === "last-6-months") {
+    //   startDate = new Date(now.getFullYear(), now.getMonth() - 6, 1);
+    // } else if (contextRange === "last-12-months") {
+    //   startDate = new Date(now.getFullYear() - 1, now.getMonth(), 1);
+    // }
 
     return allTransactions.filter((t) => new Date(t.date) >= startDate);
   };
@@ -136,6 +120,8 @@ export default function ChatPage() {
       const filteredTransactions = await getFilteredTransactions();
       const transactionContext =
         formatTransactionsForContext(filteredTransactions);
+
+      console.log("transactionContext", transactionContext);
       const categoryNames =
         categories?.categories.map((c) => c.category || (c as any).name) || [];
 
@@ -217,9 +203,9 @@ export default function ChatPage() {
     <>
       <div className="flex w-full flex-col">
         <PageHeader title="Chat with AI" />
-        <main className="flex-1 overflow-auto p-4">
+        <main className="flex-1 overflow-auto">
           <div className="mx-auto h-full max-w-3xl">
-            <div className="w-48 space-y-2 mb-3">
+            {/* <div className="w-48 space-y-2 mb-3">
               <Label htmlFor="context-range">Transaction Context</Label>
               <Select value={contextRange} onValueChange={setContextRange}>
                 <SelectTrigger id="context-range">
@@ -232,132 +218,127 @@ export default function ChatPage() {
                   <SelectItem value="last-12-months">Last 12 Months</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <Card className="flex flex-wrap h-full flex-col">
-              <CardHeader className="flex flex-row items-start gap-4">
-                <Sparkles className="h-8 w-8 text-primary" />
-                <div>
-                  <CardTitle>Conversational Insights</CardTitle>
-                  <CardDescription>
-                    Ask questions, add transactions, or create categories.
-                  </CardDescription>
+            </div> */}
+            {/* <Card className="flex flex-wrap h-full flex-col"> */}
+            {/* <CardHeader className="flex flex-row items-start gap-4">
+                
+              </CardHeader> */}
+            <div
+              ref={chatContainerRef}
+              className="flex-1 space-y-6 overflow-y-auto p-6"
+            >
+              {history.length === 0 ? (
+                <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
+                  <MessageCircle className="h-16 w-16" />
+                  <p className="mt-4 text-lg">No messages yet.</p>
+                  <p className="text-sm">
+                    Start the conversation by asking something like:
+                    <br />
+                    <em className="mt-2 block">
+                      &quot;How much did I spend on dining out this month?&quot;
+                    </em>
+                    <em className="mt-2 block">
+                      &quot;Ask questions, add transactions, or create
+                      categories.&quot;
+                    </em>
+                  </p>
                 </div>
-              </CardHeader>
-              <CardContent
-                ref={chatContainerRef}
-                className="flex-1 space-y-6 overflow-y-auto p-6"
-              >
-                {history.length === 0 ? (
-                  <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
-                    <MessageCircle className="h-16 w-16" />
-                    <p className="mt-4 text-lg">No messages yet.</p>
-                    <p className="text-sm">
-                      Start the conversation by asking something like:
-                      <br />
-                      <em className="mt-2 block">
-                        &quot;How much did I spend on dining out this
-                        month?&quot;
-                      </em>
-                    </p>
-                  </div>
-                ) : (
-                  history.map((msg, index) => (
+              ) : (
+                history.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={cn(
+                      "flex items-start gap-4",
+                      msg.role === "user" ? "justify-end" : ""
+                    )}
+                  >
+                    {msg.role === "model" && (
+                      <Avatar className="h-9 w-9">
+                        <AvatarFallback>
+                          <Sparkles className="h-5 w-5" />
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
                     <div
-                      key={index}
                       className={cn(
-                        "flex items-start gap-4",
-                        msg.role === "user" ? "justify-end" : ""
+                        "max-w-md rounded-lg px-4 py-3",
+                        msg.role === "user"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted"
                       )}
                     >
-                      {msg.role === "model" && (
-                        <Avatar className="h-9 w-9">
-                          <AvatarFallback>
-                            <Sparkles className="h-5 w-5" />
-                          </AvatarFallback>
-                        </Avatar>
+                      <p className="text-sm">{msg.parts[0].text}</p>
+                      {msg.transactionData && (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="mt-3"
+                          onClick={() =>
+                            handleCreateTransaction(msg.transactionData!)
+                          }
+                        >
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          Confirm Transaction
+                        </Button>
                       )}
-                      <div
-                        className={cn(
-                          "max-w-md rounded-lg px-4 py-3",
-                          msg.role === "user"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted"
-                        )}
-                      >
-                        <p className="text-sm">{msg.parts[0].text}</p>
-                        {msg.transactionData && (
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="mt-3"
-                            onClick={() =>
-                              handleCreateTransaction(msg.transactionData!)
-                            }
-                          >
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            Confirm Transaction
-                          </Button>
-                        )}
-                        {msg.categoryData && (
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="mt-3"
-                            onClick={() =>
-                              handleCreateCategory(msg.categoryData!)
-                            }
-                          >
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            Confirm Category
-                          </Button>
-                        )}
-                      </div>
-                      {msg.role === "user" && (
-                        <Avatar className="h-9 w-9">
-                          <AvatarFallback>U</AvatarFallback>
-                        </Avatar>
+                      {msg.categoryData && (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="mt-3"
+                          onClick={() =>
+                            handleCreateCategory(msg.categoryData!)
+                          }
+                        >
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          Confirm Category
+                        </Button>
                       )}
                     </div>
-                  ))
-                )}
-                {isPending && (
-                  <div className="flex items-start gap-4">
-                    <Avatar className="h-9 w-9">
-                      <AvatarFallback>
-                        <Sparkles className="h-5 w-5" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="max-w-md rounded-lg bg-muted px-4 py-3">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span>Thinking...</span>
-                      </div>
+                    {msg.role === "user" && (
+                      <Avatar className="h-9 w-9">
+                        <AvatarFallback>U</AvatarFallback>
+                      </Avatar>
+                    )}
+                  </div>
+                ))
+              )}
+              {isPending && (
+                <div className="flex items-start gap-4">
+                  <Avatar className="h-9 w-9">
+                    <AvatarFallback>
+                      <Sparkles className="h-5 w-5" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="max-w-md rounded-lg bg-muted px-4 py-3">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Thinking...</span>
                     </div>
                   </div>
-                )}
-              </CardContent>
-              <CardFooter className="border-t p-4">
-                <div className="flex flex-1 gap-2">
-                  <Input
-                    className="w-full"
-                    placeholder="Ask a question or add a transaction..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={(e) =>
-                      e.key === "Enter" && !isPending && handleSendMessage()
-                    }
-                    disabled={isPending}
-                  />
-                  <Button
-                    size="icon"
-                    onClick={handleSendMessage}
-                    disabled={isPending || !message.trim()}
-                  >
-                    <ArrowUp className="h-5 w-5" />
-                  </Button>
                 </div>
-              </CardFooter>
-            </Card>
+              )}
+            </div>
+            <div className="flex flex-col sm:flex-row w-full border-t p-4 gap-3">
+              <Input
+                className="w-full"
+                placeholder="Ask a question or add a transaction..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) =>
+                  e.key === "Enter" && !isPending && handleSendMessage()
+                }
+                disabled={isPending}
+              />
+              <Button
+                size="icon"
+                className="w-full sm:w-[50px]"
+                onClick={handleSendMessage}
+                disabled={isPending || !message.trim()}
+              >
+                <ArrowUp className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </main>
       </div>

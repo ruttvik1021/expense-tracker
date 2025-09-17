@@ -78,7 +78,7 @@ const prompt = ai.definePrompt({
 Analyze the user's spending for the current and previous month and provide the following:
 1.  **Spending Summary:** A short, conversational summary (2-3 sentences) comparing their spending trends.
 2.  **Helpful Articles:** A list of 2-3 helpful and relevant financial articles. These should be real articles from reputable sources (e.g., Forbes, NerdWallet, Investopedia). Provide valid URLs.
-3.  **Personalized Suggestions:** Based on their entertainment and dining transactions, suggest 2-3 specific things they might enjoy, like a movie currently in theaters, a type of restaurant, or a concert/event. Be creative and justify your suggestions briefly.
+3.  **Personalized Suggestions:** Based on their entertainment and dining transactions, suggest 2-3 specific things they might enjoy, like a movie currently in theaters, a type of restaurant, or a concert/event. Be creative and justify your suggestions briefly in Pune, Maharashtra location.
 
 **Current Month's Transactions:**
 {{{currentMonthTransactions}}}

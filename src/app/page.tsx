@@ -70,7 +70,7 @@ const LandingPage = () => {
             Vibrant Features
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-12">
-            Explore the powerful tools that make ExpenseTracker stand out.
+            Explore the powerful tools that make AkiraFlow stand out.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -120,15 +120,15 @@ const LandingPage = () => {
             Install Our PWA
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-10">
-            Install ExpenseTracker as a Progressive Web App for a faster,
-            app-like experience.
+            Install AkiraFlow as a Progressive Web App for a faster, app-like
+            experience.
           </p>
           <div className="grid md:grid-cols-3 gap-8 text-left">
             {[
               {
                 title: "On Desktop",
                 steps: [
-                  "Open ExpenseTracker in Chrome, Edge, or Firefox",
+                  "Open AkiraFlow in Chrome, Edge, or Firefox",
                   "Click the install icon in the address bar",
                   "Follow prompts to install the app",
                 ],
@@ -136,7 +136,7 @@ const LandingPage = () => {
               {
                 title: "On iOS (Safari)",
                 steps: [
-                  "Open ExpenseTracker in Safari",
+                  "Open AkiraFlow in Safari",
                   "Tap the Share button",
                   'Tap "Add to Home Screen"',
                   'Tap "Add" to confirm',
@@ -145,7 +145,7 @@ const LandingPage = () => {
               {
                 title: "On Android (Chrome)",
                 steps: [
-                  "Open ExpenseTracker in Chrome",
+                  "Open AkiraFlow in Chrome",
                   "Tap the menu icon (three dots)",
                   'Tap "Add to Home Screen"',
                   "Follow prompts to install",
