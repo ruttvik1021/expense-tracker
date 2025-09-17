@@ -96,7 +96,12 @@ export default function InsightsPage() {
                     Spending Summary
                   </h3>
                   <p className="text-muted-foreground">
-                    {insights.spendingSummary}
+                    {insights.spendingSummary.split('\n').map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        <br />
+                      </span>
+                    ))}
                   </p>
                 </div>
                 <Separator />
