@@ -67,7 +67,7 @@ export default function InsightsPage() {
       // 1️⃣ Stream summary
       setSummary("");
       const stream = await streamSpendingSummary(input);
-      for await (const chunk of stream) {
+      for await (const chunk of stream.stream()) {
         setSummary((prev) => prev + (chunk.text ?? ""));
       }
 
