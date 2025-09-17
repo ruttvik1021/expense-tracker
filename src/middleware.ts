@@ -59,5 +59,6 @@ export const config = {
     "/login",
     "/register",
     "/chat",
+    "/((?!_next/static|_next/image|favicon.ico|images|fonts|.*\\..*).*)",
   ],
 };

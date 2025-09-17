@@ -24,9 +24,14 @@ export default function InsightsPage() {
   const allCategories = categories?.categories || [];
 
   const currentMonthTransactionData = allTransactions
+    .slice() // clone the array to avoid mutating original
+    .sort((a, b) => a.spentOn.localeCompare(b.spentOn)) // sort by `spentOn` (name)
     .map((t) => `${t.amount}|${t.spentOn}|${t.date.split("T")[0]}`)
     .join("\n");
+
   const currentMonthCategoryData = allCategories
+    .slice()
+    .sort((a, b) => a.category.localeCompare(b.category)) // sort by `category` (name)
     .map((t) => `${t.category}|${t.budget}`)
     .join("\n");
 
@@ -39,8 +44,7 @@ export default function InsightsPage() {
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <PageHeader title="AI Insights" />
-      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+      <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
         <div className="flex items-center gap-3">
           <Sparkles className="h-6 w-6 text-primary" />
           <CardTitle>Your Proactive Financial Insights</CardTitle>
@@ -73,7 +77,7 @@ export default function InsightsPage() {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

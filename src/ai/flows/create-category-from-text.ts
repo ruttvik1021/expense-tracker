@@ -68,6 +68,8 @@ export const createCategoryFromTextTool = ai.defineTool(
         - Name: The name for the new category.
         - Icon: A suitable icon name. Choose any suitable emoji.
 
+        Ask the user for further things budget, periodType (startMonth if periodType is "monthly", "quarterly", "half-yearly" & creationDuration if periodType is "next12Months", "yearEnd")
+
         User's text: "{{{text}}}"
         `,
     });

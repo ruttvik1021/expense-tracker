@@ -108,6 +108,8 @@ Keep your answers concise and easy to understand.`;
 
   const output = llmResponse.output!;
 
+  console.log("llmResponse", llmResponse);
+
   // 4. Check if a tool was called and handle the response.
   //   const toolRequest = llmResponse.history?.find(
   //     (m) => m.role === "model" && m.parts.some((p) => p.toolRequest)
@@ -139,6 +141,6 @@ Keep your answers concise and easy to understand.`;
   //   }
 
   return {
-    response: output.response,
+    response: output.response || "",
   };
 }

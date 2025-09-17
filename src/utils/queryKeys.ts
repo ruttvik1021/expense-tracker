@@ -21,4 +21,5 @@ export const queryKeys = {
   lastMonthSummary: "lastMonthSummary",
   sources: "sources",
   lastMonthCategories: "lastMonthCategories",
+  proactiveInsights: "proactive-insights",
 };

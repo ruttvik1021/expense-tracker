@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProactiveInsights } from "@/ai/flows/proactive-insights";
 import type { ProactiveInsightsOutput } from "@/ai/flows/proactive-insights";
+import { queryKeys } from "@/utils/queryKeys";
 
 type UseProactiveInsightsParams = {
   transactions: string;
@@ -12,7 +13,7 @@ export function useProactiveInsights({
   categories,
 }: UseProactiveInsightsParams) {
   return useQuery<ProactiveInsightsOutput>({
-    queryKey: ["proactive-insights", transactions, categories],
+    queryKey: [queryKeys.proactiveInsights, transactions, categories],
     queryFn: () =>
       getProactiveInsights({
         currentMonthTransactions: JSON.stringify(transactions),
