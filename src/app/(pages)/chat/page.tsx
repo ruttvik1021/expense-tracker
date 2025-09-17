@@ -121,14 +121,12 @@ export default function ChatPage() {
         formatTransactionsForContext(filteredTransactions);
 
       console.log("transactionContext", transactionContext);
-      const categoryNames =
-        categories?.categories.map((c) => c.category || (c as any).name) || [];
 
       const aiResponse = await chat({
         history: newHistory.slice(0, -1), // Pass history without the latest user message
         message,
         transactionContext: JSON.stringify(transactions?.transactions || []),
-        availableCategories: categoryNames,
+        availableCategories: JSON.stringify(categories?.categories || []),
       });
 
       setHistory((prev) => [
