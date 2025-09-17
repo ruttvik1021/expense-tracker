@@ -181,13 +181,13 @@ const summaryPrompt = ai.definePrompt({
     spendingSummary: z.string(),
   }),
 },
-  prompt: `You are a friendly financial assistant.
-Analyze the user's spending records (amount|item|date).
+  prompt: `You are a financial expert.
+Analyze the user's spending records and give conversational summary based on the records in 2-3 lines.
 
-All Transactions:
+All Transactions (amount|item|date):
 {{{currentMonthTransactions}}}
 
-All Categories:
+All Categories (category|budget):
 {{{currentMonthCategories}}}
 
 Last Month Transactions:
