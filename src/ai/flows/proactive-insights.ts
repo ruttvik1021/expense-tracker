@@ -135,7 +135,10 @@ const SuggestionSchema = z.object({
 const ProactiveInsightsInputSchema = z.object({
   currentMonthTransactions: z
     .string()
-    .describe("A summary of transactions from the current month."),
+    .describe("Transaction records."),
+  currentMonthCategories: z
+    .string()
+    .describe("All categories"),
   lastMonthTransactions: z
     .string()
     .describe("A summary of transactions from the last month."),
@@ -146,7 +149,7 @@ const ProactiveInsightsOutputSchema = z.object({
   spendingSummary: z
     .string()
     .describe(
-      "A brief, conversational summary comparing last month's and this month's spending."
+      "A brief, conversational summary of this month's spending."
     ),
   articles: z
     .array(ArticleSchema)
@@ -181,8 +184,11 @@ const summaryPrompt = ai.definePrompt({
   prompt: `You are a friendly financial assistant.
 Analyze the user's spending records (amount|item|date).
 
-Current Month Transactions:
+All Transactions:
 {{{currentMonthTransactions}}}
+
+All Categories:
+{{{currentMonthCategories}}}
 
 Last Month Transactions:
 {{{lastMonthTransactions}}}

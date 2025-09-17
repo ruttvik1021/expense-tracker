@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useTransactions } from "@/components/transactions/hooks/useTransactionQuery";
+import { useCategories } from "@/components/category/hooks/useCategoryQuery";
 
 const suggestionIcons = {
   Dining: <Utensils className="h-4 w-4" />,
@@ -36,16 +37,19 @@ export default function InsightsPage() {
   );
   const [isInsightsPending, startInsightsTransition] = useTransition();
   const { data: transactions } = useTransactions();
+  const { data: categories } = useCategories();
 
   useEffect(() => {
     startInsightsTransition(async () => {
       const allTransactions = transactions?.transactions || [];
+      const allCategories = categories?.categories || [];
 
-      const currentMonthData = allTransactions.map(t => `${t.amount}|${t.spentOn}|${t.date.split("T")[0]}`)
-   .join("\n");
+      const currentMonthTransactionData = allTransactions.map(t => `${t.amount}|${t.spentOn}|${t.date.split("T")[0]}`).join("\n");
+      const currentMonthCategoryData = allCategories.map(t => `${t.category}|${t.budget}`).join("\n");
 
       const result = await getProactiveInsights({
-        currentMonthTransactions: JSON.stringify(currentMonthData),
+        currentMonthTransactions: JSON.stringify(currentMonthTransactionData),
+        currentMonthCategories: JSON.stringify(currentMonthCategoryData)
         lastMonthTransactions: "",
         // lastMonthTransactions: lastMonthData,
       });
