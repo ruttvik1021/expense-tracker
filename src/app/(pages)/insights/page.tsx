@@ -31,6 +31,8 @@ const suggestionIcons = {
   Event: <CalendarSearch className="h-4 w-4" />,
 };
 
+export const maxDuration = 30; // Timeout in seconds
+
 export default function InsightsPage() {
   const [insights, setInsights] = useState<ProactiveInsightsOutput | null>(
     null
