@@ -1,7 +1,6 @@
 "use client";
 
 import { useCategories } from "@/components/category/hooks/useCategoryQuery";
-import PageHeader from "@/components/common/Pageheader";
 import { useTransactions } from "@/components/transactions/hooks/useTransactionQuery";
 import { CardTitle } from "@/components/ui/card";
 import { Loader2, Sparkles } from "lucide-react";
