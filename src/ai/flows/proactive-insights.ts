@@ -231,9 +231,9 @@ const summaryPrompt = ai.definePrompt({
       spendingSummary: z.string(),
     }),
   },
-  prompt: `You are a friendly financial assistant.
+  prompt: `You are a friendly and professional financial assistant.
 
-Analyze the user's current-month spending and give a **brief, bullet-style summary** with only the most important points.
+Analyze the user's spending records for the current month and provide a **clear, concise summary** with actionable insights.
 
 **Transactions (amount | item | date):**
 {{{currentMonthTransactions}}}
@@ -244,15 +244,27 @@ Analyze the user's current-month spending and give a **brief, bullet-style summa
 **Last Month Transactions (amount | item | date):**
 {{{lastMonthTransactions}}}
 
-Return a single field 'spendingSummary' with:
+Please provide the following in a single field 'spendingSummary':
 
-• **Totals:** income (if given), total expenses, net savings  
-• **Top Category:** highest spending category  
-• **Budget Check:** key over/under-budget categories  
-• **Trends:** notable weekly/daily spikes  
-• **Tips:** 1-2 short recommendations
+1. **Summary**
+   - Total income (if provided), total expenses, and net savings  
+   - Highest spending category  
+   - Comparison to last month (increase/decrease in total spending)
 
-Keep it under **150 words**, use clear bullets, and avoid extra narration.
+2. **Category Breakdown**
+   - Amount spent per category  
+   - Percentage of total expenses per category  
+   - Highlight categories over or under budget  
+
+3. **Spending Trends**
+   - Weekly or daily spending patterns  
+   - Notable spikes or unusual transactions
+
+4. **Recommendations**
+   - Short suggestions to stay within budget  
+   - Opportunities to optimize spending or increase savings  
+
+Format your output with **clear bullets**, keep it readable, and maintain a **friendly tone**. Avoid unnecessary narration, but provide enough detail to give meaningful insights. Aim for **150–300 words**.
 `,
 });
 
