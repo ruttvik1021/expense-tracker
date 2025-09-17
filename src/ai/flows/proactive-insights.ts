@@ -179,7 +179,7 @@ const summaryPrompt = ai.definePrompt({
   }),
 },
   prompt: `You are a friendly financial assistant.
-Analyze the user's spending for the current month, conversational summary (2-3 sentences).
+Analyze the user's spending records (amount|item|date).
 
 Current Month Transactions:
 {{{currentMonthTransactions}}}
