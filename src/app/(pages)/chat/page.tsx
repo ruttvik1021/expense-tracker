@@ -88,8 +88,7 @@ export default function ChatPage() {
 
   const getFilteredTransactions = async () => {
     const allTransactions = transactions?.transactions || [];
-    const now = new Date();
-    let startDate = new Date();
+    const startDate = new Date();
 
     // if (contextRange === "current-month") {
     //   startDate = new Date(now.getFullYear(), now.getMonth(), 1);
