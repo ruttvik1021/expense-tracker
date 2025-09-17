@@ -49,7 +49,7 @@ export default function InsightsPage() {
 
       const result = await getProactiveInsights({
         currentMonthTransactions: JSON.stringify(currentMonthTransactionData),
-        currentMonthCategories: JSON.stringify(currentMonthCategoryData)
+        currentMonthCategories: JSON.stringify(currentMonthCategoryData),
         lastMonthTransactions: "",
         // lastMonthTransactions: lastMonthData,
       });
