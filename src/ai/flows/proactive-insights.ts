@@ -173,6 +173,56 @@ export async function getProactiveInsights(
 /* ---------- Internal prompt & flow ---------- */
 
 // Prompt only asks for the spending summary
+// const summaryPrompt = ai.definePrompt({
+//   name: "proactiveInsightsSummaryPrompt",
+//   input: { schema: ProactiveInsightsInputSchema },
+//   output: {
+//     schema: z.object({
+//       spendingSummary: z.string(),
+//     }),
+//   },
+//   prompt: `
+// You are a friendly and professional financial assistant.
+
+// Analyze the user's spending records and provide a detailed report for the current month, including insights, comparisons, and recommendations.
+
+// **Transactions (amount | item | date):**
+// {{{currentMonthTransactions}}}
+
+// **Category Allocations (category | budget):**
+// {{{currentMonthCategories}}}
+
+// **Last Month Transactions (amount | item | date):**
+// {{{lastMonthTransactions}}}
+
+// Please provide the following in your analysis (spendingSummary):
+
+// 1. **Summary**
+//    - Total income, total expenses, and net savings for the current month
+//    - Highest spending category
+//    - Comparison with last month (increase/decrease in total spending)
+
+// 2. **Category Breakdown**
+//    - Total spent per category
+//    - Percentage of total expenses per category
+//    - Comparison with planned budget allocation (over/under budget)
+//    - Highlight categories significantly over or under budget
+
+// 3. **Spending Trends**
+//    - Weekly or daily spending patterns
+//    - Notable spikes or unusual expenses compared to last month
+
+// 4. **Recommendations**
+//    - Suggested adjustments to stay within budget for the rest of the month
+//    - Categories where spending could be optimized to increase savings
+
+// 5. **Optional Visualization**
+//    - You may include tables or bullet lists summarizing spending by category and trends
+
+// Use a friendly tone, provide clear insights, and make the report actionable for the user.
+// `,
+// });
+
 const summaryPrompt = ai.definePrompt({
   name: "proactiveInsightsSummaryPrompt",
   input: { schema: ProactiveInsightsInputSchema },
@@ -181,47 +231,32 @@ const summaryPrompt = ai.definePrompt({
       spendingSummary: z.string(),
     }),
   },
-  prompt: `
-You are a friendly and professional financial assistant.
+  prompt: `You are a friendly financial assistant.
 
-Analyze the user's spending records and provide a detailed report for the current month, including insights, comparisons, and recommendations.
+Analyze the user's current-month spending and give a **brief, bullet-style summary** with only the most important points.
 
 **Transactions (amount | item | date):**
 {{{currentMonthTransactions}}}
 
-**Category Allocations (category | budget):**
+**Category Budgets (category | budget):**
 {{{currentMonthCategories}}}
 
 **Last Month Transactions (amount | item | date):**
 {{{lastMonthTransactions}}}
 
-Please provide the following in your analysis (spendingSummary):
+Return a single field 'spendingSummary' with:
 
-1. **Summary**
-   - Total income, total expenses, and net savings for the current month
-   - Highest spending category
-   - Comparison with last month (increase/decrease in total spending)
+• **Totals:** income (if given), total expenses, net savings  
+• **Top Category:** highest spending category  
+• **Budget Check:** key over/under-budget categories  
+• **Trends:** notable weekly/daily spikes  
+• **Tips:** 1-2 short recommendations
 
-2. **Category Breakdown**
-   - Total spent per category
-   - Percentage of total expenses per category
-   - Comparison with planned budget allocation (over/under budget)
-   - Highlight categories significantly over or under budget
-
-3. **Spending Trends**
-   - Weekly or daily spending patterns
-   - Notable spikes or unusual expenses compared to last month
-
-4. **Recommendations**
-   - Suggested adjustments to stay within budget for the rest of the month
-   - Categories where spending could be optimized to increase savings
-
-5. **Optional Visualization**
-   - You may include tables or bullet lists summarizing spending by category and trends
-
-Use a friendly tone, provide clear insights, and make the report actionable for the user.
+Keep it under **150 words**, use clear bullets, and avoid extra narration.
 `,
 });
+
+
 
 
 // Flow: use the summary prompt, then return empty arrays for other fields
