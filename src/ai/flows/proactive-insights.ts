@@ -135,13 +135,13 @@ const SuggestionSchema = z.object({
 const ProactiveInsightsInputSchema = z.object({
   currentMonthTransactions: z
     .string()
-    .describe("Transaction records."),
+    .describe("A record of transactions from the current month."),
   currentMonthCategories: z
     .string()
-    .describe("All categories"),
+    .describe("A record of categories from the current month."),
   lastMonthTransactions: z
     .string()
-    .describe("A summary of transactions from the last month."),
+    .describe("A record of transactions from the last month."),
 });
 export type ProactiveInsightsInput = z.infer<typeof ProactiveInsightsInputSchema>;
 
@@ -149,7 +149,7 @@ const ProactiveInsightsOutputSchema = z.object({
   spendingSummary: z
     .string()
     .describe(
-      "A brief, conversational summary of this month's spending."
+      "A brief, conversational summary comparing last month's and this month's spending."
     ),
   articles: z
     .array(ArticleSchema)
@@ -177,17 +177,52 @@ const summaryPrompt = ai.definePrompt({
   name: "proactiveInsightsSummaryPrompt",
   input: { schema: ProactiveInsightsInputSchema },
   output: {
-  schema: z.object({
-    spendingSummary: z.string(),
-  }),
-},
-  prompt: `You are a financial expert.
-Quickly analyze the user's spending records and give conversational summary based on the records in 2 lines.
+    schema: z.object({
+      spendingSummary: z.string(),
+    }),
+  },
+  prompt: `
+You are a friendly and professional financial assistant.
 
-All Transactions (amount|item|date):
+Analyze the user's spending records and provide a detailed report for the current month, including insights, comparisons, and recommendations.
+
+**Transactions (amount | item | date):**
 {{{currentMonthTransactions}}}
+
+**Category Allocations (category | budget):**
+{{{currentMonthCategories}}}
+
+**Last Month Transactions (amount | item | date):**
+{{{lastMonthTransactions}}}
+
+Please provide the following in your analysis (spendingSummary):
+
+1. **Summary**
+   - Total income, total expenses, and net savings for the current month
+   - Highest spending category
+   - Comparison with last month (increase/decrease in total spending)
+
+2. **Category Breakdown**
+   - Total spent per category
+   - Percentage of total expenses per category
+   - Comparison with planned budget allocation (over/under budget)
+   - Highlight categories significantly over or under budget
+
+3. **Spending Trends**
+   - Weekly or daily spending patterns
+   - Notable spikes or unusual expenses compared to last month
+
+4. **Recommendations**
+   - Suggested adjustments to stay within budget for the rest of the month
+   - Categories where spending could be optimized to increase savings
+
+5. **Optional Visualization**
+   - You may include tables or bullet lists summarizing spending by category and trends
+
+Use a friendly tone, provide clear insights, and make the report actionable for the user.
 `,
 });
+
 
 // Flow: use the summary prompt, then return empty arrays for other fields
 const proactiveInsightsFlow = ai.defineFlow(
