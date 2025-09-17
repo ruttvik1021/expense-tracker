@@ -186,12 +186,6 @@ Quickly analyze the user's spending records and give conversational summary base
 
 All Transactions (amount|item|date):
 {{{currentMonthTransactions}}}
-
-All Categories (category|budget):
-{{{currentMonthCategories}}}
-
-Last Month Transactions:
-{{{lastMonthTransactions}}}
 `,
 });
 
