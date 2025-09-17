@@ -73,7 +73,7 @@ const prompt = ai.definePrompt({
   name: "proactiveInsightsPrompt",
   input: { schema: ProactiveInsightsInputSchema },
   output: { schema: ProactiveInsightsOutputSchema },
-  prompt: `You are a friendly and insightful financial assistant. Your goal is to provide proactive, helpful, and engaging insights based on a user's transaction history.
+  prompt: `You are a friendly and insightful financial assistant. Your goal is to provide proactive, helpful, and engaging insights based on a user's transaction history. Don't take time beyond 5 seconds for below tasks.
 
 Analyze the user's spending for the current and previous month and provide the following:
 1.  **Spending Summary:** A short, conversational summary (2-3 sentences) comparing their spending trends.
