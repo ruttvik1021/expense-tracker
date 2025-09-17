@@ -1,14 +1,12 @@
 "use client";
 
-import type { ProactiveInsightsOutput } from "@/ai/flows/proactive-insights";
-import { getProactiveInsights } from "@/ai/flows/proactive-insights";
 import { useCategories } from "@/components/category/hooks/useCategoryQuery";
 import PageHeader from "@/components/common/Pageheader";
 import { useTransactions } from "@/components/transactions/hooks/useTransactionQuery";
 import { CardTitle } from "@/components/ui/card";
 import { Loader2, Sparkles } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
 import ReactMarkdown from "react-markdown";
+import { useProactiveInsights } from "./useProactiveInsights";
 
 // const suggestionIcons = {
 //   Dining: <Utensils className="h-4 w-4" />,
@@ -20,34 +18,24 @@ import ReactMarkdown from "react-markdown";
 export const maxDuration = 60; // Timeout in seconds
 
 export default function InsightsPage() {
-  const [insights, setInsights] = useState<ProactiveInsightsOutput | null>(
-    null
-  );
-  const [isInsightsPending, startInsightsTransition] = useTransition();
   const { data: transactions } = useTransactions();
   const { data: categories } = useCategories();
+  const allTransactions = transactions?.transactions || [];
+  const allCategories = categories?.categories || [];
 
-  useEffect(() => {
-    startInsightsTransition(async () => {
-      const allTransactions = transactions?.transactions || [];
-      const allCategories = categories?.categories || [];
+  const currentMonthTransactionData = allTransactions
+    .map((t) => `${t.amount}|${t.spentOn}|${t.date.split("T")[0]}`)
+    .join("\n");
+  const currentMonthCategoryData = allCategories
+    .map((t) => `${t.category}|${t.budget}`)
+    .join("\n");
 
-      const currentMonthTransactionData = allTransactions
-        .map((t) => `${t.amount}|${t.spentOn}|${t.date.split("T")[0]}`)
-        .join("\n");
-      const currentMonthCategoryData = allCategories
-        .map((t) => `${t.category}|${t.budget}`)
-        .join("\n");
-
-      const result = await getProactiveInsights({
-        currentMonthTransactions: JSON.stringify(currentMonthTransactionData),
-        currentMonthCategories: JSON.stringify(currentMonthCategoryData),
-        lastMonthTransactions: "",
-        // lastMonthTransactions: lastMonthData,
-      });
-      setInsights(result);
-    });
-  }, []);
+  const { data: insights, isLoading: isInsightsPending } = useProactiveInsights(
+    {
+      transactions: currentMonthTransactionData,
+      categories: currentMonthCategoryData,
+    }
+  );
 
   return (
     <div className="flex min-h-screen w-full flex-col">
