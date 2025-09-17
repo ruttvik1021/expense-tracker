@@ -127,7 +127,7 @@ export default function ChatPage() {
       const aiResponse = await chat({
         history: newHistory.slice(0, -1), // Pass history without the latest user message
         message,
-        transactionContext,
+        transactionContext: JSON.stringify(transactions?.transactions || []),
         availableCategories: categoryNames,
       });
 
