@@ -173,9 +173,11 @@ export async function getProactiveInsights(
 const summaryPrompt = ai.definePrompt({
   name: "proactiveInsightsSummaryPrompt",
   input: { schema: ProactiveInsightsInputSchema },
-  output: z.object({
+  output: {
+  schema: z.object({
     spendingSummary: z.string(),
   }),
+},
   prompt: `You are a friendly financial assistant.
 Analyze the user's spending for the current and previous month
 and provide a 2–3 sentence conversational summary comparing trends.
