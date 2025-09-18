@@ -44,6 +44,8 @@ export default function ChatPage() {
 
   const { data: categories } = useCategories();
   const { data: transactions } = useTransactions();
+  const allTransactions = transactions?.transactions || [];
+  const allCategories = categories?.categories || [];
   const [isTransactionDialogOpen, setTransactionDialogOpen] = useState(false);
   const [isCategoryDialogOpen, setCategoryDialogOpen] = useState(false);
 
@@ -52,6 +54,18 @@ export default function ChatPage() {
   const [newCategory, setNewCategory] = useState<Partial<ICategory> | null>(
     null
   );
+
+  const currentMonthTransactionData = allTransactions
+    .slice() // clone the array to avoid mutating original
+    .sort((a, b) => a.spentOn.localeCompare(b.spentOn)) // sort by `spentOn` (name)
+    .map((t) => `${t.amount}|${t.spentOn}|${t.date.split("T")[0]}`)
+    .join("\n");
+
+  const currentMonthCategoryData = allCategories
+    .slice()
+    .sort((a, b) => a.category.localeCompare(b.category)) // sort by `category` (name)
+    .map((t) => `${t._id}|${t.category}|${t.budget}`)
+    .join("\n");
 
   const [pendingTransaction, setPendingTransaction] =
     useState<PendingTransaction | null>(null);
@@ -126,9 +140,8 @@ export default function ChatPage() {
       const aiResponse = await chat({
         history: newHistory.slice(0, -1), // Pass history without the latest user message
         message,
-        transactionContext: JSON.stringify(transactions?.transactions || []),
-        availableCategories:
-          categories?.categories?.map((item) => JSON.stringify(item)) ?? [],
+        transactionContext: String(currentMonthTransactionData),
+        availableCategories: String(currentMonthCategoryData),
       });
 
       setHistory((prev) => [

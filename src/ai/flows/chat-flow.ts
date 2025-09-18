@@ -12,13 +12,7 @@ import { createTransactionFromTextTool } from "./create-transaction-from-text";
 import { createCategoryFromTextTool } from "./create-category-from-text";
 
 const ChatInputSchema = z.object({
-  prompt: z.string().describe("The full prompt for the AI model."),
-  availableCategories: z
-    .array(z.string())
-    .optional()
-    .describe(
-      "A list of available transaction categories for the tool to use."
-    ),
+  prompt: z.string().describe("The full prompt for the AI model.")
 });
 
 const ChatOutputSchema = z.object({
@@ -68,8 +62,8 @@ const chatPrompt = ai.definePrompt({
 export async function chat(input: {
   history: { role: "user" | "model"; parts: { text: string }[] }[];
   message: string;
-  transactionContext?: string;
-  availableCategories: string[];
+  transactionContext: string;
+  availableCategories: string;
 }): Promise<ChatOutput> {
   // 1. Format the raw chat history into a simple string.
   const formattedHistory = input.history
@@ -91,7 +85,8 @@ If the user asks you to create a new category (e.g., "create a new category for 
 Keep your answers concise and easy to understand.`;
 
   const contextBlock = input.transactionContext
-    ? `Here is the user's transaction data for context:\n${input.transactionContext}\n`
+    ? `Here is the user's transaction data for context:\n${input.transactionContext}\n
+       Here is the user created categories for expenses: \n${input.availableCategories}\n`
     : "";
 
   const historyBlock = formattedHistory
@@ -103,7 +98,6 @@ Keep your answers concise and easy to understand.`;
   // 3. Call the prompt.
   const llmResponse = await chatPrompt({
     prompt: finalPrompt,
-    availableCategories: input.availableCategories,
   });
 
   const output = llmResponse.output!;
