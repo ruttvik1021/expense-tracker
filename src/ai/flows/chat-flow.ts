@@ -135,9 +135,17 @@ General Advice:
     prompt: finalPrompt,
   });
 
-  const output = llmResponse.output!;
+  const output = llmResponse.output;
 
-  console.log("llmResponse", llmResponse);
+if (!output) {
+  console.error("LLM returned null output", llmResponse);
+  return {
+    response: "Sorry, I could not generate a response.",
+    history: [],
+    transactionData: null,
+    categoryData: null
+  };
+}
 
   // 4. Check if a tool was called and handle the response.
     const toolRequest = output?.history?.find(
