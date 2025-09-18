@@ -215,30 +215,11 @@ export default function ChatPage() {
 
   return (
     <>
-      <div>
+      <div className="flex flex-col h-screen">
         <PageHeader title="Chat with Akira" />
         <div className="flex-1 overflow-auto">
-          {/* <div className="w-48 space-y-2 mb-3">
-              <Label htmlFor="context-range">Transaction Context</Label>
-              <Select value={contextRange} onValueChange={setContextRange}>
-                <SelectTrigger id="context-range">
-                  <SelectValue placeholder="Select date range" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="current-month">This Month</SelectItem>
-                  <SelectItem value="last-3-months">Last 3 Months</SelectItem>
-                  <SelectItem value="last-6-months">Last 6 Months</SelectItem>
-                  <SelectItem value="last-12-months">Last 12 Months</SelectItem>
-                </SelectContent>
-              </Select>
-            </div> */}
-          {/* <Card className="flex flex-wrap h-full flex-col"> */}
-          {/* <CardHeader className="flex flex-row items-start gap-4">
-                
-              </CardHeader> */}
           <div
-            ref={chatContainerRef}
-            className="flex-1 space-y-6 overflow-y-auto p-6 md:h-[80vh] h-[55vh]"
+            className="flex-1 overflow-y-auto p-6" ref={chatContainerRef}
           >
             {history.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
@@ -336,7 +317,7 @@ export default function ChatPage() {
               </div>
             )}
           </div>
-          <div className="flex flex-col sm:flex-row w-full border-t p-4 gap-3">
+          <div className="border-t p-4 flex flex-col sm:flex-row gap-3">
             <Input
               className="w-full sm:flex-[4_1_0%]"
               type="text"
