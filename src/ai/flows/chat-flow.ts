@@ -55,8 +55,7 @@ const chatPrompt = ai.definePrompt({
   input: { schema: ChatInputSchema },
   output: { schema: ChatOutputSchema },
   tools: [createTransactionFromTextTool, createCategoryFromTextTool],
-  prompt: `{{{prompt}}}`,
-  returnToolRequests: true,
+  prompt: `{{{prompt}}}`
 });
 
 export async function chat(input: {
