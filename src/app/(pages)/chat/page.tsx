@@ -138,14 +138,14 @@ export default function ChatPage() {
       const transactionContext =
         formatTransactionsForContext(filteredTransactions);
 
-      console.log("transactionContext", transactionContext);
-
       const aiResponse = await chat({
         history: newHistory.slice(0, -1), // Pass history without the latest user message
         message,
         transactionContext: String(currentMonthTransactionData),
         availableCategories: String(currentMonthCategoryData),
       });
+
+console.log("transactionContext", {transactionContext, aiResponse});
 
       setHistory((prev) => [
         ...prev,
