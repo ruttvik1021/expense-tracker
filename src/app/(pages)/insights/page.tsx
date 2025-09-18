@@ -6,6 +6,9 @@ import { CardTitle } from "@/components/ui/card";
 import { Loader2, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useProactiveInsights } from "./useProactiveInsights";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "@/utils/queryKeys";
+import { getProfile } from "../../../../server/actions/profile/profile";
 
 // const suggestionIcons = {
 //   Dining: <Utensils className="h-4 w-4" />,
@@ -21,6 +24,10 @@ export default function InsightsPage() {
   const { data: categories } = useCategories();
   const allTransactions = transactions?.transactions || [];
   const allCategories = categories?.categories || [];
+  const { data: userData, isLoading } = useQuery({
+      queryKey: [queryKeys.profile],
+      queryFn: () => getProfile(),
+  });
 
   const currentMonthTransactionData = allTransactions
     .slice() // clone the array to avoid mutating original
@@ -38,6 +45,8 @@ export default function InsightsPage() {
     {
       transactions: currentMonthTransactionData,
       categories: currentMonthCategoryData,
+      budget: String(userData?.data?.budget),
+      isBudgetLoading: isLoading
     }
   );
 

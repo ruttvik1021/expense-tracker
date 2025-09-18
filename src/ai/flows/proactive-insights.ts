@@ -20,6 +20,9 @@ const ProactiveInsightsInputSchema = z.object({
   lastMonthTransactions: z
     .string()
     .describe("A record of transactions from the last month."),
+  budget: z
+    .string()
+    .describe("Total budget for the month."),
 });
 export type ProactiveInsightsInput = z.infer<
   typeof ProactiveInsightsInputSchema
@@ -72,6 +75,9 @@ Analyze the user's spending records for the current month and provide a **clear,
 (amount | item | date)  
 {{{lastMonthTransactions}}}
 
+### Monthly Budget
+{{{budget}}}
+
 ---
 
 Please provide the following in **one JSON field named 'spendingSummary'**,  
@@ -107,16 +113,25 @@ and **use ONLY pure Markdown syntax** (headings, lists, bold, italics).
 4. **Recommendations**
    - Short suggestions to stay within budget  
    - Opportunities to optimize spending or increase savings
+   
+   
 
-
-
+5. **Investment Ideas** *(include this section only if total expenses are **significantly below** total budget)*  
+   - Suggest ideas based on the categories like If user is already investing then expert level strategies else simple, beginner-friendly investment or savings strategies  
+   - Include ideas such as:  
+     - **Stocks**: diversified index funds or blue-chip equities  
+     - **Mutual Funds (MF)**: low-cost diversified equity or balanced funds  
+     - **Bonds**: government or high-quality corporate bonds for stability  
+   - Provide 2-3 **reputable article links** for each asset type (stocks, mutual funds, bonds) to help the user learn more.
+     - Use well-known financial education or major investment sites (e.g., Investopedia, Morningstar, government financial portals, moneycontrol, etmoney, cnbc, yahoo finance).
 ---
 
 **Formatting requirements**  
-- Output must be valid **Markdown only**—no HTML tags.  
+- Output must be valid **Markdown only**—no HTML tags.
 - Add 2 new line between main points
 - Make the numbered points bold
-- Use **clear bullet points** and friendly, concise language.  
+- Use **clear bullet points** and friendly, concise language.
+- If budget is not updated, ask user to update the budget from the profile section.
 - Keep the total length between **200 words**.
 `,
 });
