@@ -216,7 +216,7 @@ export default function ChatPage() {
 
   return (
     <>
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-[80vh]">
       {/* Scrollable chat messages */}
       <div
         ref={chatContainerRef}
