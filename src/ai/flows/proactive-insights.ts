@@ -110,6 +110,7 @@ and **use ONLY pure Markdown syntax** (headings, lists, bold, italics).
 
 **Formatting requirements**  
 - Output must be valid **Markdown only**—no HTML tags.  
+- Add new line space between main points
 - Use **clear bullet points** and friendly, concise language.  
 - Keep the total length between **200 words**.
 `,
