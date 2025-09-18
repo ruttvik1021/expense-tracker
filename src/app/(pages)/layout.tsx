@@ -24,7 +24,7 @@ const navLinks: ILink[] = [
     icon: <Sparkle className="h-4 w-4" />,
   },
   {
-    label: "Chat with AI",
+    label: "Chat with Akira",
     href: "/chat",
     icon: <MessageCircle className="h-4 w-4" />,
   },

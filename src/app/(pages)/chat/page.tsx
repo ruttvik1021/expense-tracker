@@ -255,10 +255,9 @@ export default function ChatPage() {
                     categories.&quot;
                   </em>
                   {(isTransactionsLoading || isCategoriesLoading) && (
-                    <p className="mt-2 flex items-center" aria-busy="true">
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Getting your transactional and category context...
-                    </p>
+                    <em className="mt-2 block">
+                      Getting your transactional and category context...;
+                    </em>
                   )}
                 </p>
 
