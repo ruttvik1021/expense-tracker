@@ -44,8 +44,8 @@ export default function ChatPage() {
   const [isPending, startTransition] = useTransition();
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  const { data: categories } = useCategories();
-  const { data: transactions } = useTransactions();
+  const { data: categories, isLoading: isCategoriesLoading } = useCategories();
+  const { data: transactions, isLoading: isTransactionsLoading } = useTransactions();
   const allTransactions = transactions?.transactions || [];
   const allCategories = categories?.categories || [];
   const [isTransactionDialogOpen, setTransactionDialogOpen] = useState(false);
@@ -254,7 +254,14 @@ export default function ChatPage() {
                     &quot;Ask questions, add transactions, or create
                     categories.&quot;
                   </em>
+                  {(isTransactionsLoading || isCategoriesLoading) && (
+                    <p className="mt-2 flex items-center" aria-busy="true">
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Getting your transactional and category context...
+                    </p>
+                  )}
                 </p>
+
               </div>
             ) : (
               history.map((msg, index) => (
@@ -346,7 +353,7 @@ export default function ChatPage() {
               size="icon"
               className="w-full sm:flex-[1_1_0%]"
               onClick={handleSendMessage}
-              disabled={isPending || !message.trim()}
+              disabled={isPending || !message.trim() || isTransactionsLoading || isCategoriesLoading}
             >
               <ArrowUp className="h-5 w-5" />
             </Button>
