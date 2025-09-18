@@ -15,12 +15,31 @@ const ChatInputSchema = z.object({
   prompt: z.string().describe("The full prompt for the AI model.")
 });
 
+export const HistoryPartSchema = z.object({
+  text: z.string().optional(),
+  // When the model wants to call a tool
+  toolRequest: z
+    .object({
+      name: z.string(),
+      arguments: z.record(z.any()).optional()
+    })
+    .optional(),
+  // When a tool returns output
+  toolResponse: z
+    .object({
+      output: z.any().optional()
+    })
+    .optional()
+});
+
+export const HistoryMessageSchema = z.object({
+  role: z.enum(["user", "model", "tool"]),
+  parts: z.array(HistoryPartSchema)
+});
+
 const ChatOutputSchema = z.object({
   response: z.string().describe("The AI's response message."),
-  history: z.array(z.object({
-    role: z.enum(["user", "model"]),
-    text: z.string()
-  })),
+  history: z.array(HistoryMessageSchema).optional(),
   transactionData: z
     .object({
       description: z.string(),
@@ -31,27 +50,20 @@ const ChatOutputSchema = z.object({
       spentOn: z.string().optional(),
       source: z.string().optional(),
     })
-    .optional()
-    .describe(
-      "Structured data for a new transaction, if the user requested to create one."
-    ),
+    .optional(),
   categoryData: z
     .object({
       name: z.string(),
       icon: z.string(),
       color: z.string(),
       budget: z.number().optional(),
-      periodType: z
-        .enum(["once", "monthly", "quarterly", "half-yearly"]) // align with form
-        .optional(),
+      periodType: z.enum(["once", "monthly", "quarterly", "half-yearly"]).optional(),
       startMonth: z.number().optional(),
       creationDuration: z.enum(["next12Months", "yearEnd"]).optional(),
     })
-    .optional()
-    .describe(
-      "Structured data for a new category, if the user requested to create one."
-    ),
+    .optional(),
 });
+
 export type ChatOutput = z.infer<typeof ChatOutputSchema>;
 
 const chatPrompt = ai.definePrompt({
@@ -59,6 +71,7 @@ const chatPrompt = ai.definePrompt({
   input: { schema: ChatInputSchema },
   output: { schema: ChatOutputSchema },
   tools: [createTransactionFromTextTool, createCategoryFromTextTool],
+  returnToolRequests: true,
   prompt: `{{{prompt}}}`
 });
 
@@ -127,7 +140,7 @@ General Advice:
   console.log("llmResponse", llmResponse);
 
   // 4. Check if a tool was called and handle the response.
-    const toolRequest = output.history?.find(
+    const toolRequest = output?.history?.find(
       (m) => m.role === "model" && m.parts.some((p) => p.toolRequest)
     );
 
