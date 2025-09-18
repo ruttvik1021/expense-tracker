@@ -141,7 +141,9 @@ General Advice:
   });
 
   // 🧠 Extract model message
-  const modelMessage = llmResponse.messages.find((m) => m.role === "model");
+  const modelMessage = llmResponse.messages.find(
+    (m: any) => m.role === "model"
+  );
 
   if (!modelMessage) {
     return {
@@ -151,9 +153,9 @@ General Advice:
   }
 
   // 🔍 Find text and tool request
-  const responseText = modelMessage.content.find((c) => c.text)?.text;
+  const responseText = modelMessage.content.find((c: any) => c.text)?.text;
   const toolRequest = modelMessage.content.find(
-    (c) => c.toolRequest
+    (c: any) => c.toolRequest
   )?.toolRequest;
 
   if (!responseText && !toolRequest) {
