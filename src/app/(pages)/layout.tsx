@@ -8,7 +8,7 @@ import { Sidebar } from "@/components/common/Sidebar";
 import { NavHeader } from "@/components/common/Headers";
 import AppWrapper from "@/components/wrapper/AppWrapper";
 import { ILink } from "@/components/common/Navigation";
-import { Home, Smile, IndianRupee, MessageCircle, Sparkle } from "lucide-react";
+import { Home, Smile, IndianRupee, MessageCircle, Sparkles } from "lucide-react";
 
 const navLinks: ILink[] = [
   { label: "Home", href: "/dashboard", icon: <Home className="h-4 w-4" /> },
@@ -21,7 +21,7 @@ const navLinks: ILink[] = [
   {
     label: "Insights",
     href: "/insights",
-    icon: <Sparkle className="h-4 w-4" />,
+    icon: <Sparkles className="h-4 w-4" />,
   },
   {
     label: "Chat with Akira",

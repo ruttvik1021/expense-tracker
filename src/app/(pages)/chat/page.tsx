@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import {
   ArrowUp,
   Loader2,
-  MessageCircle,
   PlusCircle,
   Sparkles,
 } from "lucide-react";
@@ -24,6 +23,7 @@ import { useTransactions } from "@/components/transactions/hooks/useTransactionQ
 import ResponsiveDialogAndDrawer from "@/components/responsiveDialogAndDrawer";
 import TransactionForm from "@/components/transactions/transactionForm";
 import ReactMarkdown from "react-markdown";
+import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 
 type ChatMessage = {
   role: "user" | "model";
@@ -38,6 +38,8 @@ type PendingTransaction = any | null;
 export const maxDuration = 60; // Timeout in seconds
 
 export default function ChatPage() {
+  const { user } = useAuthContext();
+  const userName = userData?.data?.name || ""
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState("");
   // const [contextRange, setContextRange] = useState("current-month");
@@ -216,8 +218,6 @@ export default function ChatPage() {
   return (
     <>
     <div className="flex flex-col h-screen">
-      <PageHeader title="Chat with Akira" />
-
       {/* Scrollable chat messages */}
       <div
         ref={chatContainerRef}
@@ -225,7 +225,7 @@ export default function ChatPage() {
       >
         {history.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
-            <MessageCircle className="h-16 w-16" />
+            <Sparkles className="h-16 w-16" />
             <p className="mt-4 text-lg">No messages yet.</p>
             <p className="text-sm">
               Start the conversation by asking something like:
@@ -295,7 +295,7 @@ export default function ChatPage() {
               </div>
               {msg.role === "user" && (
                 <Avatar className="h-9 w-9">
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarFallback>{userName.slice(0, 1)}</AvatarFallback>
                 </Avatar>
               )}
             </div>
