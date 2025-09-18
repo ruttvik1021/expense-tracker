@@ -82,8 +82,9 @@ and **use ONLY pure Markdown syntax** (headings, lists, bold, italics).
    - Total income (if provided), total expenses, and net savings  
    - Highest spending category '
    - Comparison to last month (increase/decrease in total spending)
+   </br>
 
-2. **Category Breakdown**
+2. **Category Breakdown** (Only include Not-so-healthy & Watchful)
    - **Spending health** for each category: 'Not-so-healthy', 'Watchful', 'On-track', or 'Excellent'
    - **Why**: short reason (e.g., "20% over budget", "weekly spikes")
    - **Action**: brief suggestion (e.g., "reduce dine-out meals", "track groceries")
@@ -93,14 +94,17 @@ and **use ONLY pure Markdown syntax** (headings, lists, bold, italics).
    - 'Watchful': 5-20 % over budget OR rising month-over-month trend  
    - 'On-track': within ±5 % of budget and stable  
    - 'Excellent': ≥10 % under budget and declining trend
+   </br>
 
 3. **Spending Trends**
    - Weekly or daily spending patterns  
    - Notable spikes or unusual transactions
+   </br>
 
 4. **Recommendations**
    - Short suggestions to stay within budget  
    - Opportunities to optimize spending or increase savings
+   </br>
 
 ---
 
