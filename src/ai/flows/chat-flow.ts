@@ -127,12 +127,12 @@ General Advice:
   console.log("llmResponse", llmResponse);
 
   // 4. Check if a tool was called and handle the response.
-    const toolRequest = llmResponse.history?.find(
+    const toolRequest = output.history?.find(
       (m) => m.role === "model" && m.parts.some((p) => p.toolRequest)
     );
 
     if (toolRequest) {
-      const toolResponsePart = llmResponse
+      const toolResponsePart = output
         ?.history?.find(
           (m) => m.role === "tool" && m.parts.some((p) => p.toolResponse)
         )
