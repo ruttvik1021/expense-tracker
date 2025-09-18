@@ -131,6 +131,7 @@ and **use ONLY pure Markdown syntax** (headings, lists, bold, italics).
 - Use **clear bullet points** and friendly, concise language.
 - If budget is not updated, ask user to update the budget from the profile section.
 - Keep the total length between **200 words**.
+- Add Rupee Logo wherever needed
 `,
 });
 
