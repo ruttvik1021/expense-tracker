@@ -2,19 +2,13 @@
 
 import { useCategories } from "@/components/category/hooks/useCategoryQuery";
 import { useTransactions } from "@/components/transactions/hooks/useTransactionQuery";
-import { Loader2 } from "lucide-react";
+import { CardTitle } from "@/components/ui/card";
+import { Loader2, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useProactiveInsights } from "./useProactiveInsights";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/utils/queryKeys";
 import { getProfile } from "../../../../server/actions/profile/profile";
-
-// const suggestionIcons = {
-//   Dining: <Utensils className="h-4 w-4" />,
-//   Movie: <Film className="h-4 w-4" />,
-//   Concert: <CalendarSearch className="h-4 w-4" />,
-//   Event: <CalendarSearch className="h-4 w-4" />,
-// };
 
 export const maxDuration = 60; // Timeout in seconds
 
@@ -54,6 +48,10 @@ export default function InsightsPage() {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <div className="flex flex-1 flex-col gap-4 p-2 md:gap-8 md:p-2">
+        <div className="flex items-center gap-3">
+          <Sparkles className="h-6 w-6 text-primary" />
+          <CardTitle>Your Proactive Financial Insights</CardTitle>
+        </div>
         <p>
           AI-powered analysis of your recent spending habits and personalized
           recommendations.
