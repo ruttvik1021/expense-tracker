@@ -4,7 +4,6 @@ import { chat } from "@/ai/flows/chat-flow";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import PageHeader from "@/components/common/Pageheader";
 import { cn } from "@/lib/utils";
 import {
   ArrowUp,
@@ -39,7 +38,7 @@ export const maxDuration = 60; // Timeout in seconds
 
 export default function ChatPage() {
   const { user } = useAuthContext();
-  const userName = userData?.data?.name || ""
+  const userName = user?.data?.name || ""
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState("");
   // const [contextRange, setContextRange] = useState("current-month");
