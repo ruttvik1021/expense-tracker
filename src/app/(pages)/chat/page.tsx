@@ -16,8 +16,6 @@ import { useTransactionMutation } from "@/components/transactions/hooks/useTrans
 import { useTransactions } from "@/components/transactions/hooks/useTransactionQuery";
 import { transactionFormInitialValues } from "@/components/transactions/transactionForm";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
-import type { ITransaction } from "@/utils/types/transactionTypes";
-import { format } from "date-fns";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 
@@ -75,37 +73,6 @@ export default function ChatPage() {
     scrollToBottom();
   }, [history]);
 
-  const formatTransactionsForContext = (
-    transactions: ITransaction[]
-  ): string => {
-    return transactions
-      .map((t) => {
-        const desc = t.spentOn || t.category || "";
-        return `${format(
-          new Date(t.date),
-          "yyyy-MM-dd"
-        )}: ${desc} - $${t.amount.toFixed(2)}`;
-      })
-      .join("\n");
-  };
-
-  const getFilteredTransactions = async () => {
-    const allTransactions = transactions?.transactions || [];
-    const startDate = new Date();
-
-    // if (contextRange === "current-month") {
-    //   startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    // } else if (contextRange === "last-3-months") {
-    //   startDate = new Date(now.getFullYear(), now.getMonth() - 3, 1);
-    // } else if (contextRange === "last-6-months") {
-    //   startDate = new Date(now.getFullYear(), now.getMonth() - 6, 1);
-    // } else if (contextRange === "last-12-months") {
-    //   startDate = new Date(now.getFullYear() - 1, now.getMonth(), 1);
-    // }
-
-    return allTransactions.filter((t) => new Date(t.date) >= startDate);
-  };
-
   const handleSendMessage = (newMessage?: string) => {
     if (!message.trim() && !newMessage) return;
 
@@ -119,10 +86,6 @@ export default function ChatPage() {
     setMessage("");
 
     startTransition(async () => {
-      const filteredTransactions = await getFilteredTransactions();
-      const transactionContext =
-        formatTransactionsForContext(filteredTransactions);
-
       const aiResponse = await chat({
         history: newHistory.slice(0, -1), // Pass history without the latest user message
         message,
