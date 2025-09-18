@@ -57,86 +57,56 @@ const summaryPrompt = ai.definePrompt({
       spendingSummary: z.string(),
     }),
   },
-  prompt: `You are a friendly and professional financial assistant.
-
-Analyze the user's spending records for the current month and provide a **clear, concise summary** with actionable insights.
+  prompt: `Analyze the provided financial data and generate a valid JSON object with a single key, 'spendingSummary'. The value of this key must be a pure Markdown string, containing only headings, lists, bold, and italics.
 
 ---
-
-### Transactions
-(amount | item | date)  
+### Data
+(amount | item | date) 
+**Current Month Transactions:**
 {{{currentMonthTransactions}}}
 
-### Category Budgets
-(category | budget)  
+**Category Budgets:**
 {{{currentMonthCategories}}}
 
-### Last Month Transactions
-(amount | item | date)  
+**Last Month Transactions:**
 {{{lastMonthTransactions}}}
 
-### Monthly Budget
+**Monthly Budget:**
 {{{budget}}}
 
 ---
 
-Please provide the following in **one JSON field named 'spendingSummary'**,  
-and **use ONLY pure Markdown syntax** (headings, lists, bold, italics).  
-**Output must be valid **Markdown only**—no HTML tags.**
+### Instructions
 
-1. **Summary**
-   - Total income (if provided), total expenses, and net savings  
-   - Highest spending category '
-   - Comparison to last month (increase/decrease in total spending)
+1.  **Summary**
+    * **Total spending:** Total expenses for the current month.
+    * **Net savings:** Total income minus total expenses.
+    * **Insights:**
+        * Highlight the highest spending category.
+        * Compare total spending to last month (increase/decrease).
 
+2.  **Category Breakdown**
+    * Provide a spending health status for categories flagged as 'Not-so-healthy' or 'Watchful'.
+    * For each flagged category, provide a brief reason and a short, actionable suggestion.
+    * **Status Rules:**
+        * 'Not-so-healthy': Spending is >20% over budget OR there are 2+ unusually large transactions.
+        * 'Watchful': Spending is between 5% and 20% over budget OR there's a rising month-over-month trend.
 
+3.  **Spending Trends**
+    * Identify notable weekly or daily spending patterns.
+    * Highlight any unusual transactions or spending spikes.
 
-2. **Category Breakdown** (Only include Not-so-healthy & Watchful)
-   - **Spending health** for each category: 'Not-so-healthy', 'Watchful', 'On-track', or 'Excellent'
-   - **Why**: short reason (e.g., "20% over budget", "weekly spikes")
-   - **Action**: brief suggestion (e.g., "reduce dine-out meals", "track groceries")
+4.  **Recommendations**
+    * Provide 2-3 short, actionable suggestions to help the user stay on budget and optimize savings.
 
-   **Classification rules**  
-   - 'Not-so-healthy': >20 % over budget OR more than 2 unusually large transactions this month  
-   - 'Watchful': 5-20 % over budget OR rising month-over-month trend  
-   - 'On-track': within ±5 % of budget and stable  
-   - 'Excellent': ≥10 % under budget and declining trend
+5.  **Formatting**
+    * Use **bold** for key terms.
+    * Ensure all output is valid Markdown.
+    * Use clear bullet points and friendly, concise language.
+    * Total length must be between around 200-300 words.
+    * Add the Rupee symbol (₹) where appropriate.
 
-
-
-3. **Spending Trends**
-   - Weekly or daily spending patterns  
-   - Notable spikes or unusual transactions
-
-
-
-4. **Recommendations**
-   - Short suggestions to stay within budget  
-   - Opportunities to optimize spending or increase savings
-   
-   
-
-5. **Investment Ideas** *(include this section only if total expenses are **significantly below** total budget)*  
-   - Suggest ideas based on the categories like If user is already investing then expert level strategies else simple, beginner-friendly investment or savings strategies  
-   - Include ideas such as:  
-     - **Stocks**: diversified index funds or blue-chip equities  
-     - **Mutual Funds (MF)**: low-cost diversified equity or balanced funds  
-     - **Bonds**: government or high-quality corporate bonds for stability  
-   - Provide 2-3 **reputable article links** for each asset type (stocks, mutual funds, bonds) to help the user learn more.
-   - Use well-known financial education or major investment sites (e.g., Investopedia, Morningstar, government financial portals, moneycontrol, etmoney, cnbc, yahoo finance).
-
-
----
-
-**Formatting requirements**  
-- Output must be valid **Markdown only**—no HTML tags.
-- Add 2 new line between main points
-- Make the numbered points bold
-- Use **clear bullet points** and friendly, concise language.
-- If budget is not updated, ask user to update the budget from the profile section.
-- Keep the total length between **200 words**.
-- Add Rupee Logo wherever needed
-`,
+If the monthly budget is not updated, advise the user to update it from their profile.`,
 });
 
 // Flow: use the summary prompt, then return empty arrays for other fields
