@@ -82,7 +82,7 @@ If the user asks you to add, create, or record a transaction (e.g., "add a 5 cof
 
 If the user asks you to create a new category (e.g., "create a new category for Pets"), you MUST use the \`createCategoryFromTextTool\` to extract the details. The category tool should return 'name', 'icon', 'color' and may optionally include 'budget', 'periodType', 'startMonth', and 'creationDuration'. After the tool returns the category details, your final response should be a confirmation to the user that includes the suggested details, like "Sure, I can create a new category called '[name]' with the [icon] icon and a [color] color. Suggested budget: [budget] (if provided). Does this look right?".
 
-Keep your answers concise and easy to understand.`;
+Keep your answers concise and easy to understand. Add Rupee logo wherever needed.`;
 
   const contextBlock = input.transactionContext
     ? `Here is the user's transaction data for context:\n${input.transactionContext}\n

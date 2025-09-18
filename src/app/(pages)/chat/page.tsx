@@ -216,7 +216,7 @@ export default function ChatPage() {
   return (
     <>
       <div>
-        <PageHeader title="Chat with AI" />
+        <PageHeader title="Chat with Akira" />
         <div className="flex-1 overflow-auto">
           {/* <div className="w-48 space-y-2 mb-3">
               <Label htmlFor="context-range">Transaction Context</Label>
