@@ -122,6 +122,10 @@ and **use ONLY pure Markdown syntax** (headings, lists, bold, italics).
      - **Stocks**: diversified index funds or blue-chip equities  
      - **Mutual Funds (MF)**: low-cost diversified equity or balanced funds  
      - **Bonds**: government or high-quality corporate bonds for stability  
+   - Provide 2-3 **reputable article links** for each asset type (stocks, mutual funds, bonds) to help the user learn more.
+   - Use well-known financial education or major investment sites (e.g., Investopedia, Morningstar, government financial portals, moneycontrol, etmoney, cnbc, yahoo finance).
+
+
 ---
 
 **Formatting requirements**  
@@ -134,9 +138,6 @@ and **use ONLY pure Markdown syntax** (headings, lists, bold, italics).
 - Add Rupee Logo wherever needed
 `,
 });
-
-// - Provide 2-3 **reputable article links** for each asset type (stocks, mutual funds, bonds) to help the user learn more.
-//      - Use well-known financial education or major investment sites (e.g., Investopedia, Morningstar, government financial portals, moneycontrol, etmoney, cnbc, yahoo finance).
 
 // Flow: use the summary prompt, then return empty arrays for other fields
 const proactiveInsightsFlow = ai.defineFlow(
