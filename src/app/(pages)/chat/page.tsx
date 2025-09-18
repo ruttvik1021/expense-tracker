@@ -150,7 +150,7 @@ export default function ChatPage() {
       periodType: categoryFormInitialValues.periodType,
       startMonth: categoryFormInitialValues.startMonth,
       icon: categoryData.icon,
-      category: categoryData.budget,
+      category: categoryData.name,
     });
     handleSendMessage("Confirm");
   };
