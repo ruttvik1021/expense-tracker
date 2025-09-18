@@ -17,6 +17,10 @@ const ChatInputSchema = z.object({
 
 const ChatOutputSchema = z.object({
   response: z.string().describe("The AI's response message."),
+  history: z.array(z.object({
+    role: z.enum(["user", "model"]),
+    text: z.string()
+  })).optional(),
   transactionData: z
     .object({
       description: z.string(),
@@ -123,34 +127,33 @@ General Advice:
   console.log("llmResponse", llmResponse);
 
   // 4. Check if a tool was called and handle the response.
-  //   const toolRequest = llmResponse.history?.find(
-  //     (m) => m.role === "model" && m.parts.some((p) => p.toolRequest)
-  //   );
+    const toolRequest = llmResponse.history?.find(
+      (m) => m.role === "model" && m.parts.some((p) => p.toolRequest)
+    );
 
-  //   if (toolRequest) {
-  //     const toolResponsePart = llmResponse
-  //       ?.toHistory()
-  //       .history?.find(
-  //         (m) => m.role === "tool" && m.parts.some((p) => p.toolResponse)
-  //       )
-  //       ?.parts.find((p) => p.toolResponse);
-  //     if (toolResponsePart && toolResponsePart.toolResponse) {
-  //       const toolName = toolRequest.parts.find((p) => p.toolRequest)?.toolRequest
-  //         ?.name;
+    if (toolRequest) {
+      const toolResponsePart = llmResponse
+        ?.history?.find(
+          (m) => m.role === "tool" && m.parts.some((p) => p.toolResponse)
+        )
+        ?.parts.find((p) => p.toolResponse);
+      if (toolResponsePart && toolResponsePart.toolResponse) {
+        const toolName = toolRequest.parts.find((p) => p.toolRequest)?.toolRequest
+          ?.name;
 
-  //       if (toolName === "createTransactionFromTextTool") {
-  //         return {
-  //           response: output.response,
-  //           transactionData: toolResponsePart.toolResponse.output as any,
-  //         };
-  //       } else if (toolName === "createCategoryFromTextTool") {
-  //         return {
-  //           response: output.response,
-  //           categoryData: toolResponsePart.toolResponse.output as any,
-  //         };
-  //       }
-  //     }
-  //   }
+        if (toolName === "createTransactionFromTextTool") {
+          return {
+            response: output.response,
+            transactionData: toolResponsePart.toolResponse.output as any,
+          };
+        } else if (toolName === "createCategoryFromTextTool") {
+          return {
+            response: output.response,
+            categoryData: toolResponsePart.toolResponse.output as any,
+          };
+        }
+      }
+    }
 
   return {
     response: output.response || "",

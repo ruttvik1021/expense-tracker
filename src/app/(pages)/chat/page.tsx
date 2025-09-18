@@ -145,7 +145,7 @@ export default function ChatPage() {
         availableCategories: String(currentMonthCategoryData),
       });
 
-console.log("transactionContext", {transactionContext, aiResponse});
+      console.log("transactionContext", {transactionContext, aiResponse});
 
       setHistory((prev) => [
         ...prev,
