@@ -16,20 +16,28 @@ const CreateTransactionFromTextInputSchema = z.object({
   availableCategories: z
     .array(z.string())
     .describe("A list of available transaction categories to choose from."),
+  availablePaymentSources: z
+    .array(z.string())
+    .describe("A list of available payment methods to choose from."),
 });
 
 const CreateTransactionFromTextOutputSchema = z.object({
-  description: z.string().describe("A concise description of the transaction."),
+  description: z
+    .string()
+    .optional()
+    .describe("A concise description of the transaction."),
   amount: z.number().describe("The transaction amount."),
   category: z
     .string()
+    .optional()
     .describe(
       "The suggested category for the transaction. If a suitable one exists in the available categories, use it. Otherwise, suggest a new, appropriate category name."
     ),
   date: z
     .string()
+    .optional()
     .describe(
-      "The date of the transaction in ISO 8601 format (e.g., YYYY-MM-DD). Default to today if not specified."
+      "The date of the transaction format (e.g., 2025-09-19T00:30:27+05:30). Default to today if not specified."
     ),
   spentOn: z
     .string()
@@ -55,6 +63,9 @@ export const createTransactionFromTextTool = ai.defineTool(
       availableCategories: z
         .array(z.string())
         .describe("A list of valid category names to choose from."),
+      availablePaymentSources: z
+        .array(z.string())
+        .describe("A list of available payment methods to choose from."),
     }),
     outputSchema: CreateTransactionFromTextOutputSchema,
   },
@@ -69,15 +80,30 @@ export const createTransactionFromTextTool = ai.defineTool(
         Analyze the user's request and extract the following details:
         - Description (what was the item/service?)
         - Amount (how much did it cost?)
-        - Category (which of the available categories fits best? If none fit, suggest a new, sensible one.)
-        - Date (in YYYY-MM-DD format, default to today if not specified)
+        - Category: MUST be chosen from the availableCategories list below. 
+          If the user's text implies a category not in this list, DO NOT create it automatically.
+          Instead, ask the user: "Would you like to create a new category called 'X'?"
+          Only proceed with category creation if the user confirms.
+
+        - Date (in 2025-09-19T00:30:27+05:30 format)
+        - Source (how was it paid)
+
+        - If anything is missing ask the user for it.
 
         Available Categories:
         {{#each availableCategories}}
         - {{{this}}}
         {{/each}}
-        
-        If a transaction fits well into one of the available categories, use that category name exactly. Otherwise, suggest a new, appropriate category.
+
+        Available Sources:
+        {{#each availablePaymentSources}}
+        - {{{this}}}
+        {{/each}}
+
+        If any confusion ask user for clarification.
+        Note:
+        - Never guess or create a new category without confirmation from the user.
+
 
         User's text: "{{{text}}}"
         `,
