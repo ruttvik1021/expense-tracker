@@ -126,13 +126,13 @@ export default function ChatPage() {
     const sourceId = sourceMap.get(source.toLowerCase());
 
     if (categoryId) {
-      handleSendMessage("Confirm");
       await addTransaction.mutateAsync({
         ...transactionFormInitialValues,
         category: categoryId,
         spentOn: description,
         source: sourceId,
       });
+      handleSendMessage("Confirm");
     } else {
       // Category does not exist, so we need to create it first
       toast.error(
@@ -144,7 +144,6 @@ export default function ChatPage() {
   const handleCreateCategory = async (
     categoryData: NonNullable<ChatMessage["categoryData"]>
   ) => {
-    handleSendMessage("Confirm");
     await addCategory.mutateAsync({
       budget: categoryFormInitialValues.budget,
       creationDuration: categoryFormInitialValues.creationDuration,
@@ -153,6 +152,7 @@ export default function ChatPage() {
       icon: categoryData.icon,
       category: categoryData.budget,
     });
+    handleSendMessage("Confirm");
   };
 
   return (
