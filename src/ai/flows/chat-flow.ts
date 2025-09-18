@@ -15,7 +15,7 @@ const ChatInputSchema = z.object({
   prompt: z.string().describe("The full prompt for the AI model.")
 });
 
-export const HistoryPartSchema = z.object({
+const HistoryPartSchema = z.object({
   text: z.string().optional(),
   // When the model wants to call a tool
   toolRequest: z
@@ -32,7 +32,7 @@ export const HistoryPartSchema = z.object({
     .optional()
 });
 
-export const HistoryMessageSchema = z.object({
+const HistoryMessageSchema = z.object({
   role: z.enum(["user", "model", "tool"]),
   parts: z.array(HistoryPartSchema)
 });
