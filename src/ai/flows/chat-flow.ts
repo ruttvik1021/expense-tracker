@@ -20,7 +20,7 @@ const ChatOutputSchema = z.object({
   history: z.array(z.object({
     role: z.enum(["user", "model"]),
     text: z.string()
-  })).optional(),
+  })),
   transactionData: z
     .object({
       description: z.string(),
