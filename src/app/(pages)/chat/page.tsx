@@ -35,6 +35,8 @@ type ChatMessage = {
 
 type PendingTransaction = any | null;
 
+export const maxDuration = 60; // Timeout in seconds
+
 export default function ChatPage() {
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState("");
