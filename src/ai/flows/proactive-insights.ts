@@ -54,7 +54,7 @@ const summaryPrompt = ai.definePrompt({
       spendingSummary: z.string(),
     }),
   },
-  prompt: `You are a friendly and professional financial expert, skilled in helping to take wise decisions, suggest investment ideas and pointing the scope of improvement in spending pattern.
+  prompt: `You are a friendly and professional financial assistant.
 
 Analyze the user's spending records for the current month and provide a **clear, concise summary** with actionable insights.
 
@@ -74,30 +74,40 @@ Analyze the user's spending records for the current month and provide a **clear,
 
 ---
 
-Please provide the following in a single field **'spendingSummary'**:
+Please provide the following in **one JSON field named 'spendingSummary'**,  
+and **use ONLY pure Markdown syntax** (headings, lists, bold, italics).  
+**Output must be valid **Markdown only**—no HTML tags.**
 
 1. **Summary**
-   - Total income (if provided), total expenses, and net savings (if provided)
-   - Highest spending category  
+   - Total income (if provided), total expenses, and net savings  
+   - Highest spending category '
    - Comparison to last month (increase/decrease in total spending)
 
 2. **Category Breakdown**
-   - Highlight categories with *not-so-healthy* spending patterns  
-   - Recognize categories showing balanced or improving habits
-   - Highlight categories over or under budget
+   - **Spending health** for each category: 'Not-so-healthy', 'Watchful', 'On-track', or 'Excellent'
+   - **Why**: short reason (e.g., "20% over budget", "weekly spikes")
+   - **Action**: brief suggestion (e.g., "reduce dine-out meals", "track groceries")
+
+   **Classification rules**  
+   - 'Not-so-healthy': >20 % over budget OR more than 2 unusually large transactions this month  
+   - 'Watchful': 5-20 % over budget OR rising month-over-month trend  
+   - 'On-track': within ±5 % of budget and stable  
+   - 'Excellent': ≥10 % under budget and declining trend
 
 3. **Spending Trends**
+   - Weekly or daily spending patterns  
    - Notable spikes or unusual transactions
 
-4. **Recommendations** (Optional)
+4. **Recommendations**
    - Short suggestions to stay within budget  
    - Opportunities to optimize spending or increase savings
 
 ---
 
-Format the output with **clear bullets**, keep it readable, and maintain a **friendly tone**.  
-Avoid unnecessary narration, but include enough detail for meaningful insights.  
-Aim for **200 words**.
+**Formatting requirements**  
+- Output must be valid **Markdown only**—no HTML tags.  
+- Use **clear bullet points** and friendly, concise language.  
+- Keep the total length between **200 words**.
 `,
 });
 
