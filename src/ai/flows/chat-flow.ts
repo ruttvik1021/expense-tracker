@@ -141,9 +141,7 @@ if (!output) {
   console.error("LLM returned null output", llmResponse);
   return {
     response: "Sorry, I could not generate a response.",
-    history: [],
-    transactionData: null,
-    categoryData: null
+    history: []
   };
 }
 
