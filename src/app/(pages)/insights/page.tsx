@@ -2,8 +2,7 @@
 
 import { useCategories } from "@/components/category/hooks/useCategoryQuery";
 import { useTransactions } from "@/components/transactions/hooks/useTransactionQuery";
-import { CardTitle } from "@/components/ui/card";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useProactiveInsights } from "./useProactiveInsights";
 import { useQuery } from "@tanstack/react-query";
