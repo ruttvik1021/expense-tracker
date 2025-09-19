@@ -128,10 +128,10 @@ export default function ChatPage() {
     if (categoryId) {
       await addTransaction.mutateAsync({
         ...transactionFormInitialValues,
+        ...transactionData,
         category: categoryId,
         spentOn: description,
-        source: sourceId,
-        amount: amount
+        source: sourceId
       });
       handleSendMessage("Confirm");
     } else {
