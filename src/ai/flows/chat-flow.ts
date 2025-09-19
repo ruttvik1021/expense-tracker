@@ -181,13 +181,13 @@ General Advice:
 
     if (!txn?.amount) {
       return {
-        response: `What category should this ₹${txn?.amount} expense fall under? For example: "Groceries", "Food", or "Entertainment".`,
+        response: `How much amount you want to add to this transaction?`,
       };
     }
 
     if (!txn?.category) {
       return {
-        response: `What category should this ₹${txn?.amount} expense fall under? For example: "Groceries", "Food", or "Entertainment".`,
+        response: `What category should this ₹${txn?.amount} expense fall under? For example: ${input.availableCategories}.`,
       };
     }
 
@@ -199,7 +199,7 @@ General Advice:
 
     if (!txn?.source) {
       return {
-        response: `Where did the money come from? e.g., Cash, Credit Card, UPI, etc.`,
+        response: `Where did the money come from? E.g., ${input.availablePaymentMethods}.`,
       };
     }
 
