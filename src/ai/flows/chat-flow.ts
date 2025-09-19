@@ -70,7 +70,7 @@ export type ChatOutput = z.infer<typeof ChatOutputSchema>;
 const chatPrompt = ai.definePrompt({
   name: "chatPrompt",
   input: { schema: ChatInputSchema },
-  output: { schema: ChatOutputSchema },
+  output: { schema: z.any() },
   tools: [createTransactionFromTextTool, createCategoryFromTextTool],
   returnToolRequests: true,
   prompt: `{{{prompt}}}`,
