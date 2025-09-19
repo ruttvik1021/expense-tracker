@@ -121,17 +121,17 @@ export default function ChatPage() {
         (c as any).id || (c as any)._id || c.source,
       ])
     );
-    const { category, description, source } = transactionData;
+    const { category, description, source, amount } = transactionData;
     const categoryId = categoryMap.get(category.toLowerCase());
     const sourceId = sourceMap.get(source.toLowerCase());
 
     if (categoryId) {
       await addTransaction.mutateAsync({
         ...transactionFormInitialValues,
-        ...transactionData,
         category: categoryId,
         spentOn: description,
-        source: sourceId
+        source: sourceId,
+        amount: Number(amount)
       });
       handleSendMessage("Confirm");
     } else {
