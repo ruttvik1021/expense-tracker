@@ -153,7 +153,7 @@ General Advice:
   }
 
   // 🔍 Find text and tool request
-  const responseText = llmResponse?.output || "";
+  const responseText = modelMessage.content.find((c: any) => c.text)?.text;
   const toolRequest = modelMessage.content.find(
     (c: any) => c.toolRequest
   )?.toolRequest;
