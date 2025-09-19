@@ -121,7 +121,7 @@ export default function ChatPage() {
         (c as any).id || (c as any)._id || c.source,
       ])
     );
-    const { category, description, source } = transactionData;
+    const { category, description, source, amount } = transactionData;
     const categoryId = categoryMap.get(category.toLowerCase());
     const sourceId = sourceMap.get(source.toLowerCase());
 
@@ -131,6 +131,7 @@ export default function ChatPage() {
         category: categoryId,
         spentOn: description,
         source: sourceId,
+        amount: amount
       });
       handleSendMessage("Confirm");
     } else {
