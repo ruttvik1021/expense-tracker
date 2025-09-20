@@ -52,6 +52,14 @@ export const createCategoryFromTextTool = ai.defineTool(
       text: z
         .string()
         .describe("The user's raw text input about creating a category."),
+
+      availableCategories: z
+        .array(z.string())
+        .describe("A list of valid category names to choose from."),
+
+      availablePaymentSources: z
+        .array(z.string())
+        .describe("A list of available payment methods to choose from."),
     }),
     outputSchema: CreateCategoryFromTextOutputSchema,
   },
@@ -65,7 +73,7 @@ export const createCategoryFromTextTool = ai.defineTool(
         
         Analyze the user's request and extract the category name. Then, suggest a relevant emoji for this new category.
 
-        - Name: The name for the new category.
+        - Name: The name for the new category (in Title Case).
         - Icon: A single emoji character (e.g., 😄, 🛒, 🐶 — NOT "Smile" or "Dog")
 
         Ask the user for further things budget, periodType (startMonth if periodType is "monthly", "quarterly", "half-yearly" & creationDuration if periodType is "next12Months", "yearEnd")

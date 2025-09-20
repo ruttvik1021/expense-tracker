@@ -180,9 +180,15 @@ Note: Strictly return message as a formatted markdown directly.
 
   // 🧰 Handle tool requests
   if (toolRequest?.name === "createTransactionFromTextTool") {
-    const transactionResult = await createTransactionFromTextTool.run(
-      toolRequest?.input ?? {}
-    );
+    const transactionResult = await createTransactionFromTextTool.run({
+      text: input.message, // or another parsed value from history
+      availableCategories:
+        input.availableCategories
+          ?.split("\n")
+          .map((line) => line.split("|")[1] || "") ?? [],
+      availablePaymentSources: input.availablePaymentMethods?.split("\n") ?? [],
+    });
+
     const txn = transactionResult?.result;
 
     if (!txn?.amount || !txn?.category || !txn?.description || !txn?.source) {
@@ -207,9 +213,14 @@ Note: Strictly return message as a formatted markdown directly.
   }
 
   if (toolRequest?.name === "createCategoryFromTextTool") {
-    const categoryResult = await createCategoryFromTextTool.run(
-      toolRequest.input ?? {}
-    );
+    const categoryResult = await createCategoryFromTextTool.run({
+      text: input.message,
+      availableCategories:
+        input.availableCategories
+          ?.split("\n")
+          .map((line) => line.split("|")[1] || "") ?? [],
+      availablePaymentSources: input.availablePaymentMethods?.split("\n") ?? [],
+    });
 
     return {
       response: `Sure, I can create a new category called “${
