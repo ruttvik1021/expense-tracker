@@ -70,7 +70,7 @@ export type ChatOutput = z.infer<typeof ChatOutputSchema>;
 const chatPrompt = ai.definePrompt({
   name: "chatPrompt",
   input: { schema: ChatInputSchema },
-  output: { schema: z.any() },
+  output: { schema: ChatOutputSchema },
   tools: [createTransactionFromTextTool, createCategoryFromTextTool],
   returnToolRequests: true,
   prompt: `{{{prompt}}}`,
@@ -106,9 +106,13 @@ Transaction Handling:
    • The tool must return: description, amount, category, date, and where possible spentOn and source.
    • If the returned transaction is missing a category, politely ask the user to create a category first.  
      → Guide them to create it by invoking 'createCategoryFromTextTool' and confirming the details.  
-     → After the category is created, continue with the transaction creation flow.  
+     → After the category is created, automatically continue with the transaction creation flow using the original transaction details provided by the user.  
+     → Do not wait for the user to retype the transaction. Instead, intelligently resume the flow and ask for any remaining missing details if needed.  
+     → For example, if the user previously tried to add a ₹300 transaction to a category that didn't exist (e.g., "pets"), and then confirms or says "Category added successfully", you should treat this as a signal to retry creating the transaction now that the category exists.
+
    • Once all details are ready, confirm to the user:  
      “Sure, I can add a transaction for [description] for ₹[amount] in the [category] category (for [spentOn]) (with [source]). Does this look right?”
+   → After confirming the transaction, follow up by asking: “Is there anything else I can help you with?”
 
 Category Handling:
 2. If the user asks you to create a new category (e.g., "create a new category for Pets"):
@@ -116,11 +120,18 @@ Category Handling:
    • Ask user about the budget, periodType, startMonth, creationDuration, if user denies then proceed with 0 budget and periodType as 'ONCE'.
    • Confirm back:  
      “Sure, I can create a new category called “[name]” with the [icon] icon and a [color] color. Suggested budget: ₹[budget] (if provided). Does this look right?”
+   → After confirming the category, if any previous task (e.g., a transaction creation) was interrupted due to missing category, resume that task automatically. Otherwise, follow up by asking: “Is there anything else I can help you with?”
 
 General Advice:
 • Act as a personal financial advisor: offer insights on saving, budgeting, spending patterns, and financial planning whenever useful.
 • Keep answers concise and easy to understand.
 • Show the Rupee symbol (₹) wherever you mention currency.
+
+Always remember:
+- Resume any previously paused flows (like transaction creation) if a dependency (e.g. category or source) is now resolved.
+- Otherwise, politely ask “Is there anything else I can help you with?” to keep the conversation going.
+
+Note: Strictly return message as a formatted markdown directly.
 `;
 
   const contextBlock = input.transactionContext
@@ -136,7 +147,7 @@ General Advice:
   const finalPrompt = `${systemMessage}\n\n${contextBlock}${historyBlock}User's new message:\n${input.message}\n\nYour response:`;
 
   // 3. Call the prompt.
-  const llmResponse: any = await chatPrompt({
+  const llmResponse = await chatPrompt({
     prompt: finalPrompt,
   });
 
@@ -153,7 +164,9 @@ General Advice:
   }
 
   // 🔍 Find text and tool request
-  const responseText = modelMessage.content.find((c: any) => c.text)?.text;
+  const responseText =
+    llmResponse?.output?.response ||
+    modelMessage.content.find((c: any) => c.text)?.text;
   const toolRequest = modelMessage.content.find(
     (c: any) => c.toolRequest
   )?.toolRequest;
@@ -168,38 +181,18 @@ General Advice:
   // 🧰 Handle tool requests
   if (toolRequest?.name === "createTransactionFromTextTool") {
     const transactionResult = await createTransactionFromTextTool.run(
-      toolRequest.input ?? {}
+      toolRequest?.input ?? {}
     );
-
     const txn = transactionResult?.result;
 
-    if (!txn) {
+    if (!txn?.amount || !txn?.category || !txn?.description || !txn?.source) {
       return {
-        response: `It looks like the transaction is missing important imformation. Eg: I spent 100 on Pizza via UPI`,
-      };
-    }
-
-    if (!txn?.amount) {
-      return {
-        response: `How much amount you want to add to this transaction?`,
-      };
-    }
-
-    if (!txn?.category) {
-      return {
-        response: `What category should this ₹${txn?.amount} expense fall under? For example: ${input.availableCategories}.`,
-      };
-    }
-
-    if (!txn?.description) {
-      return {
-        response: `What did you spend ₹${txn?.amount} on? Please give a short description.`,
-      };
-    }
-
-    if (!txn?.source) {
-      return {
-        response: `Where did the money come from? E.g., ${input.availablePaymentMethods}.`,
+        response: `I need more info to complete this transaction.\n
+        ${!txn?.amount ? "- What's the amount?\n" : ""}
+        ${!txn?.category ? "- What category does it fall under?\n" : ""}
+        ${!txn?.description ? "- What was the transaction for?\n" : ""}
+        ${!txn?.source ? "- Where was the money spent from?\n" : ""}
+      `,
       };
     }
 

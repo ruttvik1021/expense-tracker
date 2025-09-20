@@ -109,51 +109,65 @@ export default function ChatPage() {
   const handleCreateTransaction = async (
     transactionData: NonNullable<ChatMessage["transactionData"]>
   ) => {
-    const categoryMap = new Map(
-      categories?.categories.map((c) => [
-        c.category.toLowerCase(),
-        (c as any).id || (c as any)._id || c.category,
-      ])
-    );
-    const sourceMap = new Map(
-      sources?.map((c) => [
-        c.source.toLowerCase(),
-        (c as any).id || (c as any)._id || c.source,
-      ])
-    );
-    const { category, description, source, amount } = transactionData;
-    const categoryId = categoryMap.get(category.toLowerCase());
-    const sourceId = sourceMap.get(source.toLowerCase());
-
-    if (categoryId) {
-      await addTransaction.mutateAsync({
-        ...transactionFormInitialValues,
-        category: categoryId,
-        spentOn: description,
-        source: sourceId,
-        amount: Number(amount)
-      });
-      handleSendMessage("Confirm");
-    } else {
-      // Category does not exist, so we need to create it first
-      toast.error(
-        `The category "${category}" doesn't exist. Please create it before adding the transaction.`
+    startTransition(async () => {
+      const categoryMap = new Map(
+        categories?.categories.map((c) => [
+          c.category.toLowerCase(),
+          (c as any).id || (c as any)._id || c.category,
+        ])
       );
-    }
+      const sourceMap = new Map(
+        sources?.map((c) => [
+          c.source.toLowerCase(),
+          (c as any).id || (c as any)._id || c.source,
+        ])
+      );
+
+      const { category, description, source, amount } = transactionData;
+      const categoryId = categoryMap.get(category.toLowerCase());
+      const sourceId = sourceMap.get(source.toLowerCase());
+
+      if (categoryId) {
+        try {
+          await addTransaction.mutateAsync({
+            ...transactionFormInitialValues,
+            category: categoryId,
+            spentOn: description,
+            source: sourceId,
+            amount: Number(amount),
+          });
+
+          handleSendMessage("Transaction added successfully");
+        } catch (error) {
+          toast.error("Failed to add transaction.");
+        }
+      } else {
+        toast.error(
+          `The category "${category}" doesn't exist. Please create it before adding the transaction.`
+        );
+      }
+    });
   };
 
   const handleCreateCategory = async (
     categoryData: NonNullable<ChatMessage["categoryData"]>
   ) => {
-    await addCategory.mutateAsync({
-      budget: categoryFormInitialValues.budget,
-      creationDuration: categoryFormInitialValues.creationDuration,
-      periodType: categoryFormInitialValues.periodType,
-      startMonth: categoryFormInitialValues.startMonth,
-      icon: categoryData.icon,
-      category: categoryData.name,
+    startTransition(async () => {
+      try {
+        await addCategory.mutateAsync({
+          budget: categoryFormInitialValues.budget,
+          creationDuration: categoryFormInitialValues.creationDuration,
+          periodType: categoryFormInitialValues.periodType,
+          startMonth: categoryFormInitialValues.startMonth,
+          icon: categoryData.icon,
+          category: categoryData.name,
+        });
+
+        handleSendMessage("Category added successfully");
+      } catch (error) {
+        toast.error("Failed to add category.");
+      }
     });
-    handleSendMessage("Confirm");
   };
 
   return (
