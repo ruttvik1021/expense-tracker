@@ -1,6 +1,5 @@
 "use client";
 
-import { loginApi } from "@/ajax/authApi";
 import { Button } from "@/components/ui/button";
 import { Navlink } from "@/components/common/Navigation";
 import { Input } from "@/components/ui/input";
@@ -20,6 +19,7 @@ import { useAuthContext } from "../wrapper/ContextWrapper";
 import { useRouter } from "next/navigation";
 import { queryKeys } from "@/utils/queryKeys";
 import React from "react";
+import { loginUser } from "../../../server/actions/auth/login";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -32,12 +32,14 @@ const Login = () => {
   const { authenticateUser, verifyUserEmail } = useAuthContext();
   const { mutate: loginMutate, isPending: isLogging } = useMutation({
     mutationKey: [queryKeys.user],
-    mutationFn: (data: ILogin) => loginApi(data),
+    mutationFn: (data: ILogin) => loginUser(data),
     onSuccess(data) {
-      authenticateUser(data.data?.token);
-      verifyUserEmail(data.data?.isEmailVerified);
-      router.push("/dashboard");
-      toast.success(data.data?.message);
+      if (data.success) {
+        authenticateUser(data.token);
+        verifyUserEmail(data.isEmailVerified);
+        router.push("/dashboard");
+        toast.success(data.message);
+      }
     },
     onError(error) {
       toast.error(error?.message);
