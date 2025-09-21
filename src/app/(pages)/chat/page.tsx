@@ -4,12 +4,14 @@ import { chat } from "@/ai/flows/chat-flow";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { ArrowUp, Loader2, PlusCircle, Sparkles, Trash2 } from "lucide-react";
+import { ArrowUp, Loader2, PlusCircle, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 
 import { categoryFormInitialValues } from "@/components/category/categoryForm";
 import { useCategoryMutation } from "@/components/category/hooks/useCategoryMutation";
 import { useCategories } from "@/components/category/hooks/useCategoryQuery";
+import { ConversationsSidebar } from "@/components/conversations/sidebar";
+import Loader from "@/components/loader/loader";
 import { useSources } from "@/components/paymentSources/hooks/useSourcesQuery";
 import { useTransactionMutation } from "@/components/transactions/hooks/useTransactionMutation";
 import { useTransactions } from "@/components/transactions/hooks/useTransactionQuery";
@@ -23,8 +25,6 @@ import {
   useGetConversationById,
   useGetConversations,
 } from "./hooks/useConversationQuery";
-import Loader from "@/components/loader/loader";
-import { ConversationsSidebar } from "@/components/conversations/sidebar";
 
 type ChatMessage = {
   role: "user" | "model";
