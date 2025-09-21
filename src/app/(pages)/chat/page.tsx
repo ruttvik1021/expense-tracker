@@ -293,18 +293,23 @@ export default function ChatPage() {
       )}
 
       <div className="flex flex-col justify-between h-full">
-        <div className="flex items-center justify-between px-4 pt-4">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="save-toggle"
-              checked={saveEnabled}
-              onCheckedChange={setSaveEnabled}
-            />
-            <Label htmlFor="save-toggle" className="text-sm">
-              Save Conversation
-            </Label>
-          </div>
-        </div>
+        {isNewFlowEnabled && (
+          <>
+            <div className="flex items-center justify-between px-4 pt-4">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="save-toggle"
+                  checked={saveEnabled}
+                  onCheckedChange={setSaveEnabled}
+                />
+                <Label htmlFor="save-toggle" className="text-sm">
+                  Save Conversation
+                </Label>
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Scrollable chat messages */}
         <div
           ref={chatContainerRef}
