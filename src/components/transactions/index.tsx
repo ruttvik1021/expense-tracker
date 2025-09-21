@@ -193,7 +193,6 @@ const Transactions = () => {
           </span>
         </p>
       </div>
-      <Separator />
       {groupBy !== GroupBy.NONE ? (
         groupedTransactions &&
         Object.keys(groupedTransactions).map((group) => (

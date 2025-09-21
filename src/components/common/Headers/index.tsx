@@ -39,18 +39,6 @@ export const NavHeader = ({ navLinks }: { navLinks: ILink[] }) => {
                     My Account
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <div
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent dropdown from closing
-                      }}
-                      className="w-full"
-                    >
-                      Icon Preference
-                      <IconToggle />
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <LogoutButton />
                 </DropdownMenuContent>
               </DropdownMenu>
