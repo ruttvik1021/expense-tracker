@@ -1,8 +1,5 @@
 import { useCategories } from "@/components/category/hooks/useCategoryQuery";
 import { useTransactions } from "@/components/transactions/hooks/useTransactionQuery";
-import { queryKeys } from "@/utils/queryKeys";
-import { useQuery } from "@tanstack/react-query";
-import { getProfile } from "../../server/actions/profile/profile";
 
 export function formatNumber(num: number) {
   if (num >= 1000) {
@@ -14,10 +11,6 @@ export function formatNumber(num: number) {
 
 const useSpentVsBudgetData = (page: "Categories" | "Transactions") => {
   const { data: categoryData } = useCategories();
-  const { data: userData } = useQuery({
-    queryKey: [queryKeys.profile],
-    queryFn: () => getProfile(),
-  });
   const { data: transactionData } = useTransactions();
 
   let totalBudget = 0;
@@ -26,12 +19,11 @@ const useSpentVsBudgetData = (page: "Categories" | "Transactions") => {
   let percentageSpent = 0;
 
   if (page === "Categories") {
-    totalBudget = userData?.data?.budget
-      ? userData?.data?.budget
-      : categoryData?.categories?.reduce(
-          (acc: number, category: any) => acc + category.budget,
-          0
-        ) || 0;
+    totalBudget =
+      categoryData?.categories?.reduce(
+        (acc: number, category: any) => acc + category.budget,
+        0
+      ) || 0;
     totalSpent =
       categoryData?.categories?.reduce(
         (acc: number, category: any) => acc + category.totalAmountSpent,

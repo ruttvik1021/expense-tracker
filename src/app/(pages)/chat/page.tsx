@@ -1,7 +1,6 @@
 "use client";
 
 import { chat } from "@/ai/flows/chat-flow";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -210,13 +209,6 @@ export default function ChatPage() {
                   msg.role === "user" ? "justify-end" : ""
                 )}
               >
-                {msg.role === "model" && (
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback>
-                      <Sparkles className="h-5 w-5" />
-                    </AvatarFallback>
-                  </Avatar>
-                )}
                 <div
                   className={cn(
                     "max-w-md rounded-lg px-4 py-3",
@@ -251,22 +243,12 @@ export default function ChatPage() {
                     </Button>
                   )}
                 </div>
-                {msg.role === "user" && (
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback>{userName.slice(0, 1)}</AvatarFallback>
-                  </Avatar>
-                )}
               </div>
             ))
           )}
 
           {isPending && (
             <div className="flex items-start gap-4">
-              <Avatar className="h-9 w-9">
-                <AvatarFallback>
-                  <Sparkles className="h-5 w-5" />
-                </AvatarFallback>
-              </Avatar>
               <div className="max-w-md rounded-lg bg-muted px-4 py-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Loader2 className="h-4 w-4 animate-spin" />

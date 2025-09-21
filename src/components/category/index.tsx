@@ -66,6 +66,8 @@ const Category = () => {
     isEmailVerified,
   } = useAuthContext();
   const router = useRouter();
+  const { user } = useAuthContext();
+  const userMonthlyBudget = user?.data?.budget;
   const { data, isLoading } = useCategories();
   const { deleteCategory } = useCategoryMutation();
   const [open, setOpen] = useState<{
@@ -172,6 +174,13 @@ const Category = () => {
                 </div>
               </div>
             </div>
+
+            <div className="text-sm text-muted-foreground space-y-1 ">
+              <div>
+                Categories created for:{" "}
+                <span className="font-medium text-primary">{totalBudget}</span>
+              </div>
+            </div>
           </CardHeader>
 
           <CardContent className="space-y-4">
@@ -180,12 +189,17 @@ const Category = () => {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Spent</span>
                 <span className="font-medium">
-                  {totalSpent} / {totalBudget}
+                  {totalSpent} / {userMonthlyBudget}
                 </span>
               </div>
 
               <Progress
                 value={(Number(totalSpent) / Number(totalBudget)) * 100}
+                color={
+                  Number(totalSpent) >= Number(totalBudget)
+                    ? "bg-red-700"
+                    : "bg-green-700"
+                }
               />
             </div>
           </CardContent>
@@ -285,6 +299,12 @@ const Category = () => {
                           (Number(category.totalAmountSpent) /
                             Number(category.budget)) *
                           100
+                        }
+                        color={
+                          Number(category.totalAmountSpent) >=
+                          Number(category.budget)
+                            ? "bg-red-700"
+                            : "bg-green-700"
                         }
                       />
                     </div>
