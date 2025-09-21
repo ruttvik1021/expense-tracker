@@ -4,7 +4,7 @@ import { chat } from "@/ai/flows/chat-flow";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { ArrowUp, Loader2, PlusCircle, Sparkles } from "lucide-react";
+import { Loader2, PlusCircle, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 
 import { categoryFormInitialValues } from "@/components/category/categoryForm";
@@ -399,33 +399,17 @@ export default function ChatPage() {
           )}
         </div>
 
-        {/* Fixed input bar at the bottom */}
-        <div className="border-t p-4 flex flex-col sm:flex-row gap-3">
-          <Input
-            className="w-full"
-            type="text"
-            placeholder="Ask a question or add a transaction..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) =>
-              e.key === "Enter" && !isPending && handleSendMessage()
-            }
-            disabled={isPending}
-          />
-          <Button
-            size="icon"
-            className="w-full"
-            onClick={() => handleSendMessage()}
-            disabled={
-              isPending ||
-              !message.trim() ||
-              isTransactionsLoading ||
-              isCategoriesLoading
-            }
-          >
-            <ArrowUp className="h-5 w-5" />
-          </Button>
-        </div>
+        <Input
+          className="w-full"
+          type="textarea"
+          placeholder="Ask a question or add a transaction..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) =>
+            e.key === "Enter" && !isPending && handleSendMessage()
+          }
+          disabled={isPending}
+        />
       </div>
     </>
   );

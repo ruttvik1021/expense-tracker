@@ -118,6 +118,11 @@ html {
   overscroll-behavior: none;
 }
 
+.title {
+    font-size: 1.125rem /* 18px */;
+    line-height: 1.75rem /* 28px */;
+}
+
 /* Add to your global CSS or a CSS module */
 .perspective {
   perspective: 1000px;

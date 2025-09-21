@@ -1,4 +1,6 @@
 "use client";
+
+import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { Moon, Sun } from "lucide-react";
 import { useEffect } from "react";
@@ -13,34 +15,39 @@ const ThemeToggleButton = () => {
   const { activeTheme, setActiveTheme } = useAuthContext();
   const htmlElement = document.documentElement;
 
+  // Apply theme on mount or when theme changes
   useEffect(() => {
-    if (activeTheme) {
-      toggleTheme(activeTheme);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!activeTheme) return;
+
+    htmlElement.classList.remove(Modes.DARK, Modes.LIGHT);
+    htmlElement.classList.add(activeTheme);
+    localStorage.setItem(Theme, activeTheme);
   }, [activeTheme]);
 
-  const toggleTheme = (theme: Modes) => {
-    localStorage.setItem(Theme, theme);
-    htmlElement.classList.add(theme);
+  const handleToggle = () => {
+    const newTheme = activeTheme === Modes.DARK ? Modes.LIGHT : Modes.DARK;
+    setActiveTheme(newTheme);
   };
 
-  return activeTheme === Modes.DARK ? (
-    <Sun
-      onClick={() => {
-        setActiveTheme(Modes.LIGHT);
-        htmlElement.classList.remove(Modes.DARK);
-      }}
-      className="w-full"
-    />
+  const showText = true; // Set to false to show icons only
+
+  return showText ? (
+    <Button variant="outline" size="sm" onClick={handleToggle}>
+      {activeTheme === Modes.DARK ? "Light" : "Dark"}
+    </Button>
   ) : (
-    <Moon
-      onClick={() => {
-        setActiveTheme(Modes.DARK);
-        htmlElement.classList.remove(Modes.LIGHT);
-      }}
-      className="w-full"
-    />
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={handleToggle}
+      aria-label="Toggle theme"
+    >
+      {activeTheme === Modes.DARK ? (
+        <Sun className="h-5 w-5" />
+      ) : (
+        <Moon className="h-5 w-5" />
+      )}
+    </Button>
   );
 };
 

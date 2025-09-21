@@ -25,7 +25,7 @@ const Profile = () => {
 
         <Card>
           <CardHeader>
-            <PageHeader title={"Profile Settings"} />
+            <PageHeader title="Profile Settings" />
             <CardDescription>
               Manage your account preferences and settings.
             </CardDescription>
@@ -42,7 +42,7 @@ const Profile = () => {
 
         <Card>
           <CardHeader>
-            <PageHeader title={"Icon Preferences"} />
+            <PageHeader title="Icon Preferences" />
           </CardHeader>
           <CardContent className="space-y-6">
             <div

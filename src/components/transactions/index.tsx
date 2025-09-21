@@ -148,16 +148,16 @@ const Transactions = () => {
     <>
       <div className="mb-3">
         <div className="flex items-center justify-between mb-2">
-          <PageHeader title={`${filteredCategory || ""} Transactions`} />
-
-          <div className="flex items-center gap-2">
-            <TransactionFilters />
-            <CustomAddIcon
-              onClick={() => {
-                setOpen({ type: "ADD", open: true });
-              }}
-            />
-          </div>
+          <PageHeader title={`${filteredCategory || ""} Transactions`}>
+            <div className="flex items-center gap-2">
+              <TransactionFilters />
+              <CustomAddIcon
+                onClick={() => {
+                  setOpen({ type: "ADD", open: true });
+                }}
+              />
+            </div>
+          </PageHeader>
         </div>
         <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
           <Select

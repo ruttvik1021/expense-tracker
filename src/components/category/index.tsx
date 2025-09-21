@@ -119,15 +119,18 @@ const Category = () => {
     <>
       <div className="mb-3">
         <div className="flex items-center justify-between mb-2">
-          <PageHeader title="Category" />
-          {moment(categoryFilter.categoryDate).isSame(moment(), "month") &&
-            (isEmailVerified || (data && data?.categories?.length < 5)) && (
-              <CustomAddIcon
-                onClick={() => {
-                  setOpen({ type: "ADD", open: true });
-                }}
-              />
-            )}
+          <PageHeader title="Category">
+            <>
+              {moment(categoryFilter.categoryDate).isSame(moment(), "month") &&
+                (isEmailVerified || (data && data?.categories?.length < 5)) && (
+                  <CustomAddIcon
+                    onClick={() => {
+                      setOpen({ type: "ADD", open: true });
+                    }}
+                  />
+                )}
+            </>
+          </PageHeader>
         </div>
         {!isEmailVerified && data && data?.categories?.length > 4 && (
           <FeatureRestrictedWarning message="Verify email to add more categories" />

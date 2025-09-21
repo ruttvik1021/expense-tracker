@@ -10,7 +10,7 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) => {
     <div
       className={cn(
         "h-full flex flex-col overflow-auto",
-        isAuthenticated && "p-2 pb-2 sm:p-4 lg:p-6"
+        isAuthenticated && "p-2 pb-2"
       )}
     >
       {children}

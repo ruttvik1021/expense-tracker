@@ -34,7 +34,10 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
       </Button>
 
       {allSavedConversation.map((conv) => (
-        <div key={conv._id} className="flex items-center justify-between group">
+        <div
+          key={conv._id}
+          className="flex items-center justify-between group gap-2"
+        >
           <Button
             variant="ghost"
             className="w-full justify-start text-left overflow-hidden text-ellipsis whitespace-nowrap"
@@ -47,7 +50,6 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
             onClick={() => handleDeleteConversation(conv._id)}
           >
             <Trash2 className="w-4 h-4" />
@@ -82,7 +84,7 @@ export const ConversationsSidebar = ({
       </aside>
 
       {/* Mobile: Top Bar with Hamburger */}
-      <div className="md:hidden flex items-center justify-between bg-drawer p-4 border-b border-border shadow-md">
+      <div className="md:hidden flex items-center justify-between bg-drawer border-b border-border shadow-md">
         <h2 className="text-3xl font-bold tracking-tight text-blue-700">
           Conversations
         </h2>

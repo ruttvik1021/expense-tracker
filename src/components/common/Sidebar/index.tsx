@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import IconPreferenceAlert from "@/components/alerts/IconPreferences";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,9 +10,9 @@ import {
 import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { Menu, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { ILink, LogoutButton, Navlink } from "../Navigation";
+import { useState } from "react";
+import { Brand, ILink, LogoutButton, Navlink } from "../Navigation";
 import ThemeToggleButton from "../Toggles/ThemeToggle";
-import PageHeader from "../Pageheader";
 
 export const Sidebar = ({ navLinks }: { navLinks: ILink[] }) => {
   const pathName = usePathname();
@@ -28,7 +26,7 @@ export const Sidebar = ({ navLinks }: { navLinks: ILink[] }) => {
     <div className="flex h-full flex-col justify-between p-6">
       {/* Top: Logo and nav */}
       <div>
-        <PageHeader title="AkiraFlow"></PageHeader>
+        <Brand />
         <nav className="flex flex-col gap-4 my-3">
           {navLinks.map((item) => (
             <Navlink
@@ -44,12 +42,14 @@ export const Sidebar = ({ navLinks }: { navLinks: ILink[] }) => {
       </div>
 
       {/* Bottom: Profile/Theme/Logout */}
-      <div className="flex flex-col gap-4 border-t border-border pt-4">
+      <div className="flex flex-col gap-4 border-t border-border pt-4 justify-start">
         <DropdownMenu>
-          <ThemeToggleButton />
+          <div className="flex justify-center">
+            <ThemeToggleButton />
+          </div>
           <DropdownMenuTrigger asChild>
-            <div className="flex items-center justify-center gap-2 cursor-pointer">
-              <PageHeader title={user?.data.name}></PageHeader>
+            <div className="flex items-center justify-center gap-2 cursor-pointer text-bold text-3xl text-selected">
+              {user?.data.name}
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-popover">
@@ -60,7 +60,6 @@ export const Sidebar = ({ navLinks }: { navLinks: ILink[] }) => {
             <LogoutButton />
           </DropdownMenuContent>
         </DropdownMenu>
-        <IconPreferenceAlert />
       </div>
     </div>
   );
@@ -74,9 +73,7 @@ export const Sidebar = ({ navLinks }: { navLinks: ILink[] }) => {
 
       {/* Mobile: Top Bar with Hamburger */}
       <div className="md:hidden flex items-center justify-between bg-drawer p-4 border-b border-border shadow-md">
-        <h2 className="text-3xl font-bold tracking-tight text-blue-700">
-          AkiraFlow
-        </h2>
+        <Brand />
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle sidebar"

@@ -15,6 +15,7 @@ import {
   MessageCircle,
   Sparkles,
 } from "lucide-react";
+import IconPreferenceAlert from "@/components/alerts/IconPreferences";
 
 const navLinks: ILink[] = [
   { label: "Home", href: "/dashboard", icon: <Home className="h-4 w-4" /> },
@@ -59,13 +60,15 @@ export default function PageLayout({
               </div>
 
               {/* Main Content Area */}
-              <section className="flex-1 h-full overflow-auto md:px-10 sm:px-4">
+              <section className="flex-1 h-full overflow-auto">
                 <AppWrapper>{children}</AppWrapper>
               </section>
             </main>
 
             <Toaster richColors position="top-center" />
             <SpeedInsights />
+
+            <IconPreferenceAlert />
           </ContextWrapper>
         </QueryWrapper>
       </body>

@@ -14,8 +14,8 @@ const Dashboard = () => {
   const { isEmailVerified } = useAuthContext();
   const [month, setMonth] = useState(new Date());
   return (
-    <>
-      <PageHeader title={"Home"} />
+    <div className="mb-3">
+      <PageHeader title="Home" />
       {!isEmailVerified ? (
         <FeatureRestrictedWarning message="Verify email to see the charts" />
       ) : (
@@ -38,7 +38,7 @@ const Dashboard = () => {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 };
 
