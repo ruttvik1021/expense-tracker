@@ -14,7 +14,6 @@ import { useSources } from "@/components/paymentSources/hooks/useSourcesQuery";
 import { useTransactionMutation } from "@/components/transactions/hooks/useTransactionMutation";
 import { useTransactions } from "@/components/transactions/hooks/useTransactionQuery";
 import { transactionFormInitialValues } from "@/components/transactions/transactionForm";
-import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 
@@ -29,8 +28,6 @@ type ChatMessage = {
 export const maxDuration = 60; // Timeout in seconds
 
 export default function ChatPage() {
-  const { user } = useAuthContext();
-  const userName = user?.data?.name || "";
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState("");
   // const [contextRange, setContextRange] = useState("current-month");
