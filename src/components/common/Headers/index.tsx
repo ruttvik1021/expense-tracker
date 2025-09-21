@@ -13,7 +13,6 @@ import { useAuthContext } from "@/components/wrapper/ContextWrapper";
 import { User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ILink, LogoutButton, Navbar, NavDrawer } from "../Navigation";
-import IconToggle from "../Toggles/IconToggle";
 import ThemeToggleButton from "../Toggles/ThemeToggle";
 
 export const NavHeader = ({ navLinks }: { navLinks: ILink[] }) => {
