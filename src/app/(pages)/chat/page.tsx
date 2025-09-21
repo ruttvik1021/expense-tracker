@@ -168,7 +168,7 @@ export default function ChatPage() {
 
   return (
     <>
-      <div className="flex flex-col h-[80vh]">
+      <div className="flex flex-col justify-between h-full">
         {/* Scrollable chat messages */}
         <div
           ref={chatContainerRef}
@@ -259,7 +259,7 @@ export default function ChatPage() {
         {/* Fixed input bar at the bottom */}
         <div className="border-t p-4 flex flex-col sm:flex-row gap-3">
           <Input
-            className="w-full sm:flex-[4_1_0%]"
+            className="w-full"
             type="text"
             placeholder="Ask a question or add a transaction..."
             value={message}
@@ -271,7 +271,7 @@ export default function ChatPage() {
           />
           <Button
             size="icon"
-            className="w-full sm:flex-[1_1_0%]"
+            className="w-full"
             onClick={() => handleSendMessage()}
             disabled={
               isPending ||

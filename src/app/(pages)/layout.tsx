@@ -8,7 +8,13 @@ import { Sidebar } from "@/components/common/Sidebar";
 import { NavHeader } from "@/components/common/Headers";
 import AppWrapper from "@/components/wrapper/AppWrapper";
 import { ILink } from "@/components/common/Navigation";
-import { Home, Smile, IndianRupee, MessageCircle, Sparkles } from "lucide-react";
+import {
+  Home,
+  Smile,
+  IndianRupee,
+  MessageCircle,
+  Sparkles,
+} from "lucide-react";
 
 const navLinks: ILink[] = [
   { label: "Home", href: "/dashboard", icon: <Home className="h-4 w-4" /> },
@@ -53,7 +59,7 @@ export default function PageLayout({
               </div>
 
               {/* Main Content Area */}
-              <section className="flex-1 overflow-auto md:px-10 sm:px-4">
+              <section className="flex-1 h-full overflow-auto md:px-10 sm:px-4">
                 <AppWrapper>{children}</AppWrapper>
               </section>
             </main>
