@@ -4,7 +4,7 @@ import { chat } from "@/ai/flows/chat-flow";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { ArrowUp, Loader2, PlusCircle, Sparkles } from "lucide-react";
+import { ArrowUp, Loader2, PlusCircle, Sparkles, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 
 import { categoryFormInitialValues } from "@/components/category/categoryForm";
@@ -14,8 +14,17 @@ import { useSources } from "@/components/paymentSources/hooks/useSourcesQuery";
 import { useTransactionMutation } from "@/components/transactions/hooks/useTransactionMutation";
 import { useTransactions } from "@/components/transactions/hooks/useTransactionQuery";
 import { transactionFormInitialValues } from "@/components/transactions/transactionForm";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
+import { useConversationMutation } from "./hooks/useConversationMutation";
+import {
+  useGetConversationById,
+  useGetConversations,
+} from "./hooks/useConversationQuery";
+import Loader from "@/components/loader/loader";
+import { ConversationsSidebar } from "@/components/conversations/sidebar";
 
 type ChatMessage = {
   role: "user" | "model";
@@ -33,16 +42,70 @@ export default function ChatPage() {
   // const [contextRange, setContextRange] = useState("current-month");
   const [isPending, startTransition] = useTransition();
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null); // saved conversation ID
+  const [saveEnabled, setSaveEnabled] = useState(false);
 
+  const { addTransaction } = useTransactionMutation();
+  const { addCategory } = useCategoryMutation();
   const { data: categories, isLoading: isCategoriesLoading } = useCategories();
   const { data: sources, isLoading: isSourcesLoading } = useSources();
   const { data: transactions, isLoading: isTransactionsLoading } =
     useTransactions();
+  const { data: conversations } = useGetConversations();
+  const { data: conversationById, isLoading: isConversationByIdLoading } =
+    useGetConversationById(conversationId);
+  const {
+    addSavedConversation,
+    deleteSavedConversation,
+    updateSavedConversationMutation,
+  } = useConversationMutation();
+
   const allTransactions = transactions?.transactions || [];
   const allCategories = categories?.categories || [];
+  const allSavedConversation = conversations || [];
 
-  const { addTransaction } = useTransactionMutation();
-  const { addCategory } = useCategoryMutation();
+  useEffect(() => {
+    if (conversationById?.data) {
+      setHistory(JSON.parse(conversationById.data?.history));
+    }
+  }, [conversationById]);
+
+  const saveConversation = async (updatedHistory: ChatMessage[]) => {
+    if (!saveEnabled || updatedHistory.length === 0) return;
+
+    try {
+      if (!conversationId) {
+        const res = await addSavedConversation.mutateAsync({
+          history: updatedHistory,
+          title: updatedHistory[0]?.parts[0]?.text.slice(0, 50) || "New Chat",
+        });
+        if ("conversation" in res && res.conversation?._id) {
+          setConversationId(res.conversation._id);
+        }
+      } else {
+        await updateSavedConversationMutation.mutateAsync({
+          conversationId,
+          history: updatedHistory,
+        });
+      }
+    } catch (err) {
+      console.error("Failed to save conversation", err);
+    }
+  };
+
+  useEffect(() => {
+    const handleSaveToggle = async () => {
+      if (saveEnabled) {
+        await saveConversation(history);
+      } else {
+        if (conversationId) {
+          await deleteSavedConversation.mutateAsync(conversationId);
+        }
+      }
+    };
+
+    handleSaveToggle();
+  }, [saveEnabled]);
 
   const currentMonthTransactionData = allTransactions
     .slice() // clone the array to avoid mutating original
@@ -90,20 +153,25 @@ export default function ChatPage() {
         availablePaymentMethods: String(paymentSources),
       });
 
-      setHistory((prev) => [
-        ...prev,
+      const updatedHistory: ChatMessage[] = [
+        ...newHistory,
         {
           role: "model",
           parts: [{ text: aiResponse.response }],
           transactionData: aiResponse.transactionData,
           categoryData: aiResponse.categoryData,
         },
-      ]);
+      ];
+
+      setHistory(updatedHistory);
+
+      await saveConversation(updatedHistory);
     });
   };
 
   const handleCreateTransaction = async (
-    transactionData: NonNullable<ChatMessage["transactionData"]>
+    transactionData: NonNullable<ChatMessage["transactionData"]>,
+    index: number
   ) => {
     startTransition(async () => {
       const categoryMap = new Map(
@@ -133,6 +201,7 @@ export default function ChatPage() {
             amount: Number(amount),
           });
 
+          removeDataFromMessage(index, "transaction");
           handleSendMessage("Transaction added successfully");
         } catch (error) {
           toast.error("Failed to add transaction.");
@@ -146,7 +215,8 @@ export default function ChatPage() {
   };
 
   const handleCreateCategory = async (
-    categoryData: NonNullable<ChatMessage["categoryData"]>
+    categoryData: NonNullable<ChatMessage["categoryData"]>,
+    index: number
   ) => {
     startTransition(async () => {
       try {
@@ -159,6 +229,7 @@ export default function ChatPage() {
           category: categoryData.name,
         });
 
+        removeDataFromMessage(index, "category");
         handleSendMessage("Category added successfully");
       } catch (error) {
         toast.error("Failed to add category.");
@@ -166,9 +237,74 @@ export default function ChatPage() {
     });
   };
 
+  const removeDataFromMessage = (
+    index: number,
+    type: "transaction" | "category"
+  ) => {
+    setHistory((prevHistory) => {
+      const newHistory = [...prevHistory];
+      const msg = { ...newHistory[index] };
+
+      if (type === "transaction") {
+        msg.transactionData = null;
+      } else {
+        msg.categoryData = null;
+      }
+
+      newHistory[index] = msg;
+      return newHistory;
+    });
+  };
+
+  const handleSelectSavedConversation = (
+    hist: ChatMessage[],
+    convId: string
+  ) => {
+    setHistory(hist);
+    setConversationId(convId);
+    setSaveEnabled(true);
+  };
+
+  const handleDeleteConversation = async (id: string) => {
+    await deleteSavedConversation.mutateAsync(id);
+    startNewChat();
+  };
+
+  const startNewChat = () => {
+    setConversationId("");
+    setHistory([]);
+    setSaveEnabled(false);
+  };
+
+  const isNewFlowEnabled = false;
+
   return (
     <>
+      {isNewFlowEnabled && (
+        <>
+          <ConversationsSidebar
+            allSavedConversation={allSavedConversation}
+            handleSelectSavedConversation={handleSelectSavedConversation}
+            handleDeleteConversation={handleDeleteConversation}
+            startNewChat={startNewChat}
+          />
+          {isConversationByIdLoading && <Loader />}
+        </>
+      )}
+
       <div className="flex flex-col justify-between h-full">
+        <div className="flex items-center justify-between px-4 pt-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="save-toggle"
+              checked={saveEnabled}
+              onCheckedChange={setSaveEnabled}
+            />
+            <Label htmlFor="save-toggle" className="text-sm">
+              Save Conversation
+            </Label>
+          </div>
+        </div>
         {/* Scrollable chat messages */}
         <div
           ref={chatContainerRef}
@@ -202,7 +338,7 @@ export default function ChatPage() {
               <div
                 key={index}
                 className={cn(
-                  "flex items-start gap-4",
+                  "flex items-start gap-4 ",
                   msg.role === "user" ? "justify-end" : ""
                 )}
               >
@@ -221,7 +357,7 @@ export default function ChatPage() {
                       size="sm"
                       className="mt-3"
                       onClick={() =>
-                        handleCreateTransaction(msg.transactionData!)
+                        handleCreateTransaction(msg.transactionData!, index)
                       }
                     >
                       <PlusCircle className="mr-2 h-4 w-4" />
@@ -233,7 +369,9 @@ export default function ChatPage() {
                       variant="secondary"
                       size="sm"
                       className="mt-3"
-                      onClick={() => handleCreateCategory(msg.categoryData!)}
+                      onClick={() =>
+                        handleCreateCategory(msg.categoryData!, index)
+                      }
                     >
                       <PlusCircle className="mr-2 h-4 w-4" />
                       Confirm Category

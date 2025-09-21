@@ -1,12 +1,9 @@
+import Loader from "@/components/loader/loader";
 import { Loader2 } from "lucide-react";
 import React from "react";
 
 const Loading = () => {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-black/80 bg-opacity-70">
-      <Loader2 className="h-12 w-12 animate-spin text-primary" />
-    </div>
-  );
+  return <Loader />;
 };
 
 export default Loading;

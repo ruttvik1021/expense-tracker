@@ -152,7 +152,7 @@ Note: Strictly return message as a formatted markdown directly.
   });
 
   // 🧠 Extract model message
-  const modelMessage = llmResponse.messages.find(
+  const modelMessage = llmResponse?.messages?.find(
     (m: any) => m.role === "model"
   );
 
@@ -166,7 +166,7 @@ Note: Strictly return message as a formatted markdown directly.
   // 🔍 Find text and tool request
   const responseText =
     llmResponse?.output?.response ||
-    modelMessage.content.find((c: any) => c.text)?.text;
+    modelMessage?.content?.find((c: any) => c.text)?.text;
   const toolRequest = modelMessage.content.find(
     (c: any) => c.toolRequest
   )?.toolRequest;

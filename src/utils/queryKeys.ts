@@ -22,4 +22,5 @@ export const queryKeys = {
   sources: "sources",
   lastMonthCategories: "lastMonthCategories",
   proactiveInsights: "proactive-insights",
+  savedConversations: "savedConversations",
 };
