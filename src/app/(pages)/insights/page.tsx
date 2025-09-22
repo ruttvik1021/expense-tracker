@@ -55,13 +55,10 @@ export default function InsightsPage() {
     <div className="flex min-h-screen w-full flex-col">
       <div className="flex flex-1 flex-col gap-4 p-2 md:gap-8 md:p-2">
         <PageHeader
-          children={
-            <div className="flex items-center gap-3">
+        ><div className="flex items-center gap-3">
               <Sparkles className="h-6 w-6 text-primary" />
               <CardTitle>Your Proactive Financial Insights</CardTitle>
-            </div>
-          }
-        />
+            </div></PageHeader>
         {isLoading ? (
           <div className="flex justify-center items-center py-10">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
