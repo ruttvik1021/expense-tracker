@@ -158,8 +158,8 @@ export default function ChatPage() {
         {
           role: "model",
           parts: [{ text: aiResponse.response }],
-          transactionData: currentMonthTransactionData,
-          categoryData: currentMonthCategoryData,
+          transactionData: aiResponse?.transactionData,
+          categoryData: aiResponse?.categoryData,
         },
       ];
 
