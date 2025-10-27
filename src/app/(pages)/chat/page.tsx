@@ -29,7 +29,7 @@ import {
 type ChatMessage = {
   role: "user" | "model";
   parts: { text: string }[];
-  // AI can return various shapes; keep permissive and cast where needed
+  // AI can return these when a transaction/category is ready for confirmation
   transactionData?: any | null;
   categoryData?: any | null;
 };
@@ -133,65 +133,45 @@ export default function ChatPage() {
   }, [history]);
 
   const handleSendMessage = (newMessage?: string) => {
-    if (!message.trim() && !newMessage) return;
+    const messageToSend = newMessage || message;
+    if (!messageToSend.trim()) return;
 
-    const cleanedHistory = history.map((msg) => {
-      let text = msg.parts?.[0]?.text || "";
-  
-      if (msg.transactionData) {
-        text += `\n\n[Unconfirmed Transaction Data]\n${JSON.stringify(
-          msg.transactionData,
-          null,
-          2
-        )}`;
-      }
-  
-      if (msg.categoryData) {
-        text += `\n\n[Unconfirmed Category Data]\n${JSON.stringify(
-          msg.categoryData,
-          null,
-          2
-        )}`;
-      }
-  
-      return {
-        ...msg,
-        parts: [{ text }],
-        transactionData: undefined,
-        categoryData: undefined,
-      };
-    });
-
+    // 1. Create the new user message
     const userMessage: ChatMessage = {
       role: "user",
-      parts: [{ text: newMessage ? newMessage : message }],
+      parts: [{ text: messageToSend }],
     };
 
-    const newHistory = [...cleanedHistory, userMessage];
-    setHistory(newHistory);
+    // 2. Optimistically update the UI with the user's message
+    const newHistoryForUI = [...history, userMessage];
+    setHistory(newHistoryForUI);
     setMessage("");
 
     startTransition(async () => {
+      // 3. Call the server action.
+      // We pass the *original* history (before adding the new user message)
+      // as this is what the AI agent expects.
       const aiResponse = await chat({
-        history: newHistory.slice(0, -1), // Pass history without the latest user message
-        message,
+        history: history, // <-- Pass the original history
+        message: messageToSend, // <-- Pass the new message
         transactionContext: String(currentMonthTransactionData),
         availableCategories: String(currentMonthCategoryData),
         availablePaymentMethods: String(paymentSources),
       });
 
+      // 4. Create the final history with the AI's response
       const updatedHistory: ChatMessage[] = [
-        ...newHistory,
+        ...newHistoryForUI, // This is the history with the user's new message
         {
           role: "model",
           parts: [{ text: aiResponse.response }],
-          transactionData: aiResponse?.transactionData,
-          categoryData: aiResponse?.categoryData,
+          transactionData: aiResponse?.transactionData, // This will be populated by the agent when ready
+          categoryData: aiResponse?.categoryData, // This will be populated by the agent when ready
         },
       ];
 
+      // 5. Set the final state and save
       setHistory(updatedHistory);
-
       await saveConversation(updatedHistory);
     });
   };
