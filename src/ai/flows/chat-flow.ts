@@ -1,7 +1,7 @@
 "use server";
 /**
  * @fileOverview
- * Conversational AI for answering financial questions,
+ * Conversational AI (Agent) for answering financial questions,
  * creating transactions, and managing categories interactively.
  *
  * Works inside a Next.js App Router server action.
@@ -9,38 +9,24 @@
 
 import { ai } from "@/ai/genkit";
 import { z } from "genkit";
+import { defineFlow, runFlow } from "genkit/flow";
 import { createTransactionFromTextTool } from "./create-transaction-from-text";
 import { createCategoryFromTextTool } from "./create-category-from-text";
 
 /* --------------------------- Schema Definitions --------------------------- */
 
+// Input from the client
 const ChatInputSchema = z.object({
-  prompt: z.string().describe("The full prompt for the AI model."),
+  history: z.array(z.any()), // Full Genkit-compatible history
+  message: z.string(),
+  transactionContext: z.string(),
+  availableCategories: z.string(),
+  availablePaymentMethods: z.string(),
 });
 
-const HistoryPartSchema = z.object({
-  text: z.string().optional(),
-  toolRequest: z
-    .object({
-      name: z.string(),
-      arguments: z.record(z.any()).optional(),
-    })
-    .optional(),
-  toolResponse: z
-    .object({
-      output: z.any().optional(),
-    })
-    .optional(),
-});
-
-const HistoryMessageSchema = z.object({
-  role: z.enum(["user", "model", "tool"]),
-  parts: z.array(HistoryPartSchema),
-});
-
+// Output to the client
 const ChatOutputSchema = z.object({
   response: z.string().describe("The AI's response message."),
-  history: z.array(HistoryMessageSchema).optional(),
   transactionData: z
     .object({
       description: z.string().optional(),
@@ -68,207 +54,151 @@ const ChatOutputSchema = z.object({
 
 export type ChatOutput = z.infer<typeof ChatOutputSchema>;
 
-/* ----------------------------- Prompt Definition ----------------------------- */
+/* ----------------------------- System Prompt ----------------------------- */
 
-const chatPrompt = ai.definePrompt({
-  name: "chatPrompt",
-  input: { schema: ChatInputSchema },
-  output: { schema: ChatOutputSchema },
-  tools: [createTransactionFromTextTool, createCategoryFromTextTool],
-  prompt: `{{{prompt}}}`,
-});
+const systemPrompt = `
+You are a friendly, empathetic, and smart **personal financial assistant**.
+Your goal is to help the user manage their finances.
+Currency is always **Rupee (₹)**.
+
+### Your Core Task: Agent-based Data Collection
+You have tools to create transactions and categories. Your primary job is to ask follow-up questions until you have ALL the required information.
+
+---
+
+### Transaction Handling
+- **Tool:** \`createTransactionFromTextTool\`
+- **Required Fields:** \`description\`, \`amount\`, \`category\`, \`source\`
+- **Your Logic:**
+  1.  When the user wants to add a transaction, call \`createTransactionFromTextTool\` with the user's text.
+  2.  The tool will return a JSON object with any fields it could extract.
+  3.  You **MUST** inspect this JSON.
+  4.  If **any** required fields are missing, your *only* job is to ask a polite, conversational question to get the *next* missing piece of information.
+  5.  Repeat this process, accumulating the data in the conversation.
+  6.  **FINAL STEP (Once ALL fields are present):**
+     - Call \`createTransactionFromTextTool\` ONE LAST TIME with all the information to get the final, complete JSON object.
+     - Your response to the user MUST be a confirmation message, e.g., "✅ Got it — **[Desc]** for **₹[Amount]** in **[Category]** (via **[Source]**). Should I go ahead and save this transaction?"
+     - You **MUST** output the complete \`transactionData\` object along with this final message.
+
+**Example Flow:**
+- User: "Add 50 for coffee"
+- AI: (Calls tool) -> Tool returns: { "amount": 50, "description": "coffee" }
+- AI: (Sees 'category' and 'source' are missing) -> "Got it, 50 for coffee. What category should I put this under?"
+- User: "Food"
+- AI: (Calls tool with "Food") -> Tool returns: { "category": "Food" }
+- AI: (Sees 'source' is still missing) -> "Thanks. And which payment source did you use?"
+- User: "Credit Card"
+- AI: (Calls tool with "Credit Card") -> Tool returns: { "source": "Credit Card" }
+- AI: (SeES ALL fields are now known: {50, coffee, Food, Credit Card})
+- AI: (Calls tool *one last time* to get complete object) -> Tool returns: { "amount": 50, "description": "coffee", "category": "Food", "source": "Credit Card" }
+- AI: "✅ Got it — **coffee** for **₹50** in **Food** (via **Credit Card**). Should I go ahead and save this transaction?" (and attaches the complete \`transactionData\` object to its response)
+
+---
+
+### Category Handling
+- **Tool:** \`createCategoryFromTextTool\`
+- **Required Fields:** \`name\`, \`icon\`
+- **Your Logic:**
+  - Same as transactions. Ask for missing \`name\` or \`icon\`.
+  - Once both are present, call the tool one last time to get the complete JSON and ask for confirmation, e.g., "✅ New category **“[Name]”** with icon **[Icon]**. Would you like to save this?"
+  - Attach the complete \`categoryData\` object to this final response.
+
+---
+
+### General Guidelines
+- Be conversational.
+- Never guess — always ask.
+- Use the context below for available categories and sources.
+`;
+
+/* ----------------------------- Genkit Flow ----------------------------- */
+
+const chatFlow = defineFlow(
+  {
+    name: "chatAgentFlow",
+    inputSchema: ChatInputSchema,
+    outputSchema: ChatOutputSchema,
+    tools: [createTransactionFromTextTool, createCategoryFromTextTool],
+  },
+  async (input): Promise<ChatOutput> => {
+    // 1. Build the context block
+    const contextBlock = `
+---
+### User Context
+Available Categories:
+${input.availableCategories || "No categories yet."}
+
+Available Payment Sources:
+${input.availablePaymentMethods || "No payment sources yet."}
+
+Recent Transaction Data:
+${input.transactionContext || "No transactions yet."}
+---
+`;
+
+    // 2. Run the AI generation
+    // Genkit will automatically handle the tool-use loop based on the system prompt.
+    const llmResponse = await ai.generate({
+      model: ai, // Use your configured Genkit AI model
+      history: [
+        ...input.history,
+        { role: "user", content: [{ text: input.message }] },
+      ],
+      prompt: `${systemPrompt}\n${contextBlock}`,
+      tools: [createTransactionFromTextTool, createCategoryFromTextTool],
+      output: {
+        schema: z.object({
+          response: z.string(),
+          transactionData: z.any().optional(),
+          categoryData: z.any().optional(),
+        }),
+      },
+    });
+
+    const output = llmResponse.output();
+    if (!output) {
+      return {
+        response:
+          "Sorry, I couldn't generate a response. Please try again.",
+      };
+    }
+
+    // 3. Return the final response
+    // The AI's prompt instructs it to attach transactionData/categoryData
+    // only on the *final* confirmation step.
+    return {
+      response: output.response,
+      transactionData: output.transactionData,
+      categoryData: output.categoryData,
+    };
+  }
+);
 
 /* --------------------------- Main Chat Function --------------------------- */
 
 export async function chat(input: {
-  history: { role: "user" | "model"; parts: { text: string }[]; transactionData?: any; categoryData?: any }[];
+  history: {
+    role: "user" | "model";
+    parts: { text: string }[];
+    // Client no longer needs to send pending data
+  }[];
   message: string;
   transactionContext: string;
   availableCategories: string;
   availablePaymentMethods: string;
 }): Promise<ChatOutput> {
-  /* ----------------------------- 1. Format History ----------------------------- */
-  const formattedHistory = input.history
-    .map((msg) => {
-      const prefix = msg.role === "user" ? "User:" : "AI:";
-      return `${prefix} ${msg.parts[0]?.text ?? ""}`;
-    })
-    .join("\n");
+  // Format the client-side history into Genkit-compatible history
+  const genkitHistory = input.history.map((msg) => ({
+    role: msg.role,
+    content: msg.parts.map((part) => ({ text: part.text })),
+  }));
 
-  /* ----------------------------- 2. Detect Pending Context ----------------------------- */
-  const lastMessage = input.history[input.history.length - 1];
-  let pendingContext = "";
-
-  if (lastMessage && (lastMessage as any).transactionData) {
-    pendingContext = `\n\nThe user is currently creating a transaction. 
-Here’s what’s known so far:
-${JSON.stringify((lastMessage as any).transactionData, null, 2)}
-If the user's next message provides missing details (like source, category, or amount), 
-please continue completing this transaction instead of starting a new one.`;
-  }
-
-  if (lastMessage && (lastMessage as any).categoryData) {
-    pendingContext = `\n\nThe user is currently creating a category. 
-Here’s what’s known so far:
-${JSON.stringify((lastMessage as any).categoryData, null, 2)}
-If the user's next message provides missing details (like icon, budget, or name), 
-please continue completing this category instead of starting a new one.`;
-  }
-
-  /* ----------------------------- 3. Build Prompt ----------------------------- */
-  const systemMessage = `
-You are a friendly, empathetic, and smart **personal financial assistant**.
-
-Your goals:
-• Help the user manage finances by providing insights, budgeting advice, and summaries.
-• Currency is always **Rupee (₹)**.
-• Be conversational — if data is missing, politely ask for it instead of throwing an error.
-• Keep answers short, clear, and formatted with markdown.
-
----
-
-### Transaction Handling
-- When a user says something like *"Add 50 for coffee"* or *"Spent 200 on groceries"*:
-  - Use **createTransactionFromTextTool**.
-  - If any field is missing (amount, description, category, or source), ask for it.
-  - If a pending transaction exists, resume filling in missing fields.
-
----
-
-### Category Handling
-- If a user says *"Create a new category for Pets"*:
-  - Use **createCategoryFromTextTool**.
-  - If any field is missing, ask follow-up questions.
-  - If a pending category exists, resume filling in missing fields.
-
----
-
-### General Guidelines
-- Be conversational and encouraging.
-- Never guess — always ask politely for missing details.
-- Resume any pending transaction/category flow when new info arrives.
-- End responses naturally, e.g. “Would you like to do anything else?”
-`;
-
-  const contextBlock = input.transactionContext
-    ? `Here’s the user's transaction data:\n${input.transactionContext}\n
-Here are the user’s categories:\n${input.availableCategories}\n
-Here are the payment sources:\n${input.availablePaymentMethods}\n`
-    : "";
-
-  const historyBlock = formattedHistory
-    ? `Chat History:\n${formattedHistory}\n`
-    : "";
-
-  const finalPrompt = `${systemMessage}\n${pendingContext}\n\n${contextBlock}${historyBlock}User's new message:\n${input.message}\n\nYour response:`;
-
-  /* ----------------------------- 4. LLM Response ----------------------------- */
-  const llmResponse = await chatPrompt({
-    prompt: finalPrompt,
+  // Run the Genkit flow
+  return await runFlow(chatFlow, {
+    history: genkitHistory,
+    message: input.message,
+    transactionContext: input.transactionContext,
+    availableCategories: input.availableCategories,
+    availablePaymentMethods: input.availablePaymentMethods,
   });
-
-  const modelMessage = llmResponse?.messages?.find(
-    (m: any) => m.role === "model"
-  );
-
-  if (!modelMessage) {
-    return {
-      response: "Sorry, I couldn’t generate a response. Could you try again?",
-      history: [],
-    };
-  }
-
-  const responseText =
-    llmResponse?.output?.response ||
-    modelMessage?.content?.find((c: any) => c.text)?.text;
-  const toolRequest = modelMessage?.content?.find(
-    (c: any) => c.toolRequest
-  )?.toolRequest;
-
-  /* ----------------------------- 5. Handle Tools ----------------------------- */
-
-  // 🧰 Handle Transaction Tool
-  if (toolRequest?.name === "createTransactionFromTextTool") {
-    const transactionResult = await createTransactionFromTextTool.run({
-      text: input.message,
-      availableCategories:
-        input.availableCategories
-          ?.split("\n")
-          .map((line) => line.split("|")[1] || "") ?? [],
-      availablePaymentSources: input.availablePaymentMethods?.split("\n") ?? [],
-    });
-
-    // Merge with any pending transaction data (if continuing a flow)
-    const previousTxn = (lastMessage as any)?.transactionData || {};
-    const txn = { ...previousTxn, ...(transactionResult?.result || {}) };
-
-    // Ask for missing fields
-    const missing: string[] = [];
-    if (!txn?.description) missing.push("description");
-    if (!txn?.amount) missing.push("amount");
-    if (!txn?.category) missing.push("category");
-    if (!txn?.source) missing.push("payment source");
-
-    if (missing.length > 0) {
-      return {
-        response: `I’m almost ready to add that transaction! Could you tell me ${missing
-          .map((m) => `the **${m}**`)
-          .join(" and ")}?`,
-        transactionData: txn,
-      };
-    }
-
-    // Everything is present
-    return {
-      response: `✅ Got it — **${txn.description}** for **₹${txn.amount}** in **${txn.category}** (via **${txn.source}**).  
-Should I go ahead and save this transaction?`,
-      transactionData: txn,
-    };
-  }
-
-  // 🧰 Handle Category Tool
-  if (toolRequest?.name === "createCategoryFromTextTool") {
-    const categoryResult = await createCategoryFromTextTool.run({
-      text: input.message,
-      availableCategories:
-        input.availableCategories
-          ?.split("\n")
-          .map((line) => line.split("|")[1] || "") ?? [],
-      availablePaymentSources: input.availablePaymentMethods?.split("\n") ?? [],
-    });
-
-    // Merge with any pending category data (if continuing a flow)
-    const previousCat = (lastMessage as any)?.categoryData || {};
-    const cat = { ...previousCat, ...(categoryResult?.result || {}) };
-
-    if (!cat?.name) {
-      return {
-        response:
-          "Hmm, I couldn’t catch the category name. Could you please tell me what category you’d like to create?",
-      };
-    }
-
-    if (!cat?.icon) {
-      return {
-        response: `What icon should we use for the **${cat.name}** category? (e.g., 🐾, 🍔, 💰)`,
-        categoryData: cat,
-      };
-    }
-
-    const budgetMessage = cat.budget
-      ? `with a suggested budget of ₹${cat.budget}.`
-      : "Would you like to set a budget for it?";
-
-    return {
-      response: `✅ New category **“${cat.name}”** created with icon **${cat.icon}** — ${budgetMessage}`,
-      categoryData: cat,
-    };
-  }
-
-  /* ----------------------------- 6. Default Response ----------------------------- */
-  return {
-    response:
-      responseText ??
-      "I'm not sure how to help with that just yet — could you clarify what you'd like to do?",
-  };
 }
