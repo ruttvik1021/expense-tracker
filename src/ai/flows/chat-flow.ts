@@ -8,8 +8,7 @@
  */
 
 import { ai } from "@/ai/genkit";
-import { z } from "genkit";
-import { defineFlow, runFlow } from "genkit/flow";
+import { z, defineFlow, runFlow } from "genkit";
 import { createTransactionFromTextTool } from "./create-transaction-from-text";
 import { createCategoryFromTextTool } from "./create-category-from-text";
 
