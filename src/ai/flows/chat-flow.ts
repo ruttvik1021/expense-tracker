@@ -431,7 +431,7 @@ Your Tasks:
 
     // 1. Handle critical missing info
     if (!txn?.amount || !txn?.description) {
-      let missingParts = [];
+      const missingParts = [];
       if (!txn?.amount) missingParts.push("the amount");
       if (!txn?.description) missingParts.push("a description");
 
