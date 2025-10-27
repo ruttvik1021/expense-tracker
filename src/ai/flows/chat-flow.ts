@@ -75,14 +75,13 @@ const chatPrompt = ai.definePrompt({
   input: { schema: ChatInputSchema },
   output: { schema: ChatOutputSchema },
   tools: [createTransactionFromTextTool, createCategoryFromTextTool],
-  // returnToolRequests: true,
   prompt: `{{{prompt}}}`,
 });
 
 /* --------------------------- Main Chat Function --------------------------- */
 
 export async function chat(input: {
-  history: { role: "user" | "model"; parts: { text: string }[] }[];
+  history: { role: "user" | "model"; parts: { text: string }[]; transactionData?: any; categoryData?: any }[];
   message: string;
   transactionContext: string;
   availableCategories: string;
@@ -96,7 +95,27 @@ export async function chat(input: {
     })
     .join("\n");
 
-  /* ----------------------------- 2. Build Prompt ----------------------------- */
+  /* ----------------------------- 2. Detect Pending Context ----------------------------- */
+  const lastMessage = input.history[input.history.length - 1];
+  let pendingContext = "";
+
+  if (lastMessage && (lastMessage as any).transactionData) {
+    pendingContext = `\n\nThe user is currently creating a transaction. 
+Here’s what’s known so far:
+${JSON.stringify((lastMessage as any).transactionData, null, 2)}
+If the user's next message provides missing details (like source, category, or amount), 
+please continue completing this transaction instead of starting a new one.`;
+  }
+
+  if (lastMessage && (lastMessage as any).categoryData) {
+    pendingContext = `\n\nThe user is currently creating a category. 
+Here’s what’s known so far:
+${JSON.stringify((lastMessage as any).categoryData, null, 2)}
+If the user's next message provides missing details (like icon, budget, or name), 
+please continue completing this category instead of starting a new one.`;
+  }
+
+  /* ----------------------------- 3. Build Prompt ----------------------------- */
   const systemMessage = `
 You are a friendly, empathetic, and smart **personal financial assistant**.
 
@@ -111,20 +130,16 @@ Your goals:
 ### Transaction Handling
 - When a user says something like *"Add 50 for coffee"* or *"Spent 200 on groceries"*:
   - Use **createTransactionFromTextTool**.
-  - If any field is missing (amount, description, category, or source), ask for it:
-    - e.g. “What category does this belong to?” or “How did you pay?”
-  - Once all info is available, confirm clearly:
-    > “Got it — ₹50 for coffee in the ‘Food’ category via Credit Card. Should I save it?”
+  - If any field is missing (amount, description, category, or source), ask for it.
+  - If a pending transaction exists, resume filling in missing fields.
 
 ---
 
 ### Category Handling
-- If the user says *"Create a new category for Pets"*:
+- If a user says *"Create a new category for Pets"*:
   - Use **createCategoryFromTextTool**.
-  - If any field is missing (icon, budget, etc.), ask follow-up questions like:
-    > “What icon should we use for this category?” or “Would you like to set a budget?”
-  - After creation, confirm:
-    > “New category ‘Pets’ 🐾 created. Would you like to add a budget for it?”
+  - If any field is missing, ask follow-up questions.
+  - If a pending category exists, resume filling in missing fields.
 
 ---
 
@@ -145,10 +160,9 @@ Here are the payment sources:\n${input.availablePaymentMethods}\n`
     ? `Chat History:\n${formattedHistory}\n`
     : "";
 
-  const finalPrompt = `${systemMessage}\n\n${contextBlock}${historyBlock}User's new message:\n${input.message}\n\nYour response:`;
+  const finalPrompt = `${systemMessage}\n${pendingContext}\n\n${contextBlock}${historyBlock}User's new message:\n${input.message}\n\nYour response:`;
 
-
-  /* ----------------------------- 3. LLM Response ----------------------------- */
+  /* ----------------------------- 4. LLM Response ----------------------------- */
   const llmResponse = await chatPrompt({
     prompt: finalPrompt,
   });
@@ -171,7 +185,7 @@ Here are the payment sources:\n${input.availablePaymentMethods}\n`
     (c: any) => c.toolRequest
   )?.toolRequest;
 
-  /* ----------------------------- 4. Handle Tools ----------------------------- */
+  /* ----------------------------- 5. Handle Tools ----------------------------- */
 
   // 🧰 Handle Transaction Tool
   if (toolRequest?.name === "createTransactionFromTextTool") {
@@ -184,9 +198,11 @@ Here are the payment sources:\n${input.availablePaymentMethods}\n`
       availablePaymentSources: input.availablePaymentMethods?.split("\n") ?? [],
     });
 
-    const txn = transactionResult?.result;
+    // Merge with any pending transaction data (if continuing a flow)
+    const previousTxn = (lastMessage as any)?.transactionData || {};
+    const txn = { ...previousTxn, ...(transactionResult?.result || {}) };
 
-    // Ask for missing fields instead of erroring
+    // Ask for missing fields
     const missing: string[] = [];
     if (!txn?.description) missing.push("description");
     if (!txn?.amount) missing.push("amount");
@@ -221,7 +237,9 @@ Should I go ahead and save this transaction?`,
       availablePaymentSources: input.availablePaymentMethods?.split("\n") ?? [],
     });
 
-    const cat = categoryResult?.result;
+    // Merge with any pending category data (if continuing a flow)
+    const previousCat = (lastMessage as any)?.categoryData || {};
+    const cat = { ...previousCat, ...(categoryResult?.result || {}) };
 
     if (!cat?.name) {
       return {
@@ -247,7 +265,7 @@ Should I go ahead and save this transaction?`,
     };
   }
 
-  /* ----------------------------- 5. Default Response ----------------------------- */
+  /* ----------------------------- 6. Default Response ----------------------------- */
   return {
     response:
       responseText ??
