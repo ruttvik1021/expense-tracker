@@ -8,7 +8,7 @@
  */
 
 import { ai } from "@/ai/genkit";
-import { z, defineFlow, runFlow } from "genkit";
+import { z } from "genkit";
 import { createTransactionFromTextTool } from "./create-transaction-from-text";
 import { createCategoryFromTextTool } from "./create-category-from-text";
 
@@ -112,7 +112,7 @@ You have tools to create transactions and categories. Your primary job is to ask
 
 /* ----------------------------- Genkit Flow ----------------------------- */
 
-const chatFlow = defineFlow(
+const chatFlow = ai.defineFlow(
   {
     name: "chatAgentFlow",
     inputSchema: ChatInputSchema,
@@ -193,7 +193,7 @@ export async function chat(input: {
   }));
 
   // Run the Genkit flow
-  return await runFlow(chatFlow, {
+  return await ai.runFlow(chatFlow, {
     history: genkitHistory,
     message: input.message,
     transactionContext: input.transactionContext,
