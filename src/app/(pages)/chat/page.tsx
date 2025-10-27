@@ -135,12 +135,18 @@ export default function ChatPage() {
   const handleSendMessage = (newMessage?: string) => {
     if (!message.trim() && !newMessage) return;
 
+    const cleanedHistory = history.map((msg) => ({
+    ...msg,
+    transactionData: undefined,
+    categoryData: undefined,
+    }));
+
     const userMessage: ChatMessage = {
       role: "user",
       parts: [{ text: newMessage ? newMessage : message }],
     };
 
-    const newHistory = [...history, userMessage];
+    const newHistory = [...cleanedHistory, userMessage];
     setHistory(newHistory);
     setMessage("");
 
