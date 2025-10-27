@@ -135,11 +135,32 @@ export default function ChatPage() {
   const handleSendMessage = (newMessage?: string) => {
     if (!message.trim() && !newMessage) return;
 
-    const cleanedHistory = history.map((msg) => ({
-    ...msg,
-    transactionData: undefined,
-    categoryData: undefined,
-    }));
+    const cleanedHistory = history.map((msg) => {
+      let text = msg.parts?.[0]?.text || "";
+  
+      if (msg.transactionData) {
+        text += `\n\n[Unconfirmed Transaction Data]\n${JSON.stringify(
+          msg.transactionData,
+          null,
+          2
+        )}`;
+      }
+  
+      if (msg.categoryData) {
+        text += `\n\n[Unconfirmed Category Data]\n${JSON.stringify(
+          msg.categoryData,
+          null,
+          2
+        )}`;
+      }
+  
+      return {
+        ...msg,
+        parts: [{ text }],
+        transactionData: undefined,
+        categoryData: undefined,
+      };
+    });
 
     const userMessage: ChatMessage = {
       role: "user",
