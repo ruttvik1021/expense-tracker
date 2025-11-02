@@ -1,8 +1,11 @@
 "use client";
 
-import { Menu, Trash2, X } from "lucide-react";
+import { Menu, MessageSquare, Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { ScrollArea } from "../ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { useDeviceType } from "@/hooks/useMediaQuery";
 
 interface SidebarContentProps {
   allSavedConversation: {
@@ -14,6 +17,7 @@ interface SidebarContentProps {
   handleSelectSavedConversation: (history: any[], id: string) => void;
   handleDeleteConversation: (id: string) => void;
   startNewChat: () => void;
+  selectedConversationId?: string;
 }
 
 // SidebarContent as reusable subcomponent
@@ -22,101 +26,230 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
   handleSelectSavedConversation,
   handleDeleteConversation,
   startNewChat,
+  selectedConversationId,
 }) => {
-  return (
-    <div className="space-y-2 p-2 w-full">
-      <Button
-        variant="ghost"
-        className="w-full justify-start text-left overflow-hidden text-ellipsis whitespace-nowrap"
-        onClick={startNewChat}
-      >
-        New Chat
-      </Button>
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-      {allSavedConversation.map((conv) => (
-        <div
-          key={conv._id}
-          className="flex items-center justify-between group gap-2"
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    await handleDeleteConversation(id);
+    setDeletingId(null);
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="p-4 border-b border-border">
+        <Button
+          onClick={startNewChat}
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+          size="lg"
         >
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-left overflow-hidden text-ellipsis whitespace-nowrap"
-            onClick={() =>
-              handleSelectSavedConversation(JSON.parse(conv.history), conv._id)
-            }
-          >
-            {conv.title || new Date(conv.createdAt).toLocaleString()}
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => handleDeleteConversation(conv._id)}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
+          <Plus className="w-5 h-5 mr-2" />
+          New Chat
+        </Button>
+      </div>
+
+      {/* Conversations List */}
+      <ScrollArea className="flex-1 px-2 py-3">
+        <div className="space-y-1">
+          {allSavedConversation.length === 0 ? (
+            <div className="text-center text-muted-foreground text-sm py-8 px-4">
+              <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
+              <p>No saved conversations yet.</p>
+              <p className="text-xs mt-1">Start a new chat to begin!</p>
+            </div>
+          ) : (
+            allSavedConversation.map((conv) => {
+              const isSelected = selectedConversationId === conv._id;
+              const isDeleting = deletingId === conv._id;
+
+              return (
+                <div
+                  key={conv._id}
+                  className={cn(
+                    "group relative flex items-center gap-2 rounded-lg transition-all duration-200",
+                    isSelected && "bg-accent/50",
+                    isDeleting && "opacity-50 pointer-events-none"
+                  )}
+                >
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "flex-1 justify-start text-left h-auto py-3 px-3 hover:bg-accent/70",
+                      isSelected &&
+                        "bg-accent text-accent-foreground font-medium"
+                    )}
+                    onClick={() =>
+                      handleSelectSavedConversation(
+                        JSON.parse(conv.history),
+                        conv._id
+                      )
+                    }
+                  >
+                    <MessageSquare className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-sm truncate">
+                        {conv.title || "Untitled Chat"}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {new Date(conv.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={cn(
+                      "opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 flex-shrink-0 hover:bg-destructive hover:text-destructive-foreground mr-2",
+                      isSelected && "opacity-100"
+                    )}
+                    onClick={() => handleDelete(conv._id)}
+                    disabled={isDeleting}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              );
+            })
+          )}
         </div>
-      ))}
+      </ScrollArea>
     </div>
   );
 };
+
+interface ConversationsSidebarProps extends SidebarContentProps {
+  renderMobileToggle?: (toggleFn: () => void) => React.ReactNode;
+}
 
 export const ConversationsSidebar = ({
   allSavedConversation,
   handleSelectSavedConversation,
   handleDeleteConversation,
   startNewChat,
-}: SidebarContentProps) => {
+  selectedConversationId,
+}: ConversationsSidebarProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { isMobile } = useDeviceType();
+  const [internalSelectedId, setInternalSelectedId] = useState<
+    string | undefined
+  >(selectedConversationId);
 
-  // ✅ Don't render the sidebar if there are no conversations
-  if (!allSavedConversation.length) return <></>;
+  const handleSelectConversation = (history: any[], id: string) => {
+    setInternalSelectedId(id);
+    handleSelectSavedConversation(history, id);
+    setMobileOpen(false); // Close mobile sidebar after selection
+  };
+
+  const handleNewChat = () => {
+    setInternalSelectedId(undefined);
+    startNewChat();
+    setMobileOpen(false);
+  };
+
+  const toggleMobileSidebar = () => setMobileOpen(!mobileOpen);
 
   return (
     <>
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex h-screen bg-drawer text-primary border-r border-border shadow-md z-20">
-        <SidebarContent
-          allSavedConversation={allSavedConversation}
-          handleSelectSavedConversation={handleSelectSavedConversation}
-          handleDeleteConversation={handleDeleteConversation}
-          startNewChat={startNewChat}
-        />
-      </aside>
-
-      {/* Mobile: Top Bar with Hamburger */}
-      <div className="md:hidden flex items-center justify-between bg-drawer border-b border-border shadow-md">
-        <h2 className="text-3xl font-bold tracking-tight text-blue-700">
-          Conversations
-        </h2>
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle sidebar"
-        >
-          {mobileOpen ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Menu className="h-6 w-6" />
-          )}
-        </button>
-      </div>
-
-      {/* Mobile Sidebar Drawer */}
-      {mobileOpen && (
-        <div className="md:hidden fixed inset-0 z-30 flex">
-          <div className="w-[260px] h-full bg-drawer text-black shadow-lg z-40">
-            <SidebarContent
-              allSavedConversation={allSavedConversation}
-              handleSelectSavedConversation={handleSelectSavedConversation}
-              handleDeleteConversation={handleDeleteConversation}
-              startNewChat={startNewChat}
-            />
-          </div>
-          <div
-            className="flex-1 bg-black bg-opacity-40 z-30"
-            onClick={() => setMobileOpen(false)}
+      {/* Desktop Sidebar - Always visible on large screens */}
+      {!isMobile && (
+        <aside className="hidden lg:flex h-screen bg-card border-r border-border shadow-sm z-20">
+          <SidebarContent
+            allSavedConversation={allSavedConversation}
+            handleSelectSavedConversation={handleSelectConversation}
+            handleDeleteConversation={handleDeleteConversation}
+            startNewChat={handleNewChat}
+            selectedConversationId={internalSelectedId}
           />
-        </div>
+        </aside>
+      )}
+
+      {/* Mobile Toggle - Rendered via render prop if provided */}
+      {isMobile && (
+        <Button
+          onClick={toggleMobileSidebar}
+          variant="outline"
+          size="sm"
+          aria-label="Toggle conversations"
+        >
+          <MessageSquare className="h-4 w-4 mr-1.5 sm:mr-2" />
+          <span className="text-xs sm:text-sm">Chats</span>
+        </Button>
+      )}
+
+      {/* Mobile/Tablet Sidebar Drawer */}
+      {mobileOpen && isMobile && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm transition-opacity"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Drawer */}
+          <aside
+            className={cn(
+              "lg:hidden fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-card shadow-2xl z-50",
+              "transform transition-transform duration-300 ease-in-out",
+              mobileOpen ? "translate-x-0" : "-translate-x-full"
+            )}
+          >
+            {/* Mobile Header */}
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <MessageSquare className="w-5 h-5" />
+                Conversations
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close sidebar"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            {/* Sidebar Content */}
+            <div className="h-[calc(100%-73px)]">
+              <SidebarContent
+                allSavedConversation={allSavedConversation}
+                handleSelectSavedConversation={handleSelectConversation}
+                handleDeleteConversation={handleDeleteConversation}
+                startNewChat={handleNewChat}
+                selectedConversationId={internalSelectedId}
+              />
+            </div>
+          </aside>
+        </>
       )}
     </>
+  );
+};
+
+// Mobile Toggle Button Component - to be used in the header
+export const ConversationsSidebarToggle = ({
+  onToggle,
+}: {
+  onToggle: () => void;
+}) => {
+  return (
+    <Button
+      onClick={onToggle}
+      variant="outline"
+      size="sm"
+      className="lg:hidden"
+      aria-label="Toggle conversations"
+    >
+      <Menu className="h-4 w-4 mr-2" />
+      <span className="text-sm">Chats</span>
+    </Button>
   );
 };

@@ -4,7 +4,7 @@ import { chat } from "@/ai/flows/chat-flow";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Loader2, PlusCircle, Sparkles } from "lucide-react";
+import { Loader2, Menu, PlusCircle, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 
 import { categoryFormInitialValues } from "@/components/category/categoryForm";
@@ -290,63 +290,73 @@ export default function ChatPage() {
     setSaveEnabled(false);
   };
 
-  const isNewFlowEnabled = false;
+  const isNewFlowEnabled = true;
 
   return (
-    <>
-      {isNewFlowEnabled && (
-        <>
-          <ConversationsSidebar
-            allSavedConversation={allSavedConversation}
-            handleSelectSavedConversation={handleSelectSavedConversation}
-            handleDeleteConversation={handleDeleteConversation}
-            startNewChat={startNewChat}
-          />
-          {isConversationByIdLoading && <Loader />}
-        </>
-      )}
-
-      <div className="flex flex-col justify-between h-full">
-        {isNewFlowEnabled && (
-          <>
-            <div className="flex items-center justify-between px-4 pt-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="save-toggle"
-                  checked={saveEnabled}
-                  onCheckedChange={setSaveEnabled}
-                />
-                <Label htmlFor="save-toggle" className="text-sm">
-                  Save Conversation
-                </Label>
-              </div>
+    <div className="flex h-screen overflow-hidden">
+      <div className="hidden sm:block">
+        <ConversationsSidebar
+          allSavedConversation={allSavedConversation}
+          handleSelectSavedConversation={handleSelectSavedConversation}
+          handleDeleteConversation={handleDeleteConversation}
+          startNewChat={startNewChat}
+          selectedConversationId={conversationId || undefined}
+        />
+      </div>
+      <div className="flex flex-col flex-1 h-full">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border bg-card/50 backdrop-blur-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Mobile toggle is rendered inside ConversationsSidebar */}
+            <div className="block sm:hidden">
+              <ConversationsSidebar
+                allSavedConversation={allSavedConversation}
+                handleSelectSavedConversation={handleSelectSavedConversation}
+                handleDeleteConversation={handleDeleteConversation}
+                startNewChat={startNewChat}
+                selectedConversationId={conversationId || undefined}
+              />
             </div>
-          </>
-        )}
+
+            <div className="flex items-center gap-2">
+              <Switch
+                id="save-toggle"
+                checked={saveEnabled}
+                onCheckedChange={setSaveEnabled}
+              />
+              <Label
+                htmlFor="save-toggle"
+                className="text-xs sm:text-sm font-medium"
+              >
+                Save
+              </Label>
+            </div>
+          </div>
+        </div>
 
         {/* Scrollable chat messages */}
         <div
           ref={chatContainerRef}
-          className="flex-1 overflow-y-auto p-6 space-y-6"
+          className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6"
         >
           {history.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
-              <Sparkles className="h-16 w-16" />
-              <p className="mt-4 text-lg">No messages yet.</p>
-              <p className="text-sm">
+            <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground px-4">
+              <Sparkles className="h-12 w-12 sm:h-16 sm:w-16 text-primary/70" />
+              <p className="mt-4 text-base sm:text-lg font-semibold">
+                No messages yet.
+              </p>
+              <p className="text-xs sm:text-sm max-w-md mx-auto mt-2">
                 Start the conversation by asking something like:
                 <br />
-                <em className="mt-2 block">
+                <em className="mt-3 block text-muted-foreground/80">
                   &quot;How much did I spend on dining out this month?&quot;
                 </em>
-                <em className="mt-2 block">
-                  &quot;Ask questions, add transactions, or create
-                  categories.&quot;
+                <em className="mt-2 block text-muted-foreground/80">
+                  &quot;Add 50 rupees for coffee&quot;
                 </em>
                 {(isTransactionsLoading ||
                   isCategoriesLoading ||
                   isSourcesLoading) && (
-                  <em className="mt-2 block">
+                  <em className="mt-3 block text-primary">
                     Getting your transactional and category context...
                   </em>
                 )}
@@ -357,24 +367,26 @@ export default function ChatPage() {
               <div
                 key={index}
                 className={cn(
-                  "flex items-start gap-4 ",
+                  "flex items-start gap-2 sm:gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300",
                   msg.role === "user" ? "justify-end" : ""
                 )}
               >
                 <div
                   className={cn(
-                    "max-w-md rounded-lg px-4 py-3",
+                    "max-w-[85%] sm:max-w-md rounded-lg px-3 sm:px-4 py-2 sm:py-3 shadow-sm",
                     msg.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted"
                   )}
                 >
-                  <ReactMarkdown>{msg.parts[0].text}</ReactMarkdown>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown>{msg.parts[0].text}</ReactMarkdown>
+                  </div>
                   {msg.transactionData && (
                     <Button
                       variant="secondary"
                       size="sm"
-                      className="mt-3"
+                      className="mt-3 w-full sm:w-auto"
                       onClick={() =>
                         handleCreateTransaction(msg.transactionData!, index)
                       }
@@ -387,7 +399,7 @@ export default function ChatPage() {
                     <Button
                       variant="secondary"
                       size="sm"
-                      className="mt-3"
+                      className="mt-3 w-full sm:w-auto"
                       onClick={() =>
                         handleCreateCategory(msg.categoryData!, index)
                       }
@@ -402,8 +414,8 @@ export default function ChatPage() {
           )}
 
           {isPending && (
-            <div className="flex items-start gap-4">
-              <div className="max-w-md rounded-lg bg-muted px-4 py-3">
+            <div className="flex items-start gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="max-w-[85%] sm:max-w-md rounded-lg bg-muted px-3 sm:px-4 py-2 sm:py-3 shadow-sm">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <span>Thinking...</span>
@@ -413,18 +425,21 @@ export default function ChatPage() {
           )}
         </div>
 
-        <Input
-          className="w-full"
-          type="textarea"
-          placeholder="Ask a question or add a transaction..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={(e) =>
-            e.key === "Enter" && !isPending && handleSendMessage()
-          }
-          disabled={isPending}
-        />
+        {/* Input Area */}
+        <div className="border-t border-border bg-card/50 backdrop-blur-sm p-4 sm:p-6">
+          <Input
+            className="w-full"
+            type="textarea"
+            placeholder="Ask a question or add a transaction..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) =>
+              e.key === "Enter" && !isPending && handleSendMessage()
+            }
+            disabled={isPending}
+          />
+        </div>
       </div>
-    </>
+    </div>
   );
 }
