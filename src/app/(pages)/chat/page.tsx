@@ -151,28 +151,35 @@ export default function ChatPage() {
       // 3. Call the server action.
       // We pass the *original* history (before adding the new user message)
       // as this is what the AI agent expects.
-      const aiResponse = await chat({
-        history: history, // <-- Pass the original history
-        message: messageToSend, // <-- Pass the new message
-        transactionContext: String(currentMonthTransactionData),
-        availableCategories: String(currentMonthCategoryData),
-        availablePaymentMethods: String(paymentSources),
-      });
+      try {
+        const aiResponse = await chat({
+          history: history, // <-- Pass the original history
+          message: messageToSend, // <-- Pass the new message
+          transactionContext: String(currentMonthTransactionData),
+          availableCategories: String(currentMonthCategoryData),
+          availablePaymentMethods: String(paymentSources),
+        });
 
-      // 4. Create the final history with the AI's response
-      const updatedHistory: ChatMessage[] = [
-        ...newHistoryForUI, // This is the history with the user's new message
-        {
-          role: "model",
-          parts: [{ text: aiResponse.response }],
-          transactionData: aiResponse?.transactionData, // This will be populated by the agent when ready
-          categoryData: aiResponse?.categoryData, // This will be populated by the agent when ready
-        },
-      ];
+        // 4. Create the final history with the AI's response
+        const updatedHistory: ChatMessage[] = [
+          ...newHistoryForUI, // This is the history with the user's new message
+          {
+            role: "model",
+            parts: [{ text: aiResponse.response }],
+            transactionData: aiResponse?.transactionData, // This will be populated by the agent when ready
+            categoryData: aiResponse?.categoryData, // This will be populated by the agent when ready
+          },
+        ];
 
-      // 5. Set the final state and save
-      setHistory(updatedHistory);
-      await saveConversation(updatedHistory);
+        // 5. Set the final state and save
+        setHistory(updatedHistory);
+        await saveConversation(updatedHistory);
+      } catch (error) {
+        console.error("Chat error:", error);
+        toast.error("Failed to send message. Please try again.");
+        // Revert the optimistic update
+        setHistory(history);
+      }
     });
   };
 
