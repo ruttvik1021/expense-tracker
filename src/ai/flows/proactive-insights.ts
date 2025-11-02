@@ -1,10 +1,10 @@
 "use server";
 
 /**
- * @fileOverview A flow for providing proactive, personalized insights based on spending history.
+ * @fileOverview A flow for providing proactive, personalized financial insights based on spending history.
  *
- * - getProactiveInsights - A function that generates only a spending summary
- *   and returns empty arrays for articles and suggestions.
+ * - getProactiveInsights - A comprehensive financial analysis function that generates
+ *   spending summaries, actionable recommendations, and financial health metrics.
  */
 
 import { ai } from "@/ai/genkit";
@@ -16,13 +16,11 @@ const ProactiveInsightsInputSchema = z.object({
     .describe("A record of transactions from the current month."),
   currentMonthCategories: z
     .string()
-    .describe("A record of categories from the current month."),
+    .describe("A record of categories with budgets from the current month."),
   lastMonthTransactions: z
     .string()
     .describe("A record of transactions from the last month."),
-  budget: z
-    .string()
-    .describe("Total budget for the month."),
+  budget: z.string().describe("Total monthly budget allocated."),
 });
 export type ProactiveInsightsInput = z.infer<
   typeof ProactiveInsightsInputSchema
@@ -32,7 +30,7 @@ const ProactiveInsightsOutputSchema = z.object({
   spendingSummary: z
     .string()
     .describe(
-      "A brief, conversational summary comparing last month's and this month's spending."
+      "A comprehensive, actionable financial analysis comparing spending patterns and providing personalized recommendations."
     ),
 });
 export type ProactiveInsightsOutput = z.infer<
@@ -57,18 +55,21 @@ const summaryPrompt = ai.definePrompt({
       spendingSummary: z.string(),
     }),
   },
-  prompt: `Analyze the provided financial data and generate a valid JSON object with a single key, 'spendingSummary'. The value of this key must be a pure Markdown string, containing only headings, lists, bold, and italics.
+  prompt: `You are an expert financial advisor analyzing a user's spending patterns. Generate a comprehensive, personalized financial insights report in pure Markdown format.
 
 ---
-### Data
-(amount | item | date) 
+### 💰 Financial Data
+
 **Current Month Transactions:**
+(Format: amount | description | date)
 {{{currentMonthTransactions}}}
 
 **Category Budgets:**
+(Format: categoryId | categoryName | budget)
 {{{currentMonthCategories}}}
 
 **Last Month Transactions:**
+(Format: amount | description | date)
 {{{lastMonthTransactions}}}
 
 **Monthly Budget:**
@@ -76,40 +77,91 @@ const summaryPrompt = ai.definePrompt({
 
 ---
 
-### Instructions
+### 📋 Report Structure
 
-1.  **Summary**
-    * **Total spending:** Total expenses for the current month.
-    * **Net savings:** Total income minus total expenses.
-    * **Insights:**
-        * Highlight the highest spending category.
-        * Compare total spending to last month (increase/decrease).
+Generate a well-formatted Markdown report with the following sections:
 
-2.  **Category Breakdown**
-    * Provide a spending health status for categories flagged as 'Not-so-healthy' or 'Watchful'.
-    * For each flagged category, provide a brief reason and a short, actionable suggestion.
-    * **Status Rules:**
-        * 'Not-so-healthy': Spending is >20% over budget OR there are 2+ unusually large transactions.
-        * 'Watchful': Spending is between 5% and 20% over budget OR there's a rising month-over-month trend.
+#### 1. 📊 **Executive Summary**
+- Total spending this month (₹)
+- Comparison with last month (% increase/decrease)
+- Budget utilization percentage
+- Net position (under/over budget)
+- Quick verdict: "Excellent", "Good", "Needs Attention", or "Critical"
 
-3.  **Spending Trends**
-    * Identify notable weekly or daily spending patterns.
-    * Highlight any unusual transactions or spending spikes.
+#### 2. 💸 **Top Insights** (3-4 key findings)
+Identify the most important patterns:
+- Highest spending category
+- Biggest increase/decrease compared to last month
+- Any concerning trends
+- Positive improvements if any
 
-4.  **Recommendations**
-    * Provide 2-3 short, actionable suggestions to help the user stay on budget and optimize savings.
+#### 3. 📂 **Category Health Analysis**
+For each category, provide:
+- **Healthy** 🟢: Spending is within budget (<95%)
+- **Watchful** 🟡: Spending is 95-110% of budget OR showing upward trend
+- **Not-so-healthy** 🔴: Spending is >110% of budget OR has unusual large transactions
 
-5.  **Formatting**
-    * Use **bold** for key terms.
-    * Ensure all output is valid Markdown.
-    * Use clear bullet points and friendly, concise language.
-    * Total length must be between around 200-300 words.
-    * Add the Rupee symbol (₹) where appropriate.
+For Watchful and Not-so-healthy categories:
+- Current spending vs. budget
+- Reason for the status
+- **Actionable tip** (1-2 sentences)
 
-If the monthly budget is not updated, advise the user to update it from their profile.`,
+#### 4. 📈 **Spending Trends & Patterns**
+- Weekly/daily spending patterns
+- Unusual transactions or spikes
+- Recurring expenses identified
+- Comparison with previous month trends
+
+#### 5. 💡 **Smart Recommendations** (4-5 actionable tips)
+Provide specific, personalized suggestions:
+- Budget adjustments
+- Money-saving opportunities
+- Spending habit improvements
+- Emergency fund guidance
+- Investment/savings suggestions
+
+#### 6. 🎯 **Action Items for Next Week**
+List 3-4 immediate, specific actions the user can take.
+
+---
+
+### ✅ Quality Guidelines
+
+**DO:**
+- Use **bold** for important numbers and terms
+- Add ₹ symbol for all amounts
+- Be specific with percentages and amounts
+- Use emojis sparingly (max 1 per section header)
+- Keep tone friendly but professional
+- Provide data-driven insights, not generic advice
+- Calculate accurate percentages and comparisons
+- Format numbers clearly (e.g., ₹15,430.50)
+
+**DON'T:**
+- Use code blocks or JSON
+- Give generic advice without data backing
+- Be judgmental or negative
+- Exceed 400 words total
+- Include external links or references
+- Use complex financial jargon without explanation
+
+**Special Cases:**
+- If no budget is set: Strongly recommend setting one and explain why
+- If no transactions: Encourage starting to track expenses
+- If over budget significantly (>120%): Provide urgent tips with empathy
+- If under budget: Congratulate but suggest savings/investment options
+
+**Format:**
+- Use ## for main section headers
+- Use **bold** for emphasis
+- Use bullet points (•) for lists
+- Use > for important callouts or quotes
+- Keep paragraphs short (2-3 lines max)
+
+Generate a report that feels like advice from a caring financial advisor who knows the user's specific situation.`,
 });
 
-// Flow: use the summary prompt, then return empty arrays for other fields
+// Flow: use the summary prompt with enhanced error handling
 const proactiveInsightsFlow = ai.defineFlow(
   {
     name: "proactiveInsightsFlow",
@@ -117,9 +169,87 @@ const proactiveInsightsFlow = ai.defineFlow(
     outputSchema: ProactiveInsightsOutputSchema,
   },
   async (input) => {
-    const { output } = await summaryPrompt(input);
-    return {
-      spendingSummary: output!.spendingSummary,
-    };
+    try {
+      const { output } = await summaryPrompt(input);
+
+      // Fallback if output is empty or invalid
+      if (
+        !output ||
+        !output.spendingSummary ||
+        output.spendingSummary.trim().length < 50
+      ) {
+        return {
+          spendingSummary: generateFallbackSummary(input),
+        };
+      }
+
+      return {
+        spendingSummary: output.spendingSummary,
+      };
+    } catch (error) {
+      console.error("Error generating proactive insights:", error);
+      return {
+        spendingSummary: generateFallbackSummary(input),
+      };
+    }
   }
 );
+
+// Fallback summary generator
+function generateFallbackSummary(input: ProactiveInsightsInput): string {
+  const hasTransactions =
+    input.currentMonthTransactions &&
+    input.currentMonthTransactions.trim().length > 0;
+  const hasBudget =
+    input.budget && input.budget.trim().length > 0 && input.budget !== "0";
+
+  if (!hasTransactions) {
+    return `## 📊 Welcome to Your Financial Dashboard!
+
+### Getting Started
+You haven't recorded any transactions yet. Start tracking your expenses to get personalized insights!
+
+**Quick Actions:**
+• Add your first transaction to see where your money goes
+• Set up categories for better organization
+• Configure your monthly budget
+• Track both income and expenses
+
+> 💡 **Tip:** Regular tracking leads to better financial decisions!`;
+  }
+
+  if (!hasBudget) {
+    return `## 📊 Financial Insights
+
+### ⚠️ Set Your Budget
+You have transactions recorded, but no monthly budget set. Setting a budget helps you:
+• Track spending limits
+• Identify overspending early
+• Plan savings better
+• Make informed financial decisions
+
+**Action Required:** Update your budget from your profile settings to get detailed insights!
+
+> 💡 **Recommendation:** A good starting point is the 50/30/20 rule - 50% needs, 30% wants, 20% savings.`;
+  }
+
+  return `## 📊 Financial Insights
+
+### Summary
+Your spending data is being analyzed. Here are some general recommendations:
+
+**Best Practices:**
+• Review your transactions weekly
+• Set realistic category budgets
+• Track both fixed and variable expenses
+• Build an emergency fund (3-6 months expenses)
+• Consider the 50/30/20 budgeting rule
+
+**Next Steps:**
+• Categorize all transactions
+• Set monthly budget targets
+• Review spending patterns regularly
+• Identify areas to reduce costs
+
+> 💡 Keep tracking consistently for more personalized insights!`;
+}

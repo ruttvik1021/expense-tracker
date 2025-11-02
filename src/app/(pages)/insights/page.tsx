@@ -41,7 +41,6 @@ export default function InsightsPage() {
       transactions: currentMonthTransactionData,
       categories: currentMonthCategoryData,
       budget: String(userData?.data?.budget),
-      isBudgetLoading: isUserDataPending,
     }
   );
 
@@ -54,11 +53,12 @@ export default function InsightsPage() {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <div className="flex flex-1 flex-col gap-4 p-2 md:gap-8 md:p-2">
-        <PageHeader
-        ><div className="flex items-center gap-3">
-              <Sparkles className="h-6 w-6 text-primary" />
-              <CardTitle>Your Proactive Financial Insights</CardTitle>
-            </div></PageHeader>
+        <PageHeader>
+          <div className="flex items-center gap-3">
+            <Sparkles className="h-6 w-6 text-primary" />
+            <CardTitle>Your Proactive Financial Insights</CardTitle>
+          </div>
+        </PageHeader>
         {isLoading ? (
           <div className="flex justify-center items-center py-10">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
@@ -71,14 +71,11 @@ export default function InsightsPage() {
             <p>Could not load insights at this time.</p>
           </div>
         ) : (
-          <div className="grid gap-6">
-            {/* Spending Summary */}
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Spending Summary</h3>
-              <p>
-                <ReactMarkdown>{insights.spendingSummary}</ReactMarkdown>
-              </p>
-            </div>
+          <div className="mb-5">
+            <h3 className="font-semibold text-lg">Spending Summary</h3>
+            <p>
+              <ReactMarkdown>{insights.spendingSummary}</ReactMarkdown>
+            </p>
           </div>
         )}
       </div>

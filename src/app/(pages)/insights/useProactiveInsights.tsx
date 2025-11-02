@@ -7,25 +7,22 @@ type UseProactiveInsightsParams = {
   transactions: string;
   categories: string;
   budget: string;
-  isBudgetLoading: boolean
 };
 
 export function useProactiveInsights({
   transactions,
   categories,
   budget,
-  isBudgetLoading
 }: UseProactiveInsightsParams) {
   return useQuery<ProactiveInsightsOutput>({
-    queryKey: [queryKeys.proactiveInsights, transactions, categories],
+    queryKey: [queryKeys.proactiveInsights, transactions, categories, budget],
     queryFn: () =>
       getProactiveInsights({
-        currentMonthTransactions: JSON.stringify(transactions),
-        currentMonthCategories: JSON.stringify(categories),
+        currentMonthTransactions: transactions,
+        currentMonthCategories: categories,
         lastMonthTransactions: "", // can be added later
-        budget: budget
+        budget: budget || "0",
       }),
-    enabled: !!transactions && !!categories && !isBudgetLoading, // only fetch when data is available
-    staleTime: 1000 * 60 * 60 * 24, // 1 day
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
   });
 }
