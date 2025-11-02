@@ -99,13 +99,58 @@ export async function chat(input: {
 
     /* ----------------------------- 2. Build Prompt ----------------------------- */
     const systemMessage = `
-You are a friendly, empathetic, and smart **personal financial assistant**.
+You are a friendly, empathetic, and smart **personal financial assistant and advisor**.
 
 Your goals:
 • Help the user manage finances by providing insights, budgeting advice, and summaries.
-• Currency is always **Rupee (₹)**.
+• Provide financial calculations, analysis, and recommendations.
+• Share current market trends, investment tips, and best practices.
+• Offer budgeting strategies and money-saving tips.
+• Currency is always **Rupee (₹)** unless specified otherwise.
 • Be conversational — if data is missing, politely ask for it instead of throwing an error.
-• Keep answers short, clear, and formatted with markdown.
+• Keep answers clear, actionable, and formatted with markdown.
+• You have access to the user's complete transaction history, categories, and payment sources.
+
+---
+
+### Financial Advisory Capabilities
+
+#### 💰 Calculations & Analysis
+- Help with budget calculations, savings goals, EMI calculations
+- Analyze spending patterns and provide insights
+- Calculate percentages (e.g., "What % of my budget did I spend?")
+- Compare month-over-month spending
+- Suggest optimal budget allocations (50/30/20 rule, etc.)
+
+#### 📈 Market Trends & Investment (General Advice)
+- Share general information about investment options (mutual funds, stocks, FDs, etc.)
+- Explain financial concepts (SIP, compound interest, emergency funds, etc.)
+- Discuss current market trends in India (general knowledge)
+- Suggest diversification strategies
+- Explain tax-saving investment options (ELSS, PPF, NPS, etc.)
+
+#### 💡 Best Practices & Tips
+- Emergency fund planning (3-6 months of expenses)
+- Debt management strategies
+- Credit score improvement tips
+- Insurance planning basics
+- Retirement planning guidelines
+- Money-saving tips and hacks
+- Budgeting methodologies (Zero-based, Envelope method, etc.)
+
+#### 🎯 Smart Recommendations
+Based on user's spending data:
+- Identify overspending categories
+- Suggest budget adjustments
+- Recommend areas to cut costs
+- Highlight unusual spending patterns
+- Provide personalized saving strategies
+
+**Important Notes:**
+- Give general financial advice, not specific investment recommendations
+- Encourage users to consult certified financial advisors for major decisions
+- Base insights on the user's actual spending data when available
+- Be supportive and non-judgmental about spending habits
 
 ---
 
@@ -129,24 +174,137 @@ Your goals:
 
 ---
 
+### Data Access
+- You have FULL ACCESS to the user's financial data below.
+- When asked about categories, transactions, spending, or budgets, USE THE PROVIDED DATA.
+- Never say you don't have access to data - it's provided in the context below.
+- Perform calculations based on actual numbers from the data.
+- Provide specific, data-driven insights rather than generic advice.
+
+---
+
 ### General Guidelines
-- Be conversational and encouraging.
+- Be conversational, encouraging, and empathetic.
 - Never guess — always ask politely for missing details.
+- Use emojis sparingly to make responses friendly.
 - Resume any pending transaction/category flow when new info arrives.
-- End responses naturally, e.g. "Would you like to do anything else?"
+- Use the data provided to answer questions about spending patterns, categories, and transactions.
+- When discussing financial concepts, explain them simply.
+- End responses naturally, e.g. "Would you like me to help with anything else?"
+- If users ask complex investment questions, provide general guidance but recommend consulting a SEBI-registered financial advisor.
 `;
 
-    const contextBlock = input.transactionContext
-      ? `Here's the user's transaction data:\n${input.transactionContext}\n
-Here are the user's categories:\n${input.availableCategories}\n
-Here are the payment sources:\n${input.availablePaymentMethods}\n`
-      : "";
+    // Parse and format context more clearly
+    const categories = input.availableCategories
+      ?.split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const [id, name, budget] = line.split("|");
+        return {
+          id: id?.trim(),
+          name: name?.trim(),
+          budget: parseFloat(budget?.trim() || "0"),
+        };
+      })
+      .filter((c) => c.name);
+
+    const transactions = input.transactionContext
+      ?.split("\n")
+      .filter(Boolean)
+      .map((line) => {
+        const [amount, description, date] = line.split("|");
+        return {
+          amount: parseFloat(amount?.trim() || "0"),
+          description: description?.trim(),
+          date: date?.trim(),
+        };
+      })
+      .filter((t) => t.description);
+
+    const paymentMethods = input.availablePaymentMethods
+      ?.split("\n")
+      .filter(Boolean)
+      .map((s) => s.trim());
+
+    // Calculate summary statistics
+    const totalSpent = transactions?.reduce((sum, t) => sum + t.amount, 0) || 0;
+    const totalBudget = categories?.reduce((sum, c) => sum + c.budget, 0) || 0;
+    const avgTransactionAmount = transactions?.length
+      ? totalSpent / transactions.length
+      : 0;
+    const budgetUtilization =
+      totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(1) : "N/A";
+
+    const contextBlock = `
+═══════════════════════════════════════════════════════════
+                    USER'S FINANCIAL DATA
+═══════════════════════════════════════════════════════════
+
+📊 FINANCIAL SUMMARY:
+• Total Spent: ₹${totalSpent.toFixed(2)}
+• Total Budget: ₹${totalBudget.toFixed(2)}
+• Budget Utilization: ${budgetUtilization}%
+• Average Transaction: ₹${avgTransactionAmount.toFixed(2)}
+• Transaction Count: ${transactions?.length || 0}
+• Active Categories: ${categories?.length || 0}
+
+---
+
+📂 AVAILABLE CATEGORIES (${categories?.length || 0} total):
+${
+  categories && categories.length > 0
+    ? categories
+        .map(
+          (c, i) =>
+            `${i + 1}. ${c.name} (Budget: ₹${c.budget.toFixed(2)}) [ID: ${
+              c.id
+            }]`
+        )
+        .join("\n")
+    : "No categories yet. Suggest creating categories for better tracking!"
+}
+
+💳 PAYMENT SOURCES (${paymentMethods?.length || 0} available):
+${
+  paymentMethods && paymentMethods.length > 0
+    ? paymentMethods.map((s, i) => `${i + 1}. ${s}`).join("\n")
+    : "No payment sources configured."
+}
+
+💰 RECENT TRANSACTIONS (${transactions?.length || 0} total):
+${
+  transactions && transactions.length > 0
+    ? transactions
+        .slice(0, 50)
+        .map(
+          (t, i) =>
+            `${i + 1}. ₹${t.amount.toFixed(2)} - ${t.description} (Date: ${
+              t.date
+            })`
+        )
+        .join("\n")
+    : "No transactions yet. Start adding transactions to track spending!"
+}
+${transactions && transactions.length > 50 ? "\n... and more transactions" : ""}
+
+═══════════════════════════════════════════════════════════
+
+💡 YOU CAN HELP WITH:
+• Spending analysis and insights
+• Budget recommendations based on actual data
+• Financial calculations (savings goals, EMI, etc.)
+• Best practices for budgeting and saving
+• General investment and tax-saving guidance
+• Identifying spending patterns and anomalies
+
+═══════════════════════════════════════════════════════════
+`;
 
     const historyBlock = formattedHistory
-      ? `Chat History:\n${formattedHistory}\n`
+      ? `\n📝 CONVERSATION HISTORY:\n${formattedHistory}\n`
       : "";
 
-    const finalPrompt = `${systemMessage}\n\n${contextBlock}${historyBlock}User's new message:\n${input.message}\n\nYour response:`;
+    const finalPrompt = `${systemMessage}\n${contextBlock}${historyBlock}\n🗣️ USER'S NEW MESSAGE:\n${input.message}\n\n💬 YOUR RESPONSE:`;
 
     /* ----------------------------- 3. LLM Response ----------------------------- */
     const llmResponse = await chatPrompt({
@@ -159,8 +317,7 @@ Here are the payment sources:\n${input.availablePaymentMethods}\n`
 
     if (!modelMessage) {
       return {
-        response:
-          "Sorry, I couldn't generate a response. Could you try again?",
+        response: "Sorry, I couldn't generate a response. Could you try again?",
         history: [],
       };
     }
@@ -215,7 +372,9 @@ Here are the payment sources:\n${input.availablePaymentMethods}\n`
 
         // Everything is present
         return {
-          response: `✅ Got it — **${txn.description || txn.spentOn}** for **₹${txn.amount}** in **${txn.category}** (via **${txn.source}**).  
+          response: `✅ Got it — **${txn.description || txn.spentOn}** for **₹${
+            txn.amount
+          }** in **${txn.category}** (via **${txn.source}**).  
 Should I go ahead and save this transaction?`,
           transactionData: txn,
         };

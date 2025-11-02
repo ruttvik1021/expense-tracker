@@ -150,12 +150,20 @@ export default function ChatPage() {
       // We pass the *original* history (before adding the new user message)
       // as this is what the AI agent expects.
       try {
+        // Prepare context data
+        const transactionCtx =
+          String(currentMonthTransactionData) || "No transactions available";
+        const categoryCtx =
+          String(currentMonthCategoryData) || "No categories available";
+        const paymentCtx =
+          String(paymentSources) || "No payment sources available";
+
         const aiResponse = await chat({
           history: history, // <-- Pass the original history
           message: messageToSend, // <-- Pass the new message
-          transactionContext: String(currentMonthTransactionData),
-          availableCategories: String(currentMonthCategoryData),
-          availablePaymentMethods: String(paymentSources),
+          transactionContext: transactionCtx,
+          availableCategories: categoryCtx,
+          availablePaymentMethods: paymentCtx,
         });
 
         // 4. Create the final history with the AI's response
