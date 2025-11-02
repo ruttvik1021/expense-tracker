@@ -68,7 +68,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                 <div
                   key={conv._id}
                   className={cn(
-                    "group relative flex items-center gap-2 rounded-lg transition-all duration-200",
+                    "group relative flex items-center gap-2 rounded-lg transition-all duration-200 justify-between",
                     isSelected && "bg-accent/50",
                     isDeleting && "opacity-50 pointer-events-none"
                   )}
@@ -76,7 +76,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                   <Button
                     variant="ghost"
                     className={cn(
-                      "flex-1 justify-start text-left h-auto py-3 px-3 hover:bg-accent/70",
+                      "text-left h-auto py-3 px-3 hover:bg-accent/70",
                       isSelected &&
                         "bg-accent text-accent-foreground font-medium"
                     )}
@@ -103,12 +103,9 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                   </Button>
 
                   <Button
-                    variant="ghost"
+                    variant="destructive"
                     size="icon"
-                    className={cn(
-                      "opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 flex-shrink-0 hover:bg-destructive hover:text-destructive-foreground mr-2",
-                      isSelected && "opacity-100"
-                    )}
+                    className={cn("h-8 w-8")}
                     onClick={() => handleDelete(conv._id)}
                     disabled={isDeleting}
                   >
@@ -186,17 +183,10 @@ export const ConversationsSidebar = ({
       {/* Mobile/Tablet Sidebar Drawer */}
       {mobileOpen && isMobile && (
         <>
-          {/* Backdrop */}
-          <div
-            className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm transition-opacity"
-            onClick={() => setMobileOpen(false)}
-            aria-hidden="true"
-          />
-
           {/* Drawer */}
           <aside
             className={cn(
-              "lg:hidden fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-card shadow-2xl z-50",
+              "lg:hidden fixed top-0 left-0 bg-card w-full shadow-2xl z-50",
               "transform transition-transform duration-300 ease-in-out",
               mobileOpen ? "translate-x-0" : "-translate-x-full"
             )}

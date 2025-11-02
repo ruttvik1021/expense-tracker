@@ -12,8 +12,7 @@ export const useConversationMutation = () => {
   const { user } = useAuthContext(); // If you want to scope cache by user
   const queryClient = useQueryClient();
 
-  const onSuccessFn = (message?: string) => {
-    if (message) toast.success(message);
+  const onSuccessFn = () => {
     queryClient.invalidateQueries({
       queryKey: [queryKeys.savedConversations, user?.data.userId], // or just queryKeys.savedConversations if no user scoping
     });
@@ -26,14 +25,14 @@ export const useConversationMutation = () => {
         toast.error(data.error);
         return;
       }
-      onSuccessFn(data.message);
+      onSuccessFn();
     },
   });
 
   const updateSavedConversationMutation = useMutation({
     mutationFn: updateSavedConversation,
-    onSuccess: (data) => {
-      onSuccessFn(data.message);
+    onSuccess: () => {
+      onSuccessFn();
     },
   });
 
@@ -44,8 +43,8 @@ export const useConversationMutation = () => {
         queryKey: [queryKeys.savedConversations], // or just queryKeys.savedConversations if no user scoping
       });
     },
-    onSettled: (data) => {
-      onSuccessFn(data?.message);
+    onSettled: () => {
+      onSuccessFn();
     },
   });
 
