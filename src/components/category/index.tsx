@@ -30,6 +30,7 @@ import CategoryForm, { categoryFormInitialValues } from "./categoryForm";
 import { useCategoryMutation } from "./hooks/useCategoryMutation";
 import { useCategories, useCategoryById } from "./hooks/useCategoryQuery";
 import { CategoryFormSkeleton, CategorySkeleton } from "./skeleton";
+import { cn } from "@/lib/utils";
 
 export enum CategorySortBy {
   CATEGORY = "category",
@@ -66,8 +67,6 @@ const Category = () => {
     isEmailVerified,
   } = useAuthContext();
   const router = useRouter();
-  const { user } = useAuthContext();
-  const userMonthlyBudget = user?.data?.budget;
   const { data, isLoading } = useCategories();
   const { deleteCategory } = useCategoryMutation();
   const [open, setOpen] = useState<{
@@ -115,6 +114,7 @@ const Category = () => {
   };
 
   const { totalBudget, totalSpent } = useSpentVsBudgetData("Categories");
+  const isOverSpent = totalSpent >= totalBudget;
 
   return (
     <>
@@ -172,38 +172,44 @@ const Category = () => {
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div className="min-w-0 flex-1">
-                  <CardTitle className="text-base sm:text-lg truncate">
-                    Total Spending
+                  <CardTitle className="text-pretty sm:text-lg truncate">
+                    Total Budget Summary
                   </CardTitle>
                 </div>
-              </div>
-            </div>
-
-            <div className="text-sm text-muted-foreground space-y-1 ">
-              <div>
-                Categories created for:{" "}
-                <span className="font-medium text-primary">{totalBudget}</span>
               </div>
             </div>
           </CardHeader>
 
           <CardContent className="space-y-4">
+            <div className=" ">
+              <div>
+                {/* Categories created for:{" "} */}
+                <p
+                  className={cn(
+                    "text-2xl space-y-1 font-bold text-primary text-green-700",
+                    isOverSpent && "text-red-700"
+                  )}
+                >
+                  {totalSpent}
+                </p>
+                <p className="font-medium text-primary">
+                  of {totalBudget} total{" "}
+                </p>
+              </div>
+            </div>
             {/* Budget Info */}
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Spent</span>
-                <span className="font-medium">
-                  {totalSpent} / {userMonthlyBudget}
+                <span className="text-muted-foreground">
+                  {" "}
+                  {Math.round((Number(totalSpent) / Number(totalBudget)) * 100)}
+                  % Spent
                 </span>
               </div>
 
               <Progress
                 value={(Number(totalSpent) / Number(totalBudget)) * 100}
-                color={
-                  Number(totalSpent) >= Number(totalBudget)
-                    ? "bg-red-700"
-                    : "bg-green-700"
-                }
+                color={isOverSpent ? "bg-red-700" : "bg-green-700"}
               />
             </div>
           </CardContent>
@@ -213,6 +219,8 @@ const Category = () => {
               <CategorySkeleton key={i} />
             ))
           : data?.categories?.map((category: any) => {
+              const isOverBudget =
+                Number(category.totalAmountSpent) >= Number(category.budget);
               return (
                 <Card
                   key={category.id}
@@ -272,7 +280,6 @@ const Category = () => {
                     {/* Budget Info */}
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Spent</span>
                         <span
                           className="font-medium"
                           onClick={() => {
@@ -288,39 +295,47 @@ const Category = () => {
                         >
                           {category.totalAmountSpent} / {category.budget}
                         </span>
+                        <span
+                          className={cn(
+                            "font-bold text-green-700",
+                            isOverBudget && "text-red-700"
+                          )}
+                        >
+                          {Math.round(
+                            (Number(category.totalAmountSpent) /
+                              Number(category.budget)) *
+                              100
+                          )}
+                          %
+                        </span>
                       </div>
 
                       <Progress
                         value={
-                          (Number(category.totalAmountSpent) >=
-                          Number(category.budget)
+                          (isOverBudget
                             ? 100
                             : Number(category.totalAmountSpent) /
                               Number(category.budget)) * 100
                         }
-                        color={
-                          Number(category.totalAmountSpent) >=
-                          Number(category.budget)
-                            ? "bg-red-700"
-                            : "bg-green-700"
-                        }
+                        color={isOverBudget ? "bg-red-700" : "bg-green-700"}
                       />
 
                       {moment(categoryFilter.categoryDate).isBefore(
                         moment().add(1, "month").startOf("month")
                       ) && (
-                        <div className="flex justify-between align-center">
-                          <CustomAddIcon
+                        <div className="flex mt-3 justify-between align-center">
+                          <Button
                             onClick={() =>
                               setTransactionToAddCategory({
                                 id: category._id,
                                 date: categoryFilter.categoryDate,
                               })
                             }
-                            type="TEXT"
-                            tooltip="Add Transaction"
-                          />
-                          <CustomAddIcon
+                            variant="outline"
+                          >
+                            + Add Transaction
+                          </Button>
+                          <Button
                             onClick={() =>
                               setTransactionToAddCategory({
                                 id: category._id,
@@ -328,9 +343,10 @@ const Category = () => {
                                 amount: Number(category.budget),
                               })
                             }
-                            type="TEXT"
-                            tooltip="Pay Full"
-                          />
+                            variant="outline"
+                          >
+                            Pay Full
+                          </Button>
                         </div>
                       )}
                     </div>
