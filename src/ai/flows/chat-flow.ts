@@ -99,99 +99,43 @@ export async function chat(input: {
 
     /* ----------------------------- 2. Build Prompt ----------------------------- */
     const systemMessage = `
-You are a friendly, empathetic, and smart **personal financial assistant and advisor**.
+You are a **personal finance assistant**. Help users track expenses, manage budgets, and get financial insights.
 
-Your goals:
-• Help the user manage finances by providing insights, budgeting advice, and summaries.
-• Provide financial calculations, analysis, and recommendations.
-• Share current market trends, investment tips, and best practices.
-• Offer budgeting strategies and money-saving tips.
-• Currency is always **Rupee (₹)** unless specified otherwise.
-• Be conversational — if data is missing, politely ask for it instead of throwing an error.
-• Keep answers clear, actionable, and formatted with markdown.
-• You have access to the user's complete transaction history, categories, and payment sources.
+**Your Abilities:**
+• Create transactions from natural text (e.g., "spent 500 on groceries")
+• Create categories when needed (e.g., "create pets category")
+• Answer financial questions using their actual data
+• Provide spending insights, calculations, and advice
+• Use ₹ (Rupee) as currency
 
----
+**Guidelines:**
+• **Be simple and direct** - avoid lengthy confirmations
+• **Auto-fill missing details** intelligently when possible:
+  - Use smart defaults (today's date, best-matching category, most-used payment source)
+  - Choose appropriate icons for new categories automatically
+  - Set reasonable budget suggestions based on similar categories
+• **Only ask questions** when truly necessary (ambiguous amount, unclear category)
+• Keep responses concise and actionable
+• Use markdown formatting for clarity
+• Be friendly but brief
 
-### Financial Advisory Capabilities
+**Transaction Creation:**
+- Parse: "Add 50 for coffee" → Create transaction with smart defaults
+- If category should be from the available category, or suggest user to create a new one.
+- If payment source missing, use most frequently used
+- Confirm only with brief message: "Added ₹50 for coffee ☕"
 
-#### 💰 Calculations & Analysis
-- Help with budget calculations, savings goals, EMI calculations
-- Analyze spending patterns and provide insights
-- Calculate percentages (e.g., "What % of my budget did I spend?")
-- Compare month-over-month spending
-- Suggest optimal budget allocations (50/30/20 rule, etc.)
+**Category Creation:**
+- Parse: "Create gym category" → Create with appropriate icon (🏋️) and suggest budget
+- Auto-assign icons based on category name
+- Set default budget of ₹0 if not specified
+- Keep it simple: "Created Gym category 🏋️"
 
-#### 📈 Market Trends & Investment (General Advice)
-- Share general information about investment options (mutual funds, stocks, FDs, etc.)
-- Explain financial concepts (SIP, compound interest, emergency funds, etc.)
-- Discuss current market trends in India (general knowledge)
-- Suggest diversification strategies
-- Explain tax-saving investment options (ELSS, PPF, NPS, etc.)
-
-#### 💡 Best Practices & Tips
-- Emergency fund planning (3-6 months of expenses)
-- Debt management strategies
-- Credit score improvement tips
-- Insurance planning basics
-- Retirement planning guidelines
-- Money-saving tips and hacks
-- Budgeting methodologies (Zero-based, Envelope method, etc.)
-
-#### 🎯 Smart Recommendations
-Based on user's spending data:
-- Identify overspending categories
-- Suggest budget adjustments
-- Recommend areas to cut costs
-- Highlight unusual spending patterns
-- Provide personalized saving strategies
-
-**Important Notes:**
-- Give general financial advice, not specific investment recommendations
-- Encourage users to consult certified financial advisors for major decisions
-- Base insights on the user's actual spending data when available
-- Be supportive and non-judgmental about spending habits
-
----
-
-### Transaction Handling
-- When a user says something like *"Add 50 for coffee"* or *"Spent 200 on groceries"*:
-  - Use **createTransactionFromTextTool**.
-  - If any field is missing (amount, description, category, or source), ask for it:
-    - e.g. "What category does this belong to?" or "How did you pay?"
-  - Once all info is available, confirm clearly:
-    > "Got it — ₹50 for coffee in the 'Food' category via Credit Card. Should I save it?"
-
----
-
-### Category Handling
-- If the user says *"Create a new category for Pets"*:
-  - Use **createCategoryFromTextTool**.
-  - If any field is missing (icon, budget, etc.), ask follow-up questions like:
-    > "What icon should we use for this category?" or "Would you like to set a budget?"
-  - After creation, confirm:
-    > "New category 'Pets' 🐾 created. Would you like to add a budget for it?"
-
----
-
-### Data Access
-- You have FULL ACCESS to the user's financial data below.
-- When asked about categories, transactions, spending, or budgets, USE THE PROVIDED DATA.
-- Never say you don't have access to data - it's provided in the context below.
-- Perform calculations based on actual numbers from the data.
-- Provide specific, data-driven insights rather than generic advice.
-
----
-
-### General Guidelines
-- Be conversational, encouraging, and empathetic.
-- Never guess — always ask politely for missing details.
-- Use emojis sparingly to make responses friendly.
-- Resume any pending transaction/category flow when new info arrives.
-- Use the data provided to answer questions about spending patterns, categories, and transactions.
-- When discussing financial concepts, explain them simply.
-- End responses naturally, e.g. "Would you like me to help with anything else?"
-- If users ask complex investment questions, provide general guidance but recommend consulting a SEBI-registered financial advisor.
+**Financial Advice:**
+- Use actual data from their transactions and categories
+- Provide calculations, insights, and recommendations
+- Share budgeting tips and best practices when asked
+- Keep it practical and relevant to their situation
 `;
 
     // Parse and format context more clearly
@@ -236,75 +180,50 @@ Based on user's spending data:
       totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(1) : "N/A";
 
     const contextBlock = `
-═══════════════════════════════════════════════════════════
-                    USER'S FINANCIAL DATA
-═══════════════════════════════════════════════════════════
+**USER'S DATA:**
 
-📊 FINANCIAL SUMMARY:
-• Total Spent: ₹${totalSpent.toFixed(2)}
-• Total Budget: ₹${totalBudget.toFixed(2)}
-• Budget Utilization: ${budgetUtilization}%
-• Average Transaction: ₹${avgTransactionAmount.toFixed(2)}
-• Transaction Count: ${transactions?.length || 0}
-• Active Categories: ${categories?.length || 0}
+Summary: ₹${totalSpent.toFixed(0)} spent | ₹${totalBudget.toFixed(
+      0
+    )} budget | ${budgetUtilization}% used | ${
+      transactions?.length || 0
+    } transactions
 
----
-
-📂 AVAILABLE CATEGORIES (${categories?.length || 0} total):
+Categories (${categories?.length || 0}):
 ${
   categories && categories.length > 0
-    ? categories
-        .map(
-          (c, i) =>
-            `${i + 1}. ${c.name} (Budget: ₹${c.budget.toFixed(2)}) [ID: ${
-              c.id
-            }]`
-        )
-        .join("\n")
-    : "No categories yet. Suggest creating categories for better tracking!"
+    ? categories.map((c) => `• ${c.name} (₹${c.budget.toFixed(0)})`).join("\n")
+    : "None yet"
 }
 
-💳 PAYMENT SOURCES (${paymentMethods?.length || 0} available):
+Payment Sources (${paymentMethods?.length || 0}):
 ${
   paymentMethods && paymentMethods.length > 0
-    ? paymentMethods.map((s, i) => `${i + 1}. ${s}`).join("\n")
-    : "No payment sources configured."
+    ? paymentMethods.map((s) => `• ${s}`).join("\n")
+    : "None configured"
 }
 
-💰 RECENT TRANSACTIONS (${transactions?.length || 0} total):
+Recent Transactions (${transactions?.length || 0}):
 ${
   transactions && transactions.length > 0
     ? transactions
-        .slice(0, 50)
+        .slice(0, 20)
         .map(
-          (t, i) =>
-            `${i + 1}. ₹${t.amount.toFixed(2)} - ${t.description} (Date: ${
-              t.date
+          (t) =>
+            `• ₹${t.amount.toFixed(0)} - ${t.description} (${
+              t.date.split("T")[0]
             })`
         )
         .join("\n")
-    : "No transactions yet. Start adding transactions to track spending!"
+    : "No transactions yet"
 }
-${transactions && transactions.length > 50 ? "\n... and more transactions" : ""}
-
-═══════════════════════════════════════════════════════════
-
-💡 YOU CAN HELP WITH:
-• Spending analysis and insights
-• Budget recommendations based on actual data
-• Financial calculations (savings goals, EMI, etc.)
-• Best practices for budgeting and saving
-• General investment and tax-saving guidance
-• Identifying spending patterns and anomalies
-
-═══════════════════════════════════════════════════════════
+${transactions && transactions.length > 20 ? "... and more" : ""}
 `;
 
     const historyBlock = formattedHistory
-      ? `\n📝 CONVERSATION HISTORY:\n${formattedHistory}\n`
+      ? `\nConversation History:\n${formattedHistory}\n`
       : "";
 
-    const finalPrompt = `${systemMessage}\n${contextBlock}${historyBlock}\n🗣️ USER'S NEW MESSAGE:\n${input.message}\n\n💬 YOUR RESPONSE:`;
+    const finalPrompt = `${systemMessage}\n\n${contextBlock}${historyBlock}\n**User:** ${input.message}\n\n**Response:**`;
 
     /* ----------------------------- 3. LLM Response ----------------------------- */
     const llmResponse = await chatPrompt({
@@ -354,28 +273,20 @@ ${transactions && transactions.length > 50 ? "\n... and more transactions" : ""}
           };
         }
 
-        // Ask for missing fields instead of erroring
-        const missing: string[] = [];
-        if (!txn?.description && !txn?.spentOn) missing.push("description");
-        if (!txn?.amount) missing.push("amount");
-        if (!txn?.category) missing.push("category");
-        if (!txn?.source) missing.push("payment source");
-
-        if (missing.length > 0) {
+        // Only ask if amount is missing (critical field)
+        if (!txn?.amount) {
           return {
-            response: `I'm almost ready to add that transaction! Could you tell me ${missing
-              .map((m) => `the **${m}**`)
-              .join(" and ")}?`,
+            response: "How much was it?",
             transactionData: txn,
           };
         }
 
-        // Everything is present
+        // Return transaction data for auto-save
+        const desc = txn.description || txn.spentOn || "Transaction";
         return {
-          response: `✅ Got it — **${txn.description || txn.spentOn}** for **₹${
-            txn.amount
-          }** in **${txn.category}** (via **${txn.source}**).  
-Should I go ahead and save this transaction?`,
+          response: `Added ₹${txn.amount} for ${desc}${
+            txn.category ? " (" + txn.category + ")" : ""
+          }`,
           transactionData: txn,
         };
       } catch (error) {
@@ -405,24 +316,15 @@ Should I go ahead and save this transaction?`,
 
         if (!cat?.name) {
           return {
-            response:
-              "Hmm, I couldn't catch the category name. Could you please tell me what category you'd like to create?",
+            response: "What should I name the category?",
           };
         }
 
-        if (!cat?.icon) {
-          return {
-            response: `What icon should we use for the **${cat.name}** category? (e.g., 🐾, 🍔, 💰)`,
-            categoryData: cat,
-          };
-        }
-
-        const budgetMessage = cat.budget
-          ? `with a suggested budget of ₹${cat.budget}.`
-          : "Would you like to set a budget for it?";
-
+        // Return category data for auto-save
         return {
-          response: `✅ New category **"${cat.name}"** created with icon **${cat.icon}** — ${budgetMessage}`,
+          response: `Created ${cat.name} category${
+            cat.icon ? " " + cat.icon : ""
+          }${cat.budget ? " (₹" + cat.budget + " budget)" : ""}`,
           categoryData: cat,
         };
       } catch (error) {

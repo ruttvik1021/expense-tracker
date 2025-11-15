@@ -75,37 +75,39 @@ export const createTransactionFromTextTool = ai.defineTool(
       name: "extractionPrompt",
       input: { schema: CreateTransactionFromTextInputSchema },
       output: { schema: CreateTransactionFromTextOutputSchema },
-      prompt: `You are an expert at extracting structured data from text.
-        
-        Analyze the user's request and extract the following details:
-        - Description (what was the item/service?)
-        - Amount (how much did it cost?)
-        - Category: MUST be chosen from the availableCategories list below. 
-          If the user's text implies a category not in this list, DO NOT create it automatically.
-          Instead, ask the user: "Would you like to create a new category called 'X'?"
-          Only proceed with category creation if the user confirms.
+      prompt: `Extract transaction details from the user's text. Be smart about defaults:
 
-        - Date (in 2025-09-19T00:30:27+05:30 format)
-        - Source (how was it paid)
+**Required:**
+- Amount: Extract the number (REQUIRED - don't proceed without it)
+- Description/spentOn: What was purchased
 
-        - If anything is missing ask the user for it.
+**Auto-fill when possible:**
+- Category: Match to available categories OR suggest creating a new one if none fit
+- Date: Use today's date (${new Date().toISOString()}) if not specified
+- Source: Use the first available payment source if not specified
 
-        Available Categories:
-        {{#each availableCategories}}
-        - {{{this}}}
-        {{/each}}
+**Available Categories:**
+{{#each availableCategories}}
+- {{{this}}}
+{{/each}}
 
-        Available Sources:
-        {{#each availablePaymentSources}}
-        - {{{this}}}
-        {{/each}}
+**Available Payment Sources:**
+{{#each availablePaymentSources}}
+- {{{this}}}
+{{/each}}
 
-        If any confusion ask user for clarification.
-        Note:
-        - Never guess or create a new category without confirmation from the user.
+**Examples:**
+- "spent 50 on coffee" → amount: 50, description: "coffee", category: match to Food/Beverages or suggest new
+- "add 1000 for rent" → amount: 1000, description: "rent", category: match to Housing or suggest new
+- "500 for gym" → amount: 500, description: "gym", category: match to Fitness or suggest new
 
+**Rules:**
+- ALWAYS extract amount if present
+- Choose best matching category or suggest creating appropriate new one
+- Auto-fill date and source with smart defaults
+- Keep description short and clear
 
-        User's text: "{{{text}}}"
+User's text: "{{{text}}}"
         `,
     });
 

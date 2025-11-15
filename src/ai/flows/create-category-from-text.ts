@@ -69,16 +69,30 @@ export const createCategoryFromTextTool = ai.defineTool(
       name: "categoryExtractionPrompt",
       input: { schema: CreateCategoryFromTextInputSchema },
       output: { schema: CreateCategoryFromTextOutputSchema },
-      prompt: `You are an expert at extracting structured data from text and making creative suggestions.
-        
-        Analyze the user's request and extract the category name. Then, suggest a relevant emoji for this new category.
+      prompt: `Extract category details and auto-fill intelligently:
 
-        - Name: The name for the new category (in Title Case).
-        - Icon: A single emoji character (e.g., 😄, 🛒, 🐶 — NOT "Smile" or "Dog")
+**Required:**
+- Name: Category name in Title Case
 
-        Ask the user for further things budget, periodType (startMonth if periodType is "monthly", "quarterly", "half-yearly" & creationDuration if periodType is "next12Months", "yearEnd")
+**Auto-assign:**
+- Icon: Choose best-matching emoji based on category name
+  Examples: Gym→🏋️, Food→🍔, Travel→✈️, Shopping→🛍️, Bills→📄, Entertainment→🎬, Health→💊, Pets→🐾
+- Budget: Suggest reasonable monthly budget (e.g., ₹5000 for Food, ₹3000 for Entertainment, ₹0 if unsure)
+- periodType: Default to "monthly"
 
-        User's text: "{{{text}}}"
+**Smart Defaults:**
+- If "Gym/Fitness" → icon: 🏋️, budget: ₹2000-3000
+- If "Food/Groceries" → icon: 🍔, budget: ₹5000-8000  
+- If "Transport" → icon: 🚗, budget: ₹2000-4000
+- If "Entertainment" → icon: 🎬, budget: ₹2000-3000
+- If unclear → icon: 📁, budget: ₹0
+
+**Examples:**
+- "create pets category" → name: "Pets", icon: 🐾, budget: 2000
+- "add gym" → name: "Gym", icon: 🏋️, budget: 3000
+- "new shopping category" → name: "Shopping", icon: 🛍️, budget: 5000
+
+User's text: "{{{text}}}"
         `,
     });
 
