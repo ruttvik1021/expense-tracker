@@ -47,7 +47,7 @@ const CustomDeleteIcon = ({
   const IconComponent = isIconPreferred ? Trash2Icon : Circle;
   const iconStyle = isIconPreferred
     ? "icon"
-    : "fill-destructive rounded-md icon border";
+    : "fill-destructive rounded-lg icon border";
 
   return (
     <CommonTooltip

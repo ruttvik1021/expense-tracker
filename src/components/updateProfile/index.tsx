@@ -82,7 +82,7 @@ const UpdateProfile = () => {
                     disabled={isProfileUpdating || isLoading}
                   />
                   {meta.touched && meta.error && (
-                    <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                    <Label className="text-lg text-red-600 dark:text-red-600 pl-2">
                       {meta.error}
                     </Label>
                   )}
@@ -108,7 +108,7 @@ const UpdateProfile = () => {
                     disabled={isProfileUpdating || isLoading}
                   />
                   {meta.touched && meta.error && (
-                    <Label className="text-base text-red-600 dark:text-red-600 pl-2">
+                    <Label className="text-lg text-red-600 dark:text-red-600 pl-2">
                       {meta.error}
                     </Label>
                   )}

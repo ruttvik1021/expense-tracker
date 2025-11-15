@@ -187,7 +187,7 @@ const CategoryForm = ({
       {getFromPreviousMonth ? (
         <>
           <p>Imported categories will be added to this month only</p>
-          <div className="rounded-md border p-1 max-h-40 overflow-auto mb-3">
+          <div className="rounded-lg border p-1 max-h-40 overflow-auto mb-3">
             <ul>
               {isLoading && <li>Loading...</li>}
               {previousMonthCategories?.categories.map((category, index) => (
@@ -245,7 +245,7 @@ const CategoryForm = ({
                       </AvatarFallback>
                     </Avatar>
                     {meta.touched && meta.error && (
-                      <Label className="text-left text-base text-red-600 dark:text-red-600">
+                      <Label className="text-left text-lg text-red-600 dark:text-red-600">
                         {meta.error}
                       </Label>
                     )}
@@ -277,7 +277,7 @@ const CategoryForm = ({
                       disabled={isCategoryMutating}
                     />
                     {meta.touched && meta.error && (
-                      <Label className="text-base text-red-600 dark:text-red-600">
+                      <Label className="text-lg text-red-600 dark:text-red-600">
                         {meta.error}
                       </Label>
                     )}
@@ -309,7 +309,7 @@ const CategoryForm = ({
                       disabled={isCategoryMutating}
                     />
                     {meta.touched && meta.error && (
-                      <Label className="text-base text-red-600 dark:text-red-600">
+                      <Label className="text-lg text-red-600 dark:text-red-600">
                         {meta.error}
                       </Label>
                     )}
@@ -361,7 +361,7 @@ const CategoryForm = ({
                           </SelectContent>
                         </Select>
                         {meta.touched && meta.error && (
-                          <Label className="text-base text-red-600 dark:text-red-600">
+                          <Label className="text-lg text-red-600 dark:text-red-600">
                             {meta.error}
                           </Label>
                         )}
@@ -413,7 +413,7 @@ const CategoryForm = ({
                               </SelectContent>
                             </Select>
                             {meta.touched && meta.error && (
-                              <Label className="text-base text-red-600 dark:text-red-600">
+                              <Label className="text-lg text-red-600 dark:text-red-600">
                                 {meta.error}
                               </Label>
                             )}
@@ -458,7 +458,7 @@ const CategoryForm = ({
                               </SelectContent>
                             </Select>
                             {meta.touched && meta.error && (
-                              <Label className="text-base text-red-600 dark:text-red-600">
+                              <Label className="text-lg text-red-600 dark:text-red-600">
                                 {meta.error}
                               </Label>
                             )}

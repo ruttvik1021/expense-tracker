@@ -57,7 +57,7 @@ export default function BasePieGraph({
     <div className="space-y-4">
       <Card className={cn("w-full")}>
         <div className="flex items-center justify-between p-6">
-          <CardTitle className="text-xs sm:text-md font-medium text-muted-foreground">
+          <CardTitle className="text-xs sm:text-lg font-medium text-muted-foreground">
             {title}
           </CardTitle>
           {filterContent && <div>{filterContent}</div>}

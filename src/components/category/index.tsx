@@ -199,7 +199,7 @@ const Category = () => {
             </div>
             {/* Budget Info */}
             <div className="space-y-2">
-              <div className="flex justify-between text-md">
+              <div className="flex justify-between text-lg">
                 <span className="text-muted-foreground">
                   {" "}
                   {Math.round((Number(totalSpent) / Number(totalBudget)) * 100)}
@@ -245,7 +245,7 @@ const Category = () => {
                           {category.icon}
                         </span>
                         <div className="min-w-0 flex-1">
-                          <CardTitle className="text-base sm:text-lg truncate">
+                          <CardTitle className="text-lg sm:text-lg truncate">
                             {category.category}
                           </CardTitle>
                           <Badge variant="secondary" className="text-xs mt-1">
@@ -279,7 +279,7 @@ const Category = () => {
                   <CardContent className="space-y-4">
                     {/* Budget Info */}
                     <div className="space-y-2">
-                      <div className="flex justify-between text-md">
+                      <div className="flex justify-between text-lg">
                         <span
                           className="font-medium"
                           onClick={() => {

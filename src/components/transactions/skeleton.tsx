@@ -6,10 +6,10 @@ export const CategorySkeleton = () => {
     <Card className="p-4">
       <CardHeader className="p-0 mb-3">
         <div className="flex justify-between ">
-          <Skeleton className="h-12 w-12 rounded-md" />
+          <Skeleton className="h-12 w-12 rounded-lg" />
           <div className="flex gap-2">
-            <Skeleton className="h-6 w-6 rounded-md" />
-            <Skeleton className="h-6 w-6 rounded-md" />
+            <Skeleton className="h-6 w-6 rounded-lg" />
+            <Skeleton className="h-6 w-6 rounded-lg" />
           </div>
         </div>
       </CardHeader>
@@ -31,8 +31,8 @@ export const TransactionFormSkeleton = () => {
         </div>
       ))}
       <div className="flex justify-between items-center">
-        <Skeleton className="w-32 h-9 rounded-md" />
-        <Skeleton className="w-32 h-9 rounded-md" />
+        <Skeleton className="w-32 h-9 rounded-lg" />
+        <Skeleton className="w-32 h-9 rounded-lg" />
       </div>
     </div>
   );

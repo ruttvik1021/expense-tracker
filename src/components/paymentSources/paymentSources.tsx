@@ -77,7 +77,7 @@ const PaymentSources = () => {
       <div className="grid gap-4">
         {paymentSources?.map((source, index) => (
           <div
-            className="flex items-center justify-between rounded-md border border-selected p-4"
+            className="flex items-center justify-between rounded-lg border border-selected p-4"
             key={index}
           >
             <div className="flex items-center space-x-4">
@@ -96,7 +96,7 @@ const PaymentSources = () => {
                           source: e.target.value,
                         }))
                       }
-                      className="max-w-md"
+                      className="max-w-lg"
                     />
                   ) : (
                     source.source

@@ -100,7 +100,7 @@ export const NavDrawer = ({ links }: { links: ILink[] }) => {
             <Brand />
             <Circle
               onClick={toggleDrawer}
-              className="fill-destructive rounded-md icon border"
+              className="fill-destructive rounded-lg icon border"
             />
           </div>
           {links.map((item) => (
@@ -123,7 +123,7 @@ export const LogoutButton = () => {
   const { logoutUser } = useAuthContext();
   return (
     <Button
-      className="w-full border border-red-300 text-red-700 bg-red hover:bg-red-100 hover:text-red-900 rounded-md px-4 py-2 transition duration-300"
+      className="w-full border border-red-300 text-red-700 bg-red hover:bg-red-100 hover:text-red-900 rounded-lg px-4 py-2 transition duration-300"
       onClick={logoutUser}
     >
       Logout

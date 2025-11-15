@@ -11,7 +11,7 @@ const LandingPage = () => {
             AkiraFlow
           </h2>
         </div>
-        <nav className="hidden md:flex items-center gap-8 text-md font-medium">
+        <nav className="hidden md:flex items-center gap-8 text-lg font-medium">
           <Link href="#features" className="text-gray-300 hover:text-white">
             Features
           </Link>
@@ -22,7 +22,7 @@ const LandingPage = () => {
         <div className="flex gap-2">
           <Link
             href="/login"
-            className="bg-blue-700 hover:bg-blue-700 text-white font-bold text-md px-4 py-2 rounded-md"
+            className="bg-blue-700 hover:bg-blue-700 text-white font-bold text-lg px-4 py-2 rounded-lg"
           >
             Get Started
           </Link>
@@ -49,13 +49,13 @@ const LandingPage = () => {
           <div className="mt-10 flex justify-center gap-4 flex-wrap">
             <Link
               href="/login"
-              className="bg-blue-700 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-md text-base"
+              className="bg-blue-700 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-lg text-lg"
             >
               Get Started Free
             </Link>
             <Link
               href="#features"
-              className="bg-gray-800 hover:bg-gray-700 text-white font-bold px-6 py-3 rounded-md text-base"
+              className="bg-gray-800 hover:bg-gray-700 text-white font-bold px-6 py-3 rounded-lg text-lg"
             >
               Learn More
             </Link>
@@ -182,7 +182,7 @@ const LandingPage = () => {
           </p>
           <Link
             href="/login"
-            className="bg-gradient-to-r from-blue-600 to-purple-500 hover:from-blue-700 hover:to-purple-600 px-8 py-4 text-white font-bold rounded-md text-lg"
+            className="bg-gradient-to-r from-blue-600 to-purple-500 hover:from-blue-700 hover:to-purple-600 px-8 py-4 text-white font-bold rounded-lg text-lg"
           >
             Get Started Now
           </Link>
@@ -197,7 +197,7 @@ const LandingPage = () => {
               AkiraFlow
             </h2>
           </Link>
-          <div className="flex gap-4 text-md text-gray-400">
+          <div className="flex gap-4 text-lg text-gray-400">
             <Link href="#">Privacy Policy</Link>
             <Link href="#">Terms of Service</Link>
             <Link href="#">Contact</Link>

@@ -97,7 +97,7 @@ const MonthYearPicker = ({
           <Button
             variant="outline"
             className={cn(
-              "w-full border border-foreground rounded-md",
+              "w-full border border-foreground rounded-lg",
               btnClassName
             )}
           >
@@ -126,7 +126,7 @@ const MonthYearPicker = ({
             {monthsByYear().map((month) => (
               <button
                 key={month}
-                className={`p-2 text-center rounded-md ${
+                className={`p-2 text-center rounded-lg ${
                   month === moment(date).format("MMMM") &&
                   parseInt(year) === currentYear
                     ? "bg-selected text-white"

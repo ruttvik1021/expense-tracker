@@ -67,12 +67,12 @@ export const Sidebar = ({ navLinks }: { navLinks: ILink[] }) => {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex h-screen bg-drawer text-primary border-r border-border shadow-md z-20">
+      <aside className="hidden md:flex h-screen bg-drawer text-primary border-r border-border shadow-lg z-20">
         <SidebarContent />
       </aside>
 
       {/* Mobile: Top Bar with Hamburger */}
-      <div className="md:hidden flex items-center justify-between bg-drawer p-4 border-b border-border shadow-md">
+      <div className="md:hidden flex items-center justify-between bg-drawer p-4 border-b border-border shadow-lg">
         <Brand />
         <button
           onClick={() => setMobileOpen(!mobileOpen)}

@@ -23,7 +23,7 @@ const EmailVerification = () => {
       <div className="flex justify-center items-center w-full p-3">
         <Alert className="bg-destructive/60">
           <AlertDescription className="font-bold text-black">
-            <Label className="flex items-center gap-2 text-md">
+            <Label className="flex items-center gap-2 text-lg">
               <AlertTriangleIcon className="w-5 h-5" /> Please verify the email
               sent to you.
               <Button
@@ -45,9 +45,9 @@ const EmailVerification = () => {
 
 export const FeatureRestrictedWarning = ({ message }: { message: string }) => {
   return (
-    <Alert className="bg-destructive/20 rounded-md my-2">
+    <Alert className="bg-destructive/20 rounded-lg my-2">
       <AlertDescription className="font-bold text-black">
-        <span className="flex items-center gap-2 text-md text-foreground">
+        <span className="flex items-center gap-2 text-lg text-foreground">
           {message}
         </span>
       </AlertDescription>

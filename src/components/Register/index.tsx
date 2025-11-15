@@ -61,9 +61,9 @@ const Register = () => {
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row">
       <div className="w-full md:w-1/2 flex items-center justify-center p-12">
-        <form onSubmit={formik.handleSubmit} className="w-full max-w-md">
+        <form onSubmit={formik.handleSubmit} className="w-full max-w-lg">
           <FormikProvider value={formik}>
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-lg">
               <div className="flex items-center gap-3 mb-6">
                 <svg
                   className="h-8 w-8 text-[#1380ec]"
@@ -108,7 +108,7 @@ const Register = () => {
                             disabled={isRegistering}
                           />
                           {meta.touched && meta.error && (
-                            <div className="text-base text-red-600">
+                            <div className="text-lg text-red-600">
                               {meta.error}
                             </div>
                           )}
@@ -136,7 +136,7 @@ const Register = () => {
                             disabled={isRegistering}
                           />
                           {meta.touched && meta.error && (
-                            <div className="text-base text-red-600">
+                            <div className="text-lg text-red-600">
                               {meta.error}
                             </div>
                           )}
@@ -170,7 +170,7 @@ const Register = () => {
                             disabled={isRegistering}
                           />
                           {meta.touched && meta.error && (
-                            <div className="text-base text-red-600">
+                            <div className="text-lg text-red-600">
                               {meta.error}
                             </div>
                           )}
@@ -210,7 +210,7 @@ const Register = () => {
           <h2 className="text-4xl font-bold mb-4 text-primary-foreground">
             Track Expenses with AI
           </h2>
-          <p className="text-primary-foreground max-w-md mx-auto">
+          <p className="text-primary-foreground max-w-lg mx-auto">
             Gain insights into your spending habits and achieve your financial
             goals with our intelligent expense tracker.
           </p>

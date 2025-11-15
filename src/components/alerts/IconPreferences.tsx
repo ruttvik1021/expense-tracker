@@ -39,7 +39,7 @@ const IconPreferenceAlert = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[90%] rounded-md" onClose={handleClose}>
+      <DialogContent className="w-[90%] rounded-lg" onClose={handleClose}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserIcon className="h-5 w-5" />
@@ -52,12 +52,12 @@ const IconPreferenceAlert = () => {
           <Separator />
         </DialogHeader>
         <div className="pb-4">
-          <h3 className="text-md font-medium mb-2">Available Icon Sets:</h3>
+          <h3 className="text-lg font-medium mb-2">Available Icon Sets:</h3>
           <div className="flex justify-around">
             <div className="flex gap-2">
-              <CircleIcon className="fill-green-600  rounded-md icon border cursor-default" />
-              <CircleIcon className="fill-yellow-600 rounded-md icon border cursor-default" />
-              <CircleIcon className="fill-red-600 rounded-md icon border cursor-default" />
+              <CircleIcon className="fill-green-600  rounded-lg icon border cursor-default" />
+              <CircleIcon className="fill-yellow-600 rounded-lg icon border cursor-default" />
+              <CircleIcon className="fill-red-600 rounded-lg icon border cursor-default" />
             </div>
             <ArrowLeftRightIcon className="text-selected icon fill-current cursor-default" />
             <div className="flex gap-2">
@@ -75,7 +75,7 @@ const IconPreferenceAlert = () => {
           />
           <label
             htmlFor="dontRemind"
-            className="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="text-lg font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             Don't remind me later
           </label>
