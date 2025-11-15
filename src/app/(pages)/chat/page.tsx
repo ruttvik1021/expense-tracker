@@ -4,7 +4,7 @@ import { chat } from "@/ai/flows/chat-flow";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Loader2, PlusCircle, Sparkles } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 
 import { categoryFormInitialValues } from "@/components/category/categoryForm";
@@ -28,9 +28,6 @@ import {
 type ChatMessage = {
   role: "user" | "model";
   parts: { text: string }[];
-  // AI can return these when a transaction/category is ready for confirmation
-  transactionData?: any | null;
-  categoryData?: any | null;
 };
 
 export const maxDuration = 60; // Timeout in seconds
@@ -64,7 +61,13 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (conversationById?.data) {
-      setHistory(JSON.parse(conversationById.data?.history));
+      const parsedHistory = JSON.parse(conversationById.data?.history);
+      // Clean up old format - remove transactionData and categoryData if present
+      const cleanedHistory = parsedHistory.map((msg: any) => ({
+        role: msg.role,
+        parts: msg.parts,
+      }));
+      setHistory(cleanedHistory);
     }
   }, [conversationById]);
 
@@ -166,18 +169,25 @@ export default function ChatPage() {
           availablePaymentMethods: paymentCtx,
         });
 
-        // 4. Create the final history with the AI's response
+        // 4. Auto-execute mutations if data is present
+        if (aiResponse?.transactionData) {
+          await executeTransactionCreation(aiResponse.transactionData);
+        }
+
+        if (aiResponse?.categoryData) {
+          await executeCategoryCreation(aiResponse.categoryData);
+        }
+
+        // 5. Create the final history with the AI's response (without action buttons)
         const updatedHistory: ChatMessage[] = [
-          ...newHistoryForUI, // This is the history with the user's new message
+          ...newHistoryForUI,
           {
             role: "model",
             parts: [{ text: aiResponse.response }],
-            transactionData: aiResponse?.transactionData, // This will be populated by the agent when ready
-            categoryData: aiResponse?.categoryData, // This will be populated by the agent when ready
           },
         ];
 
-        // 5. Set the final state and save
+        // 6. Set the final state and save
         setHistory(updatedHistory);
         await saveConversation(updatedHistory);
       } catch (error) {
@@ -189,98 +199,72 @@ export default function ChatPage() {
     });
   };
 
-  const handleCreateTransaction = async (
-    transactionData: NonNullable<ChatMessage["transactionData"]>,
-    index: number
-  ) => {
-    startTransition(async () => {
-      const categoryMap = new Map(
-        categories?.categories.map((c) => [
-          c.category.toLowerCase(),
-          (c as any).id || (c as any)._id || c.category,
-        ])
-      );
-      const sourceMap = new Map(
-        sources?.map((c) => [
-          c.source.toLowerCase(),
-          (c as any).id || (c as any)._id || c.source,
-        ])
-      );
+  const executeTransactionCreation = async (transactionData: any) => {
+    const categoryMap = new Map(
+      categories?.categories.map((c) => [
+        c.category.toLowerCase(),
+        (c as any).id || (c as any)._id || c.category,
+      ])
+    );
+    const sourceMap = new Map(
+      sources?.map((c) => [
+        c.source.toLowerCase(),
+        (c as any).id || (c as any)._id || c.source,
+      ])
+    );
 
-      const { category, description, source, amount } = transactionData;
-      const categoryId = categoryMap.get(category.toLowerCase());
-      const sourceId = sourceMap.get(source.toLowerCase());
+    const { category, description, source, amount, spentOn } = transactionData;
+    const categoryId = categoryMap.get(category?.toLowerCase());
+    const sourceId = sourceMap.get(source?.toLowerCase());
 
-      if (categoryId) {
-        try {
-          await addTransaction.mutateAsync({
-            ...transactionFormInitialValues,
-            category: categoryId,
-            spentOn: description,
-            source: sourceId,
-            amount: Number(amount),
-          });
+    if (!categoryId) {
+      toast.error(`Category "${category}" not found. Please create it first.`);
+      return;
+    }
 
-          removeDataFromMessage(index, "transaction");
-          handleSendMessage("Transaction added successfully");
-        } catch (error) {
-          toast.error("Failed to add transaction.");
-        }
-      } else {
-        toast.error(
-          `The category "${category}" doesn't exist. Please create it before adding the transaction.`
-        );
-      }
-    });
+    try {
+      await addTransaction.mutateAsync({
+        ...transactionFormInitialValues,
+        category: categoryId,
+        spentOn: spentOn || description || "Transaction",
+        source: sourceId || sources?.[0]?.source || "",
+        amount: Number(amount),
+      });
+      toast.success("Transaction added successfully!");
+    } catch (error) {
+      console.error("Transaction creation error:", error);
+      toast.error("Failed to add transaction.");
+    }
   };
 
-  const handleCreateCategory = async (
-    categoryData: NonNullable<ChatMessage["categoryData"]>,
-    index: number
-  ) => {
-    startTransition(async () => {
-      try {
-        await addCategory.mutateAsync({
-          budget: categoryFormInitialValues.budget,
-          creationDuration: categoryFormInitialValues.creationDuration,
-          periodType: categoryFormInitialValues.periodType,
-          startMonth: categoryFormInitialValues.startMonth,
-          icon: categoryData.icon,
-          category: categoryData.name,
-        });
-
-        removeDataFromMessage(index, "category");
-        handleSendMessage("Category added successfully");
-      } catch (error) {
-        toast.error("Failed to add category.");
-      }
-    });
+  const executeCategoryCreation = async (categoryData: any) => {
+    try {
+      await addCategory.mutateAsync({
+        budget: categoryData.budget || categoryFormInitialValues.budget,
+        creationDuration:
+          categoryData.creationDuration ||
+          categoryFormInitialValues.creationDuration,
+        periodType:
+          categoryData.periodType || categoryFormInitialValues.periodType,
+        startMonth:
+          categoryData.startMonth || categoryFormInitialValues.startMonth,
+        icon: categoryData.icon || "📁",
+        category: categoryData.name,
+      });
+      toast.success("Category created successfully!");
+    } catch (error) {
+      console.error("Category creation error:", error);
+      toast.error("Failed to create category.");
+    }
   };
 
-  const removeDataFromMessage = (
-    index: number,
-    type: "transaction" | "category"
-  ) => {
-    setHistory((prevHistory) => {
-      const newHistory = [...prevHistory];
-      const msg = { ...newHistory[index] };
-
-      if (type === "transaction") {
-        msg.transactionData = null;
-      } else {
-        msg.categoryData = null;
-      }
-
-      newHistory[index] = msg;
-      return newHistory;
-    });
-  };
-
-  const handleSelectSavedConversation = (
-    hist: ChatMessage[],
-    convId: string
-  ) => {
-    setHistory(hist);
+  const handleSelectSavedConversation = (hist: any[], convId: string) => {
+    // Clean up old format - remove transactionData and categoryData if present
+    const cleanedHistory = hist.map((msg: any) => ({
+      role: msg.role,
+      parts: msg.parts,
+    }));
+    setHistory(cleanedHistory);
     setConversationId(convId);
     setSaveEnabled(true);
   };
@@ -386,32 +370,6 @@ export default function ChatPage() {
                   <div className="prose prose-lg dark:prose-invert max-w-none">
                     <ReactMarkdown>{msg.parts[0].text}</ReactMarkdown>
                   </div>
-                  {msg.transactionData && (
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="mt-3 w-full sm:w-auto"
-                      onClick={() =>
-                        handleCreateTransaction(msg.transactionData!, index)
-                      }
-                    >
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Confirm Transaction
-                    </Button>
-                  )}
-                  {msg.categoryData && (
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="mt-3 w-full sm:w-auto"
-                      onClick={() =>
-                        handleCreateCategory(msg.categoryData!, index)
-                      }
-                    >
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Confirm Category
-                    </Button>
-                  )}
                 </div>
               </div>
             ))
