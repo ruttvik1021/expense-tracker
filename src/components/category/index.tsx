@@ -250,14 +250,6 @@ const Category = () => {
                           moment().add(1, "month").startOf("month")
                         ) && (
                           <>
-                            <CustomAddIcon
-                              onClick={() =>
-                                setTransactionToAddCategory({
-                                  id: category._id,
-                                  date: categoryFilter.categoryDate,
-                                })
-                              }
-                            />
                             <CustomEditIcon
                               onClick={() => {
                                 setCategoryToEdit(category._id);
@@ -269,17 +261,6 @@ const Category = () => {
                                 setCategoryToDelete(category._id);
                                 setOpen({ type: "DELETE", open: true });
                               }}
-                            />
-                            <CustomAddIcon
-                              onClick={() =>
-                                setTransactionToAddCategory({
-                                  id: category._id,
-                                  date: categoryFilter.categoryDate,
-                                  amount: Number(category.budget),
-                                })
-                              }
-                              type="TEXT"
-                              tooltip="Pay Full"
                             />
                           </>
                         )}
@@ -311,9 +292,11 @@ const Category = () => {
 
                       <Progress
                         value={
-                          (Number(category.totalAmountSpent) /
-                            Number(category.budget)) *
-                          100
+                          (Number(category.totalAmountSpent) >=
+                          Number(category.budget)
+                            ? 100
+                            : Number(category.totalAmountSpent) /
+                              Number(category.budget)) * 100
                         }
                         color={
                           Number(category.totalAmountSpent) >=
@@ -322,6 +305,34 @@ const Category = () => {
                             : "bg-green-700"
                         }
                       />
+
+                      {moment(categoryFilter.categoryDate).isBefore(
+                        moment().add(1, "month").startOf("month")
+                      ) && (
+                        <div className="flex justify-between align-center">
+                          <CustomAddIcon
+                            onClick={() =>
+                              setTransactionToAddCategory({
+                                id: category._id,
+                                date: categoryFilter.categoryDate,
+                              })
+                            }
+                            type="TEXT"
+                            tooltip="Add Transaction"
+                          />
+                          <CustomAddIcon
+                            onClick={() =>
+                              setTransactionToAddCategory({
+                                id: category._id,
+                                date: categoryFilter.categoryDate,
+                                amount: Number(category.budget),
+                              })
+                            }
+                            type="TEXT"
+                            tooltip="Pay Full"
+                          />
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
