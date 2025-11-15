@@ -170,3 +170,7 @@ textarea,
 select {
   font-size: 24px !important;
 }
+
+html, body {
+  touch-action: manipulation;
+}
