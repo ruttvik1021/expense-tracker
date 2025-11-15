@@ -493,14 +493,12 @@ const CategoryForm = ({
             handleClose={() => setOpen(false)}
             title={"Pick Emoji for Category"}
             content={
-              <div className="flex justify-center">
-                <EmojiPicker
-                  onClick={(e) => {
-                    categoryFormik.setFieldValue("icon", e.emoji);
-                    setOpen(false);
-                  }}
-                />
-              </div>
+              <EmojiPicker
+                onClick={(e) => {
+                  categoryFormik.setFieldValue("icon", e.emoji);
+                  setOpen(false);
+                }}
+              />
             }
           />
         </>

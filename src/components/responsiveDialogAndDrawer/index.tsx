@@ -29,8 +29,8 @@ const ResponsiveDialogAndDrawer = ({
       <DialogContent className="sm:max-w-[425px]" onClose={handleClose}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{content}</DialogDescription>
         </DialogHeader>
+        <DialogDescription>{content}</DialogDescription>
       </DialogContent>
     </Dialog>
   ) : (
@@ -39,8 +39,8 @@ const ResponsiveDialogAndDrawer = ({
       <DialogContent className="border w-[90%]" onClose={handleClose}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{content}</DialogDescription>
         </DialogHeader>
+        <DialogDescription>{content}</DialogDescription>
       </DialogContent>
     </Dialog>
   );

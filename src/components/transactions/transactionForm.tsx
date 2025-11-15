@@ -117,7 +117,7 @@ const TransactionForm = ({
   return (
     <>
       <FormikProvider value={transactionFormik}>
-        <Form onSubmit={transactionFormik.handleSubmit}>
+        <Form onSubmit={transactionFormik.handleSubmit} className="text-left">
           <Field name="amount">
             {({
               field,

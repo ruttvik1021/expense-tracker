@@ -12,8 +12,10 @@ const Emoji = ({ onClick }: { onClick: (value: EmojiClickData) => void }) => {
     <EmojiPicker
       onEmojiClick={onClick}
       emojiStyle={EmojiStyle.NATIVE}
-      className="w-full"
       theme={activeTheme === Modes.DARK ? Theme.DARK : Theme.LIGHT}
+      style={{
+        width: "100%",
+      }}
     />
   );
 };
