@@ -34,19 +34,15 @@ const ResponsiveDialogAndDrawer = ({
       </DialogContent>
     </Dialog>
   ) : (
-    <div className="m-3">
-      <Dialog open={open} modal>
-        {triggerButton && (
-          <DialogTrigger asChild>{triggerButton}</DialogTrigger>
-        )}
-        <DialogContent className="border" onClose={handleClose}>
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{content}</DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    </div>
+    <Dialog open={open} modal>
+      {triggerButton && <DialogTrigger asChild>{triggerButton}</DialogTrigger>}
+      <DialogContent className="border w-[90%]" onClose={handleClose}>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{content}</DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
   );
 };
 
