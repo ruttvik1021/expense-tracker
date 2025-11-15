@@ -65,7 +65,7 @@ export default function TransactionFilters() {
             <SheetTitle>Transaction Filters</SheetTitle>
             <Circle
               onClick={() => setIsOpen(false)}
-              className="fill-destructive rounded-sm icon border"
+              className="fill-destructive rounded-md icon border"
             />
           </div>
           <SheetDescription>
@@ -76,7 +76,7 @@ export default function TransactionFilters() {
           {({ values, setFieldValue }) => (
             <Form className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="dateRange" className="text-sm font-medium">
+                <Label htmlFor="dateRange" className="text-md font-medium">
                   Choose Month (Default Current Month)
                 </Label>
                 <MonthYearPicker
@@ -95,7 +95,7 @@ export default function TransactionFilters() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="category" className="text-sm font-medium">
+                <Label htmlFor="category" className="text-md font-medium">
                   Category
                 </Label>
                 <Select
@@ -118,7 +118,7 @@ export default function TransactionFilters() {
                 </Select>
               </div>
               {/* <div className="space-y-2">
-                <Label className="text-sm font-medium">Amount Range</Label>
+                <Label className="text-md font-medium">Amount Range</Label>
                 <div className="flex items-center space-x-2">
                   <div className="w-full">
                     <Label htmlFor="minAmount" className="sr-only">
@@ -139,7 +139,7 @@ export default function TransactionFilters() {
                       )}
                     </Field>
                   </div>
-                  <span className="text-sm text-muted-foreground">to</span>
+                  <span className="text-md text-muted-foreground">to</span>
                   <div className="w-full">
                     <Label htmlFor="maxAmount" className="sr-only">
                       Maximum Amount

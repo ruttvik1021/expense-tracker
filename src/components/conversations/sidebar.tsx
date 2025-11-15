@@ -42,7 +42,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
       <div className="p-4 border-b border-border">
         <Button
           onClick={startNewChat}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md"
           size="lg"
         >
           <Plus className="w-5 h-5 mr-2" />
@@ -54,7 +54,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
       <ScrollArea className="flex-1 px-2 py-3">
         <div className="space-y-1">
           {allSavedConversation.length === 0 ? (
-            <div className="text-center text-muted-foreground text-sm py-8 px-4">
+            <div className="text-center text-muted-foreground text-md py-8 px-4">
               <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p>No saved conversations yet.</p>
               <p className="text-xs mt-1">Start a new chat to begin!</p>
@@ -89,7 +89,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                   >
                     <MessageSquare className="w-4 h-4 mr-2 flex-shrink-0" />
                     <div className="flex-1 overflow-hidden">
-                      <p className="text-sm truncate">
+                      <p className="text-md truncate">
                         {conv.title || "Untitled Chat"}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
@@ -156,7 +156,7 @@ export const ConversationsSidebar = ({
     <>
       {/* Desktop Sidebar - Always visible on large screens */}
       {!isMobile && (
-        <aside className="hidden lg:flex h-screen bg-card border-r border-border shadow-sm z-20">
+        <aside className="hidden lg:flex h-screen bg-card border-r border-border shadow-md z-20">
           <SidebarContent
             allSavedConversation={allSavedConversation}
             handleSelectSavedConversation={handleSelectConversation}
@@ -176,7 +176,7 @@ export const ConversationsSidebar = ({
           aria-label="Toggle conversations"
         >
           <MessageSquare className="h-4 w-4 mr-1.5 sm:mr-2" />
-          <span className="text-xs sm:text-sm">Chats</span>
+          <span className="text-xs sm:text-md">Chats</span>
         </Button>
       )}
 
@@ -239,7 +239,7 @@ export const ConversationsSidebarToggle = ({
       aria-label="Toggle conversations"
     >
       <Menu className="h-4 w-4 mr-2" />
-      <span className="text-sm">Chats</span>
+      <span className="text-md">Chats</span>
     </Button>
   );
 };

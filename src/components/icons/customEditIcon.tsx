@@ -47,7 +47,7 @@ const CustomEditIcon = ({
   const IconComponent = isIconPreferred ? SquarePenIcon : Circle;
   const iconStyle = isIconPreferred
     ? "icon"
-    : "fill-yellow-600 rounded-sm icon border";
+    : "fill-yellow-600 rounded-md icon border";
 
   return (
     <CommonTooltip

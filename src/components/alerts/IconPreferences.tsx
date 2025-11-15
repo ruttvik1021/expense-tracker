@@ -52,12 +52,12 @@ const IconPreferenceAlert = () => {
           <Separator />
         </DialogHeader>
         <div className="pb-4">
-          <h3 className="text-sm font-medium mb-2">Available Icon Sets:</h3>
+          <h3 className="text-md font-medium mb-2">Available Icon Sets:</h3>
           <div className="flex justify-around">
             <div className="flex gap-2">
-              <CircleIcon className="fill-green-600  rounded-sm icon border cursor-default" />
-              <CircleIcon className="fill-yellow-600 rounded-sm icon border cursor-default" />
-              <CircleIcon className="fill-red-600 rounded-sm icon border cursor-default" />
+              <CircleIcon className="fill-green-600  rounded-md icon border cursor-default" />
+              <CircleIcon className="fill-yellow-600 rounded-md icon border cursor-default" />
+              <CircleIcon className="fill-red-600 rounded-md icon border cursor-default" />
             </div>
             <ArrowLeftRightIcon className="text-selected icon fill-current cursor-default" />
             <div className="flex gap-2">
@@ -75,7 +75,7 @@ const IconPreferenceAlert = () => {
           />
           <label
             htmlFor="dontRemind"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="text-md font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             Don't remind me later
           </label>

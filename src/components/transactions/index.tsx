@@ -181,7 +181,7 @@ const Transactions = () => {
       </div>
       <div
         className={
-          "flex items-center text-foreground text-sm font-semibold mb-3"
+          "flex items-center text-foreground text-md font-semibold mb-3"
         }
       >
         Overall spending for this month is:{" "}
@@ -239,7 +239,7 @@ const Transactions = () => {
                           <div className="grid grid-cols-7 gap-2 items-center">
                             {/* Amount */}
                             <div className="col-span-2">
-                              <p className="flex items-center gap-1 text-sm font-medium">
+                              <p className="flex items-center gap-1 text-md font-medium">
                                 <IndianRupee className="w-3 h-3" />
                                 {transaction.amount.toLocaleString("en-IN")}
                               </p>
@@ -247,14 +247,14 @@ const Transactions = () => {
 
                             {/* Source */}
                             <div className="col-span-2">
-                              <p className="text-sm">
+                              <p className="text-md">
                                 {transaction.source?.source || "Other"}
                               </p>
                             </div>
 
                             {/* Date */}
                             <div className="col-span-2">
-                              <p className="text-sm">
+                              <p className="text-md">
                                 {moment(transaction.date).utc().format("DD/MM")}
                               </p>
                             </div>
@@ -263,7 +263,7 @@ const Transactions = () => {
                             <div className="col-span-1 flex justify-end">
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <button className="p-1 rounded-sm hover:bg-accent">
+                                  <button className="p-1 rounded-md hover:bg-accent">
                                     <MoreHorizontal className="w-4 h-4" />
                                     <span className="sr-only">
                                       More options
@@ -358,7 +358,7 @@ const Transactions = () => {
                     <TableCell>
                       {transaction.source?.source || "Other"}
                     </TableCell>
-                    <TableCell className="text-sm">
+                    <TableCell className="text-md">
                       {moment(transaction.date).utc().format("DD/MM")}
                     </TableCell>
                     <DropdownMenu>
@@ -368,7 +368,7 @@ const Transactions = () => {
                           <span className="sr-only">More</span>
                         </TableCell>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="mr-3 rounded-sm">
+                      <DropdownMenuContent className="mr-3 rounded-md">
                         <DropdownMenuItem>
                           <CustomEditIcon
                             onClick={() => {
@@ -414,7 +414,7 @@ const Transactions = () => {
                 <div className="grid grid-cols-7 gap-2 items-center">
                   {/* Amount */}
                   <div className="col-span-2">
-                    <p className="flex items-center gap-1 text-sm font-medium">
+                    <p className="flex items-center gap-1 text-md font-medium">
                       <IndianRupee className="w-3 h-3" />
                       {transaction.amount.toLocaleString("en-IN")}
                     </p>
@@ -422,14 +422,14 @@ const Transactions = () => {
 
                   {/* Source */}
                   <div className="col-span-2">
-                    <p className="text-sm">
+                    <p className="text-md">
                       {transaction.source?.source || "Other"}
                     </p>
                   </div>
 
                   {/* Date */}
                   <div className="col-span-2">
-                    <p className="text-sm">
+                    <p className="text-md">
                       {moment(transaction.date).utc().format("DD/MM")}
                     </p>
                   </div>
@@ -438,7 +438,7 @@ const Transactions = () => {
                   <div className="col-span-1 flex justify-end">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <button className="p-1 rounded-sm hover:bg-accent">
+                        <button className="p-1 rounded-md hover:bg-accent">
                           <MoreHorizontal className="w-4 h-4" />
                           <span className="sr-only">More options</span>
                         </button>

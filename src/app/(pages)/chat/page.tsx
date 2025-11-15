@@ -308,7 +308,7 @@ export default function ChatPage() {
         />
       </div>
       <div className="flex flex-col flex-1 h-full">
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border bg-card/50 backdrop-blur-sm">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border bg-card/50 backdrop-blur-md">
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Mobile toggle is rendered inside ConversationsSidebar */}
             <div className="block sm:hidden">
@@ -329,7 +329,7 @@ export default function ChatPage() {
               />
               <Label
                 htmlFor="save-toggle"
-                className="text-xs sm:text-sm font-medium"
+                className="text-xs sm:text-md font-medium"
               >
                 Save
               </Label>
@@ -348,7 +348,7 @@ export default function ChatPage() {
               <p className="mt-4 text-base sm:text-lg font-semibold">
                 No messages yet.
               </p>
-              <p className="text-xs sm:text-sm max-w-md mx-auto mt-2">
+              <p className="text-xs sm:text-md max-w-md mx-auto mt-2">
                 Start the conversation by asking something like:
                 <br />
                 <em className="mt-3 block text-muted-foreground/80">
@@ -377,13 +377,13 @@ export default function ChatPage() {
               >
                 <div
                   className={cn(
-                    "max-w-[85%] sm:max-w-md rounded-lg px-3 sm:px-4 py-2 sm:py-3 shadow-sm",
+                    "max-w-[85%] sm:max-w-md rounded-lg px-3 sm:px-4 py-2 sm:py-3 shadow-md",
                     msg.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted"
                   )}
                 >
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <div className="prose prose-md dark:prose-invert max-w-none">
                     <ReactMarkdown>{msg.parts[0].text}</ReactMarkdown>
                   </div>
                   {msg.transactionData && (
@@ -419,8 +419,8 @@ export default function ChatPage() {
 
           {isPending && (
             <div className="flex items-start gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="max-w-[85%] sm:max-w-md rounded-lg bg-muted px-3 sm:px-4 py-2 sm:py-3 shadow-sm">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="max-w-[85%] sm:max-w-md rounded-lg bg-muted px-3 sm:px-4 py-2 sm:py-3 shadow-md">
+                <div className="flex items-center gap-2 text-md text-muted-foreground">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <span>Thinking...</span>
                 </div>
@@ -430,7 +430,7 @@ export default function ChatPage() {
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-border bg-card/50 backdrop-blur-sm p-4 sm:p-6">
+        <div className="border-t border-border bg-card/50 backdrop-blur-md p-4 sm:p-6">
           <Input
             className="w-full"
             type="textarea"

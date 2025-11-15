@@ -11,7 +11,7 @@ const LandingPage = () => {
             AkiraFlow
           </h2>
         </div>
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+        <nav className="hidden md:flex items-center gap-8 text-md font-medium">
           <Link href="#features" className="text-gray-300 hover:text-white">
             Features
           </Link>
@@ -22,7 +22,7 @@ const LandingPage = () => {
         <div className="flex gap-2">
           <Link
             href="/login"
-            className="bg-blue-700 hover:bg-blue-700 text-white font-bold text-sm px-4 py-2 rounded-md"
+            className="bg-blue-700 hover:bg-blue-700 text-white font-bold text-md px-4 py-2 rounded-md"
           >
             Get Started
           </Link>
@@ -197,7 +197,7 @@ const LandingPage = () => {
               AkiraFlow
             </h2>
           </Link>
-          <div className="flex gap-4 text-sm text-gray-400">
+          <div className="flex gap-4 text-md text-gray-400">
             <Link href="#">Privacy Policy</Link>
             <Link href="#">Terms of Service</Link>
             <Link href="#">Contact</Link>

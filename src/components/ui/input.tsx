@@ -17,7 +17,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={showPassword ? "text" : type} // Toggle between "password" and "text"
           className={cn(
-            "flex h-9 w-full border border-foreground rounded-sm bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-black border-black dark:border-white dark:text-white",
+            "flex h-9 w-full border border-foreground rounded-md bg-transparent px-3 py-1 shadow-md transition-colors file:border-0 file:bg-transparent file:text-md file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-black border-black dark:border-white dark:text-white",
             className
           )}
           ref={ref}
@@ -28,7 +28,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <button
             type="button"
             onClick={togglePasswordVisibility}
-            className="absolute right-3 text-sm text-muted-foreground focus:outline-none"
+            className="absolute right-3 text-md text-muted-foreground focus:outline-none"
           >
             {showPassword ? "Hide" : "Show"}
           </button>

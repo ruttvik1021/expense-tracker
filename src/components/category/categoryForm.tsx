@@ -187,7 +187,7 @@ const CategoryForm = ({
       {getFromPreviousMonth ? (
         <>
           <p>Imported categories will be added to this month only</p>
-          <div className="rounded-sm border p-1 max-h-40 overflow-auto mb-3">
+          <div className="rounded-md border p-1 max-h-40 overflow-auto mb-3">
             <ul>
               {isLoading && <li>Loading...</li>}
               {previousMonthCategories?.categories.map((category, index) => (

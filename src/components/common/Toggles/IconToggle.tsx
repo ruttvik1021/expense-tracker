@@ -13,7 +13,7 @@ const IconToggle = () => {
   return (
     <div className="flex items-center w-full gap-3">
       <Circle
-        className="fill-green-600 rounded-sm icon border"
+        className="fill-green-600 rounded-md icon border"
         onClick={() => handlePreferrenceChange(false)}
       />
       <Switch
