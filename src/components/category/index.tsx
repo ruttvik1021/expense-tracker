@@ -83,6 +83,7 @@ const Category = () => {
   const [transactionToAddCategory, setTransactionToAddCategory] = useState<{
     id: "";
     date: Date;
+    amount?: number;
   } | null>(null);
   const updateCategoryDate = (value: Date) => {
     setCategoryFilter({ ...categoryFilter, categoryDate: value });
@@ -269,6 +270,17 @@ const Category = () => {
                                 setOpen({ type: "DELETE", open: true });
                               }}
                             />
+                            <CustomAddIcon
+                              onClick={() =>
+                                setTransactionToAddCategory({
+                                  id: category._id,
+                                  date: categoryFilter.categoryDate,
+                                  amount: Number(category.budget),
+                                })
+                              }
+                              type="TEXT"
+                              tooltip="Pay Full"
+                            />
                           </>
                         )}
                       </div>
@@ -379,6 +391,10 @@ const Category = () => {
           <TransactionForm
             initialValues={{
               ...transactionFormInitialValues,
+              ...(transactionToAddCategory?.amount && {
+                amount: transactionToAddCategory?.amount,
+                spentOn: "Paid",
+              }),
               category: transactionToAddCategory?.id || "",
               date: moment(transactionToAddCategory?.date).format() || "",
             }}
