@@ -166,9 +166,6 @@ You are a **personal finance assistant**. Help users track expenses, manage budg
     // Calculate summary statistics
     const totalSpent = transactions?.reduce((sum, t) => sum + t.amount, 0) || 0;
     const totalBudget = categories?.reduce((sum, c) => sum + c.budget, 0) || 0;
-    const avgTransactionAmount = transactions?.length
-      ? totalSpent / transactions.length
-      : 0;
     const budgetUtilization =
       totalBudget > 0 ? ((totalSpent / totalBudget) * 100).toFixed(1) : "N/A";
 
