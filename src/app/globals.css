@@ -164,13 +164,8 @@ html {
 [vaul-drawer]::after {
   background-color: transparent !important
 }
-/* 
-input,
-textarea,
-select {
-  font-size: 18px !important;
-}
 
 html, body {
   touch-action: manipulation;
-} */
+  -ms-touch-action: manipulation; /* legacy */
+}
