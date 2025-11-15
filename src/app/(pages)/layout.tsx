@@ -1,3 +1,4 @@
+import type { Viewport } from "next";
 import EmailVerification from "@/components/alerts/EmailVerification";
 import { ContextWrapper } from "@/components/wrapper/ContextWrapper";
 import QueryWrapper from "@/components/wrapper/QueryWrapper";
@@ -36,6 +37,14 @@ const navLinks: ILink[] = [
     icon: <MessageCircle className="h-4 w-4" />,
   },
 ];
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+};
 
 export default function PageLayout({
   children,

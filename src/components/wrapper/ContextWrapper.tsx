@@ -72,7 +72,7 @@ export const ContextWrapper = ({ children }: { children: React.ReactNode }) => {
     enabled: isAuthenticated,
   });
 
-  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
+  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(true);
   const verifyUserEmail = (value: boolean) => {
     localStorage.setItem("isEmailVerified", String(value));
     setIsEmailVerified(value);

@@ -164,7 +164,7 @@ html {
 [vaul-drawer]::after {
   background-color: transparent !important
 }
-
+/* 
 input,
 textarea,
 select {
@@ -173,4 +173,4 @@ select {
 
 html, body {
   touch-action: manipulation;
-}
+} */

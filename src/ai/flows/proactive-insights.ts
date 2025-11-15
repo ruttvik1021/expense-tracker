@@ -55,110 +55,135 @@ const summaryPrompt = ai.definePrompt({
       spendingSummary: z.string(),
     }),
   },
-  prompt: `You are an expert financial advisor analyzing a user's spending patterns. Generate a comprehensive, personalized financial insights report in pure Markdown format.
+  //   prompt: `You are an expert financial advisor analyzing a user's spending patterns. Generate a comprehensive, personalized financial insights report in pure Markdown format.
 
----
-### 💰 Financial Data
+  // ---
+  // ### 💰 Financial Data
 
-**Current Month Transactions:**
-(Format: amount | description | date)
-{{{currentMonthTransactions}}}
+  // **Current Month Transactions:**
+  // (Format: amount | description | date)
+  // {{{currentMonthTransactions}}}
 
-**Category Budgets:**
-(Format: categoryId | categoryName | budget)
-{{{currentMonthCategories}}}
+  // **Category Budgets:**
+  // (Format: categoryId | categoryName | budget)
+  // {{{currentMonthCategories}}}
 
-**Last Month Transactions:**
-(Format: amount | description | date)
-{{{lastMonthTransactions}}}
+  // **Last Month Transactions:**
+  // (Format: amount | description | date)
+  // {{{lastMonthTransactions}}}
 
-**Monthly Budget:**
-{{{budget}}}
+  // **Monthly Budget:**
+  // {{{budget}}}
 
----
+  // ---
 
-### 📋 Report Structure
+  // ### 📋 Report Structure
 
-Generate a well-formatted Markdown report with the following sections:
+  // Generate a well-formatted Markdown report with the following sections:
 
-#### 1. 📊 **Executive Summary**
-- Total spending this month (₹)
-- Comparison with last month (% increase/decrease)
-- Budget utilization percentage
-- Net position (under/over budget)
-- Quick verdict: "Excellent", "Good", "Needs Attention", or "Critical"
+  // #### 1. 📊 **Executive Summary**
+  // - Total spending this month (₹)
+  // - Comparison with last month (% increase/decrease)
+  // - Budget utilization percentage
+  // - Net position (under/over budget)
+  // - Quick verdict: "Excellent", "Good", "Needs Attention", or "Critical"
 
-#### 2. 💸 **Top Insights** (3-4 key findings)
-Identify the most important patterns:
-- Highest spending category
-- Biggest increase/decrease compared to last month
-- Any concerning trends
-- Positive improvements if any
+  // #### 2. 💸 **Top Insights** (3-4 key findings)
+  // Identify the most important patterns:
+  // - Highest spending category
+  // - Biggest increase/decrease compared to last month
+  // - Any concerning trends
+  // - Positive improvements if any
 
-#### 3. 📂 **Category Health Analysis**
-For each category, provide:
-- **Healthy** 🟢: Spending is within budget (<95%)
-- **Watchful** 🟡: Spending is 95-110% of budget OR showing upward trend
-- **Not-so-healthy** 🔴: Spending is >110% of budget OR has unusual large transactions
+  // #### 3. 📂 **Category Health Analysis**
+  // For each category, provide:
+  // - **Healthy** 🟢: Spending is within budget (<95%)
+  // - **Watchful** 🟡: Spending is 95-110% of budget OR showing upward trend
+  // - **Not-so-healthy** 🔴: Spending is >110% of budget OR has unusual large transactions
 
-For Watchful and Not-so-healthy categories:
-- Current spending vs. budget
-- Reason for the status
-- **Actionable tip** (1-2 sentences)
+  // For Watchful and Not-so-healthy categories:
+  // - Current spending vs. budget
+  // - Reason for the status
+  // - **Actionable tip** (1-2 sentences)
 
-#### 4. 📈 **Spending Trends & Patterns**
-- Weekly/daily spending patterns
-- Unusual transactions or spikes
-- Recurring expenses identified
-- Comparison with previous month trends
+  // #### 4. 📈 **Spending Trends & Patterns**
+  // - Weekly/daily spending patterns
+  // - Unusual transactions or spikes
+  // - Recurring expenses identified
+  // - Comparison with previous month trends
 
-#### 5. 💡 **Smart Recommendations** (4-5 actionable tips)
-Provide specific, personalized suggestions:
-- Budget adjustments
-- Money-saving opportunities
-- Spending habit improvements
-- Emergency fund guidance
-- Investment/savings suggestions
+  // #### 5. 💡 **Smart Recommendations** (4-5 actionable tips)
+  // Provide specific, personalized suggestions:
+  // - Budget adjustments
+  // - Money-saving opportunities
+  // - Spending habit improvements
+  // - Emergency fund guidance
+  // - Investment/savings suggestions
 
-#### 6. 🎯 **Action Items for Next Week**
-List 3-4 immediate, specific actions the user can take.
+  // #### 6. 🎯 **Action Items for Next Week**
+  // List 3-4 immediate, specific actions the user can take.
 
----
+  // ---
 
-### ✅ Quality Guidelines
+  // ### ✅ Quality Guidelines
 
-**DO:**
-- Use **bold** for important numbers and terms
-- Add ₹ symbol for all amounts
-- Be specific with percentages and amounts
-- Use emojis sparingly (max 1 per section header)
-- Keep tone friendly but professional
-- Provide data-driven insights, not generic advice
-- Calculate accurate percentages and comparisons
-- Format numbers clearly (e.g., ₹15,430.50)
+  // **DO:**
+  // - Use **bold** for important numbers and terms
+  // - Add ₹ symbol for all amounts
+  // - Be specific with percentages and amounts
+  // - Use emojis sparingly (max 1 per section header)
+  // - Keep tone friendly but professional
+  // - Provide data-driven insights, not generic advice
+  // - Calculate accurate percentages and comparisons
+  // - Format numbers clearly (e.g., ₹15,430.50)
 
-**DON'T:**
-- Use code blocks or JSON
-- Give generic advice without data backing
-- Be judgmental or negative
-- Exceed 400 words total
-- Include external links or references
-- Use complex financial jargon without explanation
+  // **DON'T:**
+  // - Use code blocks or JSON
+  // - Give generic advice without data backing
+  // - Be judgmental or negative
+  // - Exceed 400 words total
+  // - Include external links or references
+  // - Use complex financial jargon without explanation
 
-**Special Cases:**
-- If no budget is set: Strongly recommend setting one and explain why
-- If no transactions: Encourage starting to track expenses
-- If over budget significantly (>120%): Provide urgent tips with empathy
-- If under budget: Congratulate but suggest savings/investment options
+  // **Special Cases:**
+  // - If no budget is set: Strongly recommend setting one and explain why
+  // - If no transactions: Encourage starting to track expenses
+  // - If over budget significantly (>120%): Provide urgent tips with empathy
+  // - If under budget: Congratulate but suggest savings/investment options
 
-**Format:**
-- Use ## for main section headers
-- Use **bold** for emphasis
-- Use bullet points (•) for lists
-- Use > for important callouts or quotes
-- Keep paragraphs short (2-3 lines max)
+  // **Format:**
+  // - Use ## for main section headers
+  // - Use **bold** for emphasis
+  // - Use bullet points (•) for lists
+  // - Use > for important callouts or quotes
+  // - Keep paragraphs short (2-3 lines max)
 
-Generate a report that feels like advice from a caring financial advisor who knows the user's specific situation.`,
+  // Generate a report that feels like advice from a caring financial advisor who knows the user's specific situation.`,
+  prompt: `You are conducting a financial audit for a user. Prepare a structured, objective Markdown report.
+
+Data:
+- Current Transactions: {{{currentMonthTransactions}}}
+- Budgets: {{{currentMonthCategories}}}
+- Last Month: {{{lastMonthTransactions}}}
+- Monthly Budget: {{{budget}}}
+
+Sections:
+1. Executive Summary  
+2. Key Financial Observations  
+3. Category Performance Review only for categories with more than 75% spent
+4. Spending Variance & Trend Analysis  
+5. Recommendations for Optimization  
+6. Action Points
+
+Follow these rules:
+- Only Markdown, no code blocks
+- Keep language factual and precise
+- Use ₹ for all amounts
+- Use bullets, short paragraphs, and bold data points
+- Use icons only in section headers
+- Max 400 words
+- Add extra line breaks between sections
+`,
 });
 
 // Flow: use the summary prompt with enhanced error handling
