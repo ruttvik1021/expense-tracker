@@ -164,3 +164,9 @@ html {
 [vaul-drawer]::after {
   background-color: transparent !important
 }
+
+input,
+textarea,
+select {
+  font-size: 16px !important;
+}
