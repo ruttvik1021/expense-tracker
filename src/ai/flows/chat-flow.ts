@@ -9,8 +9,6 @@
 
 import { ai } from "@/ai/genkit";
 import { z } from "genkit";
-import { createTransactionFromTextTool } from "./create-transaction-from-text";
-import { createCategoryFromTextTool } from "./create-category-from-text";
 
 /* --------------------------- Schema Definitions --------------------------- */
 
@@ -18,45 +16,23 @@ const ChatInputSchema = z.object({
   prompt: z.string().describe("The full prompt for the AI model."),
 });
 
-const HistoryPartSchema = z.object({
-  text: z.string().optional(),
-  toolRequest: z
-    .object({
-      name: z.string(),
-      arguments: z.record(z.any()).optional(),
-    })
-    .optional(),
-  toolResponse: z
-    .object({
-      output: z.any().optional(),
-    })
-    .optional(),
-});
-
-const HistoryMessageSchema = z.object({
-  role: z.enum(["user", "model", "tool"]),
-  parts: z.array(HistoryPartSchema),
-});
-
 const ChatOutputSchema = z.object({
   response: z.string().describe("The AI's response message."),
-  history: z.array(HistoryMessageSchema).optional(),
   transactionData: z
     .object({
-      description: z.string().optional(),
-      amount: z.number().optional(),
-      category: z.string().optional(),
-      date: z.string().optional(),
-      type: z.enum(["income", "expense"]).optional(),
-      spentOn: z.string().optional(),
-      source: z.string().optional(),
+      description: z.string(),
+      amount: z.number(),
+      category: z.string(),
+      date: z.string(),
+      spentOn: z.string(),
+      source: z.string(),
     })
     .optional(),
   categoryData: z
     .object({
       name: z.string(),
       icon: z.string(),
-      budget: z.number().optional(),
+      budget: z.number(),
       periodType: z
         .enum(["once", "monthly", "quarterly", "half-yearly"])
         .optional(),
@@ -74,8 +50,6 @@ const chatPrompt = ai.definePrompt({
   name: "chatPrompt",
   input: { schema: ChatInputSchema },
   output: { schema: ChatOutputSchema },
-  tools: [createTransactionFromTextTool, createCategoryFromTextTool],
-  returnToolRequests: true,
   prompt: `{{{prompt}}}`,
 });
 
@@ -99,7 +73,7 @@ export async function chat(input: {
 
     /* ----------------------------- 2. Build Prompt ----------------------------- */
     const systemMessage = `
-You are a **personal finance assistant**. Help users track expenses, manage budgets, and get financial insights.
+You are a **personal finance assistant**. Help users track expenses, manage budgets, get financial insights also help in financial advice/planning and investment.
 
 **Your Abilities:**
 • Create transactions from natural text (e.g., "spent 500 on groceries")
@@ -120,15 +94,46 @@ You are a **personal finance assistant**. Help users track expenses, manage budg
 • Be friendly but brief
 • Check whether user is in category / transaction creation flow and handoff to specific tool.
 
-**Transaction Creation:** - Handoff to "createTransactionFromTextTool"
+**Transaction Creation:** -
+- amount: REQUIRED, must be a positive number. If missing ask user.
+- category: REQUIRED string. If missing ask user (should be from available categories only).
+- spentOn: REQUIRED string. Ask user first if not provided, take the category name by default.
+- date: REQUIRED, Ask user, default will be current date (format must be moment(value).format() STRICTLY)
+- source: REQUIRED string. If missing ask user (should be from available payment methods only).
+- If user provides a natural language date ("today", "yesterday", "last monday"), parse into ISO format. If cannot parse, ask user to clarify.
+- If all the details are available tell the user the final transaction which will be created, and ask for confirmation to proceed
+- On confirmation return {transactionData: {
+  amount,
+  category,
+  spentOn,
+  date,
+  source,
+}}
 
-**Category Creation:** - Handoff to "createCategoryFromTextTool"
+**Category Creation:** -
+- icon: REQUIRED EMOJI. If user provides an emoji or named icon (if named icon provided, use appropriate emoji). If missing, ask user.
+- category: REQUIRED string. If missing, ask user .
+- budget: number. If user supplies a number, parse it. If they omit it, default to 0 (note: later validation expects >=1).
+- periodType: one of ["once","monthly","quarterly","half-yearly"] STRICTLY. Default: "once". If user gives an unsupported value, ask user again.
+- startMonth: integer 1..12. If periodType === "once" and user does not provide startMonth, default to the current month number: 1.
+* If user specifies a month by name (e.g., "March") convert it to its month number (March -> 3). If user says "till which month" interpret as an endMonth: store as startMonth value using the same month-number format start month should be current or later month till the year end STRICTLY.
+- creationDuration: string. Default: "YEAR_END". Accept common synonyms like "year end", "end of year", "yearly" and normalize to "YEAR_END". If the user explicitly requests a different enum, return that value.
+- If all the details are available tell the user the final category which will be created, and ask for confirmation to proceed
+- On confirmation return {categoryData: {
+  icon,
+  category,
+  budget,
+  periodType (if periodType not once),
+  startMonth (if periodType not once),
+  creationDuration (if periodType not once)
+}}
 
 **Financial Advice:**
 - Use actual data from their transactions and categories
 - Provide calculations, insights, and recommendations
 - Share budgeting tips and best practices when asked
 - Keep it practical and relevant to their situation
+- Always return { response } STRICTLY
 `;
 
     // Parse and format context more clearly
@@ -227,110 +232,19 @@ ${transactions && transactions.length > 20 ? "... and more" : ""}
     if (!modelMessage) {
       return {
         response: "Sorry, I couldn't generate a response. Could you try again?",
-        history: [],
       };
     }
-
-    const responseText =
-      llmResponse?.output?.response ||
-      modelMessage?.content?.find((c: any) => c.text)?.text;
-    const toolRequest = modelMessage?.content?.find(
-      (c: any) => c.toolRequest
-    )?.toolRequest;
-
-    /* ----------------------------- 4. Handle Tools ----------------------------- */
-
-    // 🧰 Handle Transaction Tool
-    if (toolRequest?.name === "createTransactionFromTextTool") {
-      try {
-        const transactionResult = await createTransactionFromTextTool.run({
-          text: input.message,
-          availableCategories:
-            input.availableCategories
-              ?.split("\n")
-              .map((line) => line.split("|")[1]?.trim())
-              .filter(Boolean) ?? [],
-          availablePaymentSources:
-            input.availablePaymentMethods?.split("\n").filter(Boolean) ?? [],
-        });
-
-        const txn = transactionResult?.result;
-
-        if (!txn) {
-          return {
-            response:
-              "I had trouble processing that transaction. Could you rephrase it? For example: 'Add 50 rupees for coffee'",
-          };
-        }
-
-        // Only ask if amount is missing (critical field)
-        if (!txn?.amount) {
-          return {
-            response: "How much was it?",
-            transactionData: txn,
-          };
-        }
-
-        // Return transaction data for auto-save
-        const desc = txn.description || txn.spentOn || "Transaction";
-        return {
-          response: `Added ₹${txn.amount} for ${desc}${
-            txn.category ? " (" + txn.category + ")" : ""
-          }`,
-          transactionData: txn,
-        };
-      } catch (error) {
-        console.error("Transaction tool error:", error);
-        return {
-          response:
-            "I had trouble processing that transaction. Could you try rephrasing? For example: 'Add 50 rupees for coffee in Food category'",
-        };
-      }
-    }
-
-    // 🧰 Handle Category Tool
-    if (toolRequest?.name === "createCategoryFromTextTool") {
-      try {
-        const categoryResult = await createCategoryFromTextTool.run({
-          text: input.message,
-          availableCategories:
-            input.availableCategories
-              ?.split("\n")
-              .map((line) => line.split("|")[1]?.trim())
-              .filter(Boolean) ?? [],
-          availablePaymentSources:
-            input.availablePaymentMethods?.split("\n").filter(Boolean) ?? [],
-        });
-
-        const cat = categoryResult?.result;
-
-        if (!cat?.name) {
-          return {
-            response: "What should I name the category?",
-          };
-        }
-
-        // Return category data for auto-save
-        return {
-          response: `Created ${cat.name} category${
-            cat.icon ? " " + cat.icon : ""
-          }${cat.budget ? " (₹" + cat.budget + " budget)" : ""}`,
-          categoryData: cat,
-        };
-      } catch (error) {
-        console.error("Category tool error:", error);
-        return {
-          response:
-            "I had trouble creating that category. Could you try again? For example: 'Create a new category for Pets'",
-        };
-      }
-    }
+    const responseText = llmResponse?.output?.response;
+    const transactionData = llmResponse?.output?.transactionData;
+    const categoryData = llmResponse?.output?.categoryData;
 
     /* ----------------------------- 5. Default Response ----------------------------- */
     return {
       response:
         responseText ??
         "I'm not sure how to help with that just yet — could you clarify what you'd like to do?",
+      transactionData,
+      categoryData,
     };
   } catch (error) {
     console.error("Chat error:", error);
